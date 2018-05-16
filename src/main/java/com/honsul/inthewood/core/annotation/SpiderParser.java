@@ -17,5 +17,5 @@ public @interface SpiderParser {
   @AliasFor(annotation = Component.class)
   String value() default "";
   
-  String hotelId() default "";
+  String resortId() default "";
 }

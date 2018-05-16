@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @SpiderParser
-public @interface HotelParser {
+public @interface ResortParser {
   @AliasFor(annotation = Component.class)
   String value() default "";
   
   @AliasFor(annotation = SpiderParser.class)
-  String hotelId() default "";
+  String resortId() default "";
 }

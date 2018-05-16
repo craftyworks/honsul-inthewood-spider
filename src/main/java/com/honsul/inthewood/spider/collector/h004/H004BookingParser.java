@@ -20,7 +20,7 @@ import com.honsul.inthewood.core.model.Booking;
 /**
  * 문성자연휴양림 예약현황 파서.
  */
-@BookingParser(hotelId="H004")
+@BookingParser(resortId="H004")
 public class H004BookingParser implements Parser<Booking>{
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
@@ -56,7 +56,7 @@ public class H004BookingParser implements Parser<Booking>{
       String roomType = attr[5];
       String roomNm = row.selectFirst("button").text().replaceAll("\\*", "");
       Booking booking = new Booking();
-      booking.setHotelId(SpiderContext.getHotelId());
+      booking.setResortId(SpiderContext.getResortId());
       booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
       booking.setRoomNo(roomNo);
       booking.setRoomNm(roomNm);

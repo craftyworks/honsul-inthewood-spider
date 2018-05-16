@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.model.Hotel;
+import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Room;
 
 @Mapper
@@ -17,6 +17,6 @@ public interface SpiderDao {
 
   void updateRoom(Room item);
 
-  List<Hotel> selectHotels();
+  List<Resort> selectResorts();
 
 }

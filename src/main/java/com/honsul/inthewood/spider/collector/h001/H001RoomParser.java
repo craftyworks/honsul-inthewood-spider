@@ -26,7 +26,7 @@ import com.honsul.inthewood.core.model.Room;
 /**
  * 좌구산자연휴양림 숙소현황 파서.
  */
-@RoomParser(hotelId="H001")
+@RoomParser(resortId="H001")
 public class H001RoomParser implements Parser<Room>{
 
   private static final String ENTRY_POINT_URL = "http://jwagu.jp.go.kr/reservation.do";
@@ -80,7 +80,7 @@ public class H001RoomParser implements Parser<Room>{
           long price = Long.parseLong(arguments[9]);
 
           Room room = new Room();
-          room.setHotelId(SpiderContext.getHotelId());
+          room.setResortId(SpiderContext.getResortId());
           room.setRoomNo(roomNo);
           room.setRoomNm(roomNm);
           room.setRoomType("숲속의집".equals(roomTypeNm) ? "1" : "2");

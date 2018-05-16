@@ -8,5 +8,5 @@ public interface Collector {
   
   public void collectBooking();
   
-  public void collectHotel();
+  public void collectResort();
 }

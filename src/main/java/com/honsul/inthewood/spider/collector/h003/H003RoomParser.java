@@ -23,7 +23,7 @@ import com.honsul.inthewood.core.model.Room;
  * 
  * <p>예약현황 페이지에서 숙소 별 예약 페이지로 이동하여 숙소 정보를 추출
  */
-@RoomParser(hotelId="H003")
+@RoomParser(resortId="H003")
 public class H003RoomParser implements Parser<Room>{
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -81,7 +81,7 @@ public class H003RoomParser implements Parser<Room>{
       long price = Long.parseLong(sPrice.substring(0, sPrice.indexOf("(")));
       
       Room room = new Room();
-      room.setHotelId(SpiderContext.getHotelId());
+      room.setResortId(SpiderContext.getResortId());
       room.setRoomNo(roomNm);
       room.setRoomNm(roomNm);
       room.setRoomType(getRoomType(roomTypeNm));

@@ -7,23 +7,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.honsul.inthewood.core.Parser;
-import com.honsul.inthewood.core.annotation.HotelParser;
-import com.honsul.inthewood.core.model.Hotel;
+import com.honsul.inthewood.core.annotation.ResortParser;
+import com.honsul.inthewood.core.model.Resort;
 
-@HotelParser(hotelId="H001")
-public class H001HotelParser implements Parser<Hotel>{
+@ResortParser(resortId="H001")
+public class H001ResortParser implements Parser<Resort>{
   
   @Override
-  public List<Hotel> parse() {
+  public List<Resort> parse() {
     return null;
   }
   
   public static void main(String[] args) throws IOException {
 
     Document doc = Jsoup.connect("https://terms.naver.com/entry.nhn?docId=1999034&amp;amp;&cid=42856&categoryId=42856").get();
-    String hotelNm = doc.select("h2.headword").first().text();
+    String resortNm = doc.select("h2.headword").first().text();
     String homePage = doc.select("div#size_ct p>a").first().attr("href");
     
-    System.out.println(hotelNm + ", " + homePage);   
+    System.out.println(resortNm + ", " + homePage);   
   }
 }

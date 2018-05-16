@@ -23,7 +23,7 @@ import com.honsul.inthewood.core.model.Room;
  * 
  * <p>예약현황 페이지에서 숙소 별 예약 페이지로 이동하여 숙소 정보를 추출
  */
-@RoomParser(hotelId="H002")
+@RoomParser(resortId="H002")
 public class H002RoomParser implements Parser<Room>{
 
   private static final String CONNECT_URL = "http://alpshuyang.boeun.go.kr/reservation.asp?location=002";
@@ -82,7 +82,7 @@ public class H002RoomParser implements Parser<Room>{
         long peakPrice = Long.parseLong(m.group(2));
         long price = Long.parseLong(m.group(3));
         Room room = new Room();
-        room.setHotelId(SpiderContext.getHotelId());
+        room.setResortId(SpiderContext.getResortId());
         room.setRoomNo(entry.getKey());
         room.setRoomNm(roomNm);
         room.setRoomType(roomType);

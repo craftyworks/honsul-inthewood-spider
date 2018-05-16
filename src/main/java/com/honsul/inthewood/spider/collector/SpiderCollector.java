@@ -15,7 +15,7 @@ import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.model.Hotel;
+import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Room;
 import com.honsul.inthewood.spider.dao.SpiderDao;
 
@@ -31,23 +31,23 @@ public class SpiderCollector {
   
   @Scheduled(fixedDelay=3000000)
   private void collectAllBooking() {
-    List<Hotel> hotels = dao.selectHotels();
-    for(Hotel hotel : hotels) {
-      collectBooking(hotel);
+    List<Resort> resorts = dao.selectResorts();
+    for(Resort resort : resorts) {
+      collectBooking(resort);
     }
   }
 
-  public void collect(Hotel hotel) {
-    collectRoom(hotel);
-    collectBooking(hotel);
+  public void collect(Resort resort) {
+    collectRoom(resort);
+    collectBooking(resort);
   }
   
   /**
    * 휴양림 예약현황 수집
    */
-  public void collectBooking(Hotel hotel) {
-    SpiderContext.setHotel(hotel);
-    List<Booking> items = lookupBookingParser(hotel.getHotelId()).parse();
+  public void collectBooking(Resort resort) {
+    SpiderContext.setResort(resort);
+    List<Booking> items = lookupBookingParser(resort.getResortId()).parse();
     for(Booking item : items) {
       dao.updateBooking(item);      
     }
@@ -56,30 +56,30 @@ public class SpiderCollector {
   /**
    * 휴양림 숙소정보 수집
    */
-  public void collectRoom(Hotel hotel) {
-    SpiderContext.setHotel(hotel);
-    List<Room> items = lookupRoomParser(hotel.getHotelId()).parse();
+  public void collectRoom(Resort resort) {
+    SpiderContext.setResort(resort);
+    List<Room> items = lookupRoomParser(resort.getResortId()).parse();
     for(Room item : items) {
       dao.updateRoom(item);      
     }
   }
 
-  private Parser<Booking> lookupBookingParser(String hotelId) {
+  private Parser<Booking> lookupBookingParser(String resortId) {
     Map<String, Object> beans = applicationContext.getBeansWithAnnotation(BookingParser.class);
     for(Object bean : beans.values()) {
       BookingParser annotation = bean.getClass().getAnnotation(BookingParser.class);
-      if(hotelId.equals(annotation.hotelId())) {
+      if(resortId.equals(annotation.resortId())) {
         return (Parser<Booking>) bean;
       }
     }
     return null;
   }
   
-  private Parser<Room> lookupRoomParser(String hotelId) {
+  private Parser<Room> lookupRoomParser(String resortId) {
     Map<String, Object> beans = applicationContext.getBeansWithAnnotation(RoomParser.class);
     for(Object bean : beans.values()) {
       RoomParser annotation = bean.getClass().getAnnotation(RoomParser.class);
-      if(hotelId.equals(annotation.hotelId())) {
+      if(resortId.equals(annotation.resortId())) {
         return (Parser<Room>) bean;
       }
     }

@@ -27,7 +27,7 @@ import com.honsul.inthewood.core.model.Booking;
 /**
  * 좌구산자연휴양림 예약현황 파서.
  */
-@BookingParser(hotelId="H001")
+@BookingParser(resortId="H001")
 public class H001BookingParser implements Parser<Booking>{
   
   private static final String ENTRY_POINT_URL = "http://jwagu.jp.go.kr/reservation.do";
@@ -79,7 +79,7 @@ public class H001BookingParser implements Parser<Booking>{
         String roomNm = arguments[2];
         String bookingDt = arguments[4];
         Booking booking = new Booking();
-        booking.setHotelId(SpiderContext.getHotelId());
+        booking.setResortId(SpiderContext.getResortId());
         booking.setRoomNo(roomNo);
         booking.setRoomNm(roomNm);
         booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));

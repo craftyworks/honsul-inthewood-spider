@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 public class Booking implements Item {
-  private String hotelId;
+  private String resortId;
   private LocalDate bookingDt;
   private String roomNm;
   private String roomNo;
