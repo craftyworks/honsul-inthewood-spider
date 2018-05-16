@@ -84,9 +84,8 @@ public class R001RoomParser implements Parser<Room>{
           room.setResortId(SpiderContext.getResortId());
           room.setRoomNo(roomNo);
           room.setRoomNm(roomNm);
-          room.setRoomType(getRoomType(roomTypeNm));
-          room.setRoomTypeNm(roomTypeNm);
-          room.setOccupancy(occupancy);
+          room.setRoomType(RoomType.getRoomType(roomTypeNm));
+          room.setNumberOfPeople(occupancy);
           room.setPeakPrice(peakPrice);
           room.setPrice(price);
           roomList.add(room);
@@ -105,10 +104,6 @@ public class R001RoomParser implements Parser<Room>{
           }
         }
     );
-  }
-  
-  private String getRoomType(String roomTypeNm) {
-    return "숲속의집".equals(roomTypeNm) ? RoomType.HUT.toString() : RoomType.CONDO.toString();
   }
 
   @Override

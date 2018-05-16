@@ -18,6 +18,7 @@ import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
 import com.honsul.inthewood.core.model.RoomType;
+import com.honsul.inthewood.core.util.TextUtils;
 
 /**
  * 충북알프스자연휴양림 숙소현황 파서.
@@ -73,7 +74,7 @@ public class R002RoomParser implements Parser<Room>{
       Document resvDoc = reservePage(entry.getValue());
       String roomNm = resvDoc.selectFirst("#form1>div.reserv_input_tit>h3").text();
       String roomTypeNm = roomNm.split("[0-9]")[0];
-      String roomType = getRoomType(roomTypeNm);
+      RoomType roomType = getRoomType(roomTypeNm);
       
       //[기준인원] 4명 [사용료] 일반 성수기 : 53,000원, 비수기 : 53,000원
       String roomInfo = resvDoc.selectFirst("#form1>div.reserv_input_tit>p").text().replaceAll("[,\\[\\]\\s*]", "");
@@ -87,8 +88,7 @@ public class R002RoomParser implements Parser<Room>{
         room.setRoomNo(entry.getKey());
         room.setRoomNm(roomNm);
         room.setRoomType(roomType);
-        room.setRoomTypeNm(roomTypeNm);
-        room.setOccupancy(occupancy);
+        room.setNumberOfPeople(occupancy);
         room.setPeakPrice(peakPrice);
         room.setPrice(price);
         roomList.add(room);
@@ -98,11 +98,11 @@ public class R002RoomParser implements Parser<Room>{
     return roomList;
   }
   
-  private String getRoomType(String roomNm) {
-    if("알프스빌리지".equals(roomNm) || "숲속의작은집".equals(roomNm) || "숲속의집".equals(roomNm)) {
-      return RoomType.HUT.toString();
+  private RoomType getRoomType(String roomNm) {
+    if(TextUtils.contains(roomNm, new String[] {"알프스빌리지", "숲속의작은집", "숲속의집"})) {
+      return RoomType.HUT;
     }
-    return RoomType.CONDO.toString();
+    return RoomType.CONDO;
   }
 
   @Override

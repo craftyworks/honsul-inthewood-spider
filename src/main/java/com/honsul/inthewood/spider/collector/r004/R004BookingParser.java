@@ -19,6 +19,7 @@ import com.honsul.inthewood.core.model.Booking;
 
 /**
  * 문성자연휴양림 예약현황 파서.
+ * 
  * <p>JSoup 으로 처리.
  */
 @BookingParser(resortId="R004")
@@ -59,7 +60,7 @@ public class R004BookingParser implements Parser<Booking>{
       Booking booking = new Booking();
       booking.setResortId(SpiderContext.getResortId());
       booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-      booking.setRoomNo(roomNo);
+      booking.setRoomNo(roomNm);
       booking.setRoomNm(roomNm);
       bookingList.add(booking);
     }
@@ -81,10 +82,5 @@ public class R004BookingParser implements Parser<Booking>{
     logger.debug("parsed Booking List count : {}", bookingList.size());
     
     return bookingList;
-  }
-  
-  public static void main(String[] args) {
-    R004BookingParser parser = new R004BookingParser();
-    parser.parse();
   }
 }

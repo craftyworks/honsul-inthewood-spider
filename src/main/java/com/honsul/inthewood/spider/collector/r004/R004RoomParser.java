@@ -1,117 +1,77 @@
 package com.honsul.inthewood.spider.collector.r004;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import com.honsul.inthewood.core.Parser;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
 import com.honsul.inthewood.core.model.RoomType;
+import com.honsul.inthewood.core.parser.JsoupRoomParser;
+import com.honsul.inthewood.core.util.TextUtils;
 
 /**
- * 충북알프스자연휴양림 숙소현황 파서.
+ * 문성자연휴양림 숙소현황 파서.
  * 
- * <p>예약현황 페이지에서 숙소 별 예약 페이지로 이동하여 숙소 정보를 추출
+ * <p>JSoup 으로 처리. 예약페이지 내 메뉴판에서 스크랩
  */
-@RoomParser(resortId="R002")
-public class R004RoomParser implements Parser<Room>{
-
-  private static final String CONNECT_URL = "http://alpshuyang.boeun.go.kr/reservation.asp?location=002";
+@RoomParser(resortId="R004")
+public class R004RoomParser extends JsoupRoomParser {
   
-  private static final String ROOM_URL = "http://alpshuyang.boeun.go.kr/reservation.asp?location=002_02";
+  private static final String CONNECT_URL = "http://msf.cj100.net/reservation.asp?location=001";
   
-  private static final Pattern ROOM_INFO_PATTERN = Pattern.compile("^기준인원([0-9]+)명사용료일반성수기:([0-9]+)원비수기:([0-9]+)원.*$");
-  
-  /**
-   * 이번달 예약현황 페이지 이동
-   */
-  private Document thisMonth() {
-    try {
-      return Jsoup.connect(CONNECT_URL).get();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-  
-  /**
-   * 숙소 예약 페이지 이동
-   */
-  private Document reservePage(String arguments) {
-    try {
-     return Jsoup.connect(ROOM_URL).header("Referer", CONNECT_URL).data("rsv_info", arguments).post();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-  
-  private List<Room> extract(Document doc) {
-    // 중복 제거된 숙소목록 추출
-    Map<String, String> roomMap = new HashMap<>();
-    for(Element row : doc.select("#contents form[action^=reservation.asp]")) {
-      String attrValue = row.selectFirst("input[name=rsv_info]").attr("value");
-      String[] attr = attrValue.split("#@");
-      String roomNo = attr[1];
-      if(!roomMap.containsKey(roomNo)) {
-        roomMap.put(roomNo, attrValue);
-      }
-    }
-    
-    // 숙소별로 예약 페이지 이동하여 정보 추출
-    List<Room> roomList = new ArrayList<>();
-    for(Entry<String, String> entry : roomMap.entrySet()) {
-      Document resvDoc = reservePage(entry.getValue());
-      String roomNm = resvDoc.selectFirst("#form1>div.reserv_input_tit>h3").text();
-      String roomTypeNm = roomNm.split("[0-9]")[0];
-      String roomType = getRoomType(roomTypeNm);
-      
-      //[기준인원] 4명 [사용료] 일반 성수기 : 53,000원, 비수기 : 53,000원
-      String roomInfo = resvDoc.selectFirst("#form1>div.reserv_input_tit>p").text().replaceAll("[,\\[\\]\\s*]", "");
-      Matcher m = ROOM_INFO_PATTERN.matcher(roomInfo);
-      if(m.find()) {
-        String occupancy = m.group(1);
-        long peakPrice = Long.parseLong(m.group(2));
-        long price = Long.parseLong(m.group(3));
-        Room room = new Room();
-        room.setResortId(SpiderContext.getResortId());
-        room.setRoomNo(entry.getKey());
-        room.setRoomNm(roomNm);
-        room.setRoomType(roomType);
-        room.setRoomTypeNm(roomTypeNm);
-        room.setOccupancy(occupancy);
-        room.setPeakPrice(peakPrice);
-        room.setPrice(price);
-        roomList.add(room);
-      }
-    }
-    
-    return roomList;
-  }
-  
-  private String getRoomType(String roomNm) {
-    if("알프스빌리지".equals(roomNm) || "숲속의작은집".equals(roomNm) || "숲속의집".equals(roomNm)) {
-      return RoomType.HUT.toString();
-    }
-    return RoomType.CONDO.toString();
+  public R004RoomParser() {
+    super(CONNECT_URL);
   }
 
   @Override
-  public List<Room> parse() {
-    
+  public List<Room> extract(Document doc) {
+
     List<Room> roomList = new ArrayList<>();
     
-    roomList.addAll(extract(thisMonth()));
+    String roomNm = "";
+    String numberOfPeople = "";
+    String space = "";
+    long price = 0, peakPrice = 0;
+    
+    for(Element row : doc.select("div#snb>div.group>table>tbody>tr")) {
+      roomNm = row.selectFirst("th").text();
+      Elements tds = row.select("td");
+      if(!tds.isEmpty()) {
+        String temp = tds.get(0).text();
+        numberOfPeople = TextUtils.substringBefore(temp, "인");
+        space = TextUtils.stripCursor(temp);
+        peakPrice = TextUtils.parseLong(tds.get(1).text());
+        price = TextUtils.parseLong(tds.get(2).text());
+      }
+      
+      Room room = new Room();
+      room.setResortId(SpiderContext.getResortId());
+      room.setRoomNo(roomNm);
+      room.setRoomNm(roomNm);
+      room.setRoomType(getRoomType(roomNm));
+      room.setNumberOfPeople(numberOfPeople);
+      room.setSpace(space);
+      room.setPeakPrice(peakPrice);
+      room.setPrice(price);
+      roomList.add(room);
+    }
+    
+    logger.debug("parsed Room List count : {}", roomList.size());
     
     return roomList;
   }
+  
+  @Override
+  public RoomType getRoomType(String roomNm) {
+    if(TextUtils.contains(roomNm, new String[] {"채송화", "민들레", "원추리", "수선화", "제비꽃"})) {
+      return RoomType.HUT;
+    }
+    return RoomType.CONDO;
+  }
+
 }

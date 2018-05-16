@@ -9,9 +9,8 @@ public class Room implements Item {
   private String resortId;
   private String roomNo;
   private String roomNm;
-  private String roomType;
-  private String roomTypeNm;
-  private String occupancy;
+  private RoomType roomType;
+  private String numberOfPeople;
   private String space;
   private String info;
   long price;
