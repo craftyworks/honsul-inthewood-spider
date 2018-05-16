@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.h002;
+package com.honsul.inthewood.spider.collector.r002;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,14 +17,15 @@ import com.honsul.inthewood.core.Parser;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
+import com.honsul.inthewood.core.model.RoomType;
 
 /**
  * 충북알프스자연휴양림 숙소현황 파서.
  * 
  * <p>예약현황 페이지에서 숙소 별 예약 페이지로 이동하여 숙소 정보를 추출
  */
-@RoomParser(resortId="H002")
-public class H002RoomParser implements Parser<Room>{
+@RoomParser(resortId="R002")
+public class R002RoomParser implements Parser<Room>{
 
   private static final String CONNECT_URL = "http://alpshuyang.boeun.go.kr/reservation.asp?location=002";
   
@@ -99,9 +100,9 @@ public class H002RoomParser implements Parser<Room>{
   
   private String getRoomType(String roomNm) {
     if("알프스빌리지".equals(roomNm) || "숲속의작은집".equals(roomNm) || "숲속의집".equals(roomNm)) {
-      return "1";
+      return RoomType.HUT.toString();
     }
-    return "2";
+    return RoomType.CONDO.toString();
   }
 
   @Override

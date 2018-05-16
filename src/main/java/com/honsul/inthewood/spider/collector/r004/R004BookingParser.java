@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.h004;
+package com.honsul.inthewood.spider.collector.r004;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -19,9 +19,10 @@ import com.honsul.inthewood.core.model.Booking;
 
 /**
  * 문성자연휴양림 예약현황 파서.
+ * <p>JSoup 으로 처리.
  */
-@BookingParser(resortId="H004")
-public class H004BookingParser implements Parser<Booking>{
+@BookingParser(resortId="R004")
+public class R004BookingParser implements Parser<Booking>{
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
   private static final String CONNECT_URL = "http://msf.cj100.net/reservation.asp?location=001";
@@ -83,7 +84,7 @@ public class H004BookingParser implements Parser<Booking>{
   }
   
   public static void main(String[] args) {
-    H004BookingParser parser = new H004BookingParser();
+    R004BookingParser parser = new R004BookingParser();
     parser.parse();
   }
 }

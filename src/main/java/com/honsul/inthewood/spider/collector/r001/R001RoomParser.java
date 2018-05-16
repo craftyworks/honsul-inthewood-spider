@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.h001;
+package com.honsul.inthewood.spider.collector.r001;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,18 +22,19 @@ import com.honsul.inthewood.core.Parser;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
+import com.honsul.inthewood.core.model.RoomType;
 
 /**
  * 좌구산자연휴양림 숙소현황 파서.
  */
-@RoomParser(resortId="H001")
-public class H001RoomParser implements Parser<Room>{
+@RoomParser(resortId="R001")
+public class R001RoomParser implements Parser<Room>{
 
   private static final String ENTRY_POINT_URL = "http://jwagu.jp.go.kr/reservation.do";
   
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
-  private H001RoomParser thisMonth(WebDriver driver) {
+  private R001RoomParser thisMonth(WebDriver driver) {
     logger.debug("opening : {}", ENTRY_POINT_URL);
     driver.get(ENTRY_POINT_URL);
     
@@ -83,7 +84,7 @@ public class H001RoomParser implements Parser<Room>{
           room.setResortId(SpiderContext.getResortId());
           room.setRoomNo(roomNo);
           room.setRoomNm(roomNm);
-          room.setRoomType("숲속의집".equals(roomTypeNm) ? "1" : "2");
+          room.setRoomType(getRoomType(roomTypeNm));
           room.setRoomTypeNm(roomTypeNm);
           room.setOccupancy(occupancy);
           room.setPeakPrice(peakPrice);
@@ -106,6 +107,10 @@ public class H001RoomParser implements Parser<Room>{
     );
   }
   
+  private String getRoomType(String roomTypeNm) {
+    return "숲속의집".equals(roomTypeNm) ? RoomType.HUT.toString() : RoomType.CONDO.toString();
+  }
+
   @Override
   public List<Room> parse() {
     //System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");

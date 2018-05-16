@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.h001;
+package com.honsul.inthewood.spider.collector.r001;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,14 +27,14 @@ import com.honsul.inthewood.core.model.Booking;
 /**
  * 좌구산자연휴양림 예약현황 파서.
  */
-@BookingParser(resortId="H001")
-public class H001BookingParser implements Parser<Booking>{
+@BookingParser(resortId="R001")
+public class R001BookingParser implements Parser<Booking>{
   
   private static final String ENTRY_POINT_URL = "http://jwagu.jp.go.kr/reservation.do";
   
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
-  private H001BookingParser thisMonth(WebDriver driver) {
+  private R001BookingParser thisMonth(WebDriver driver) {
     logger.debug("opening : {}", ENTRY_POINT_URL);
     driver.get(ENTRY_POINT_URL);
     
@@ -54,7 +54,7 @@ public class H001BookingParser implements Parser<Booking>{
     return this;
   }
   
-  private H001BookingParser nextMonth(WebDriver driver) {
+  private R001BookingParser nextMonth(WebDriver driver) {
     logger.debug("moving to next month");
     driver.findElement(By.cssSelector("input.next")).click();
     

@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.h002;
+package com.honsul.inthewood.spider.collector.r002;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -9,6 +9,8 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.honsul.inthewood.core.Parser;
 import com.honsul.inthewood.core.SpiderContext;
@@ -18,8 +20,10 @@ import com.honsul.inthewood.core.model.Booking;
 /**
  * 충북알프스자연휴양림 예약현황 파서.
  */
-@BookingParser(resortId="H002")
-public class H002BookingParser implements Parser<Booking>{
+@BookingParser(resortId="R002")
+public class R002BookingParser implements Parser<Booking>{
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  
   private static final String CONNECT_URL = "http://alpshuyang.boeun.go.kr/reservation.asp?location=002";
   
   private Document thisMonth() {
@@ -73,6 +77,8 @@ public class H002BookingParser implements Parser<Booking>{
     
     bookingList.addAll(extract(nextMonth(doc)));
 
+    logger.debug("parsed Booking List count : {}", bookingList.size());
+    
     return bookingList;
   }
   

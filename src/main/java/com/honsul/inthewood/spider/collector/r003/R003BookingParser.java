@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.h003;
+package com.honsul.inthewood.spider.collector.r003;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,14 +22,15 @@ import com.honsul.inthewood.core.model.Booking;
 
 /**
  * 광치자연휴양림 예약현황 파서.
+ * <p>https 인증 오류 발생하여 WebDriver 로 파싱함.
  */
-@BookingParser(resortId="H003")
-public class H003BookingParser implements Parser<Booking>{
+@BookingParser(resortId="R003")
+public class R003BookingParser implements Parser<Booking>{
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
   private static final String ENTRY_POINT_URL = "https://www.kwangchi.or.kr:451/reservation.asp?location=002";
   
-  private H003BookingParser thisMonth(WebDriver driver) {
+  private R003BookingParser thisMonth(WebDriver driver) {
     logger.debug("opening : {}", ENTRY_POINT_URL);
     driver.get(ENTRY_POINT_URL);
     
@@ -38,7 +39,7 @@ public class H003BookingParser implements Parser<Booking>{
     return this;
   }
   
-  private H003BookingParser nextMonth(WebDriver driver) {
+  private R003BookingParser nextMonth(WebDriver driver) {
     logger.debug("moving to next month");
     driver.findElement(By.cssSelector("input.next")).click();
     
@@ -100,7 +101,7 @@ public class H003BookingParser implements Parser<Booking>{
   }
   
   public static void main(String[] args) {
-    H003BookingParser parser = new H003BookingParser();
+    R003BookingParser parser = new R003BookingParser();
     parser.parse();
   }
 }
