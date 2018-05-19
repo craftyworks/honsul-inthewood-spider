@@ -2,3 +2,5 @@ INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('H001', '좌구산자연휴양�
 INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('H002', '충북알프스자연휴양림');
 INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('H003', '광치자연휴양림');
 INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('H004', '문성자연휴양림');
+INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('H005', '봉황자연휴양림');
+INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('H006', '계명산자연휴양림');

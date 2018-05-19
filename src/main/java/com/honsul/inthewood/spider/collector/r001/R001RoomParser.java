@@ -55,6 +55,7 @@ public class R001RoomParser implements Parser<Room>{
   }
   
   private List<Room> extract(WebDriver driver) {
+    System.out.println(driver.findElement(By.tagName("body")).toString());
     List<Room> roomList = new ArrayList<>();
     
     String roomTypeNm = null;

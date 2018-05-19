@@ -5,57 +5,47 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.honsul.inthewood.core.Parser;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
+import com.honsul.inthewood.core.parser.AbstractBookingParser;
+import com.honsul.inthewood.core.util.WebDriverUtils;
 
 /**
  * 광치자연휴양림 예약현황 파서.
  * <p>https 인증 오류 발생하여 WebDriver 로 파싱함.
  */
 @BookingParser(resortId="R003")
-public class R003BookingParser implements Parser<Booking>{
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class R003BookingParser extends AbstractBookingParser {
   
-  private static final String ENTRY_POINT_URL = "https://www.kwangchi.or.kr:451/reservation.asp?location=002";
+  private static final String CONNECT_URL = "https://www.kwangchi.or.kr:451/reservation.asp?location=002";
   
-  private R003BookingParser thisMonth(WebDriver driver) {
-    logger.debug("opening : {}", ENTRY_POINT_URL);
-    driver.get(ENTRY_POINT_URL);
-    
-    waitForJQuery(driver);
-    
-    return this;
+  public R003BookingParser() {
+    super(CONNECT_URL);
   }
   
-  private R003BookingParser nextMonth(WebDriver driver) {
-    logger.debug("moving to next month");
-    driver.findElement(By.cssSelector("input.next")).click();
-    
-    waitForJQuery(driver);
-    
-    return this;
+  protected Document thisMonth() {
+    return WebDriverUtils.getDocument(CONNECT_URL);
   }
   
-  private List<Booking> extract(WebDriver driver) {
+  protected Document nextMonth(Document doc) {
+    return WebDriverUtils.getDocument(CONNECT_URL, (driver) -> {
+      driver.findElement(By.cssSelector("input.next")).click();
+    });
+  }
+  
+  @Override
+  public List<Booking> extract(Document doc) {
     List<Booking> bookingList = new ArrayList<>();
-    
-    List<WebElement> bookingIcons = driver.findElements(By.cssSelector("#contents form[action='/reservation.asp?location=002_02']"));
-    for(WebElement elm : bookingIcons) {
-      String[] attr = elm.findElement(By.cssSelector("input[name='rsv_info']")).getAttribute("value").split("#@");
+
+    for(Element elm : doc.select("#contents form[action='/reservation.asp?location=002_02']")) {
+      String[] attr = elm.select("input[name='rsv_info']").attr("value").split("#@");
       String bookingDt = attr[2];
-      String roomNm = elm.findElement(By.tagName("button")).getText().replaceAll("\\*", "");
+      String roomNm = elm.select("button").text().replaceAll("\\*", "");
       Booking booking = new Booking();
       booking.setResortId(SpiderContext.getResortId());
       booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -68,40 +58,4 @@ public class R003BookingParser implements Parser<Booking>{
     return bookingList;
   }
   
-  private void waitForJQuery(WebDriver driver) {
-    new WebDriverWait(driver, 5).until(
-        new ExpectedCondition<Boolean>() {
-          public Boolean apply(WebDriver d) {
-            JavascriptExecutor js = (JavascriptExecutor) d;
-            return (Boolean) js.executeScript("return !!window.jQuery && window.jQuery.active == 0");
-          }
-        }
-    );
-  }
-  
-  @Override
-  public List<Booking> parse() {
-    //System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");
-    //WebDriver driver = new ChromeDriver();
-    
-    System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
-    WebDriver driver = new PhantomJSDriver();
-    
-    List<Booking> bookingList = new ArrayList<>();
-    
-    bookingList.addAll(thisMonth(driver).extract(driver));
-    
-    bookingList.addAll(nextMonth(driver).extract(driver));
-    
-    driver.quit();
-    
-    logger.debug("parsed Booking List count : {}", bookingList.size());
-    
-    return bookingList;
-  }
-  
-  public static void main(String[] args) {
-    R003BookingParser parser = new R003BookingParser();
-    parser.parse();
-  }
 }

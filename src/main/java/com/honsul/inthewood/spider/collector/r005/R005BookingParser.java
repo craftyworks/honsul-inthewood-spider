@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.r004;
+package com.honsul.inthewood.spider.collector.r005;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -16,17 +16,18 @@ import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.parser.AbstractBookingParser;
 
 /**
- * 문성자연휴양림 예약현황 파서.
+ * 봉황자연휴양림 예약현황 파서.
  * 
  * <p>JSoup 으로 처리.
  */
-@BookingParser(resortId="R004")
-public class R004BookingParser extends AbstractBookingParser {
+@BookingParser(resortId="R005")
+public class R005BookingParser extends AbstractBookingParser {
+
+  private static final String CONNECT_URL = "http://bhf.cj100.net/reservation.asp?location=002";
   
-  private static final String CONNECT_URL = "http://msf.cj100.net/reservation.asp?location=001";
-  
-  public R004BookingParser() {
+  public R005BookingParser() {
     super(CONNECT_URL);
+    header("Referer", "http://bhf.cj100.net/reservation.asp");
   }
   
   protected Document nextMonth(Document doc) {
@@ -35,16 +36,15 @@ public class R004BookingParser extends AbstractBookingParser {
     String month = elm.selectFirst("input[name=wh_month]").val();
     
     try {
-      return Jsoup.connect(CONNECT_URL).data("wh_year", year).data("wh_month", month).post();
+      return Jsoup.connect(CONNECT_URL).header("Referer", "http://bhf.cj100.net/reservation.asp").data("wh_year", year).data("wh_month", month).post();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
   
   public List<Booking> extract(Document doc) {
-
     List<Booking> bookingList = new ArrayList<>();
-    for(Element row : doc.select("#contents form[action=reservation.asp?location=001_00]")) {
+    for(Element row : doc.select("#contents form[action=reservation.asp?location=002_00]")) {
       String[] attr = row.selectFirst("input[name=rsv_info]").attr("value").split("#@");
       String roomNo = attr[1];
       String bookingDt = attr[2];
@@ -60,5 +60,5 @@ public class R004BookingParser extends AbstractBookingParser {
     
     return bookingList;
   }
-  
+
 }

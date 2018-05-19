@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector.r004;
+package com.honsul.inthewood.spider.collector.r005;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +15,18 @@ import com.honsul.inthewood.core.parser.AbstractRoomParser;
 import com.honsul.inthewood.core.util.TextUtils;
 
 /**
- * 문성자연휴양림 숙소현황 파서.
+ * 봉황자연휴양림 숙소현황 파서.
  * 
  * <p>JSoup 으로 처리. 예약페이지 내 메뉴판에서 스크랩
  */
-@RoomParser(resortId="R004")
-public class R004RoomParser extends AbstractRoomParser {
+@RoomParser(resortId="R005")
+public class R005RoomParser extends AbstractRoomParser {
   
-  private static final String CONNECT_URL = "http://msf.cj100.net/reservation.asp?location=001";
+  private static final String CONNECT_URL = "http://bhf.cj100.net/reservation.asp?location=002";
   
-  public R004RoomParser() {
+  public R005RoomParser() {
     super(CONNECT_URL);
+    header("Referer", "http://bhf.cj100.net/reservation.asp");
   }
 
   @Override
@@ -38,15 +39,18 @@ public class R004RoomParser extends AbstractRoomParser {
     String space = "";
     long price = 0, peakPrice = 0;
     
-    for(Element row : doc.select("div#snb>div.group>table>tbody>tr")) {
+    for(Element row : doc.select("div#snb>table>tbody>tr")) {
       roomNm = row.selectFirst("th").text();
       Elements tds = row.select("td");
       if(!tds.isEmpty()) {
-        String temp = tds.get(0).text();
-        numberOfPeople = TextUtils.substringBefore(temp, "인");
-        space = TextUtils.stripCursor(temp);
-        peakPrice = TextUtils.parseLong(tds.get(1).text());
-        price = TextUtils.parseLong(tds.get(2).text());
+        int idx = 0; 
+        if(tds.size() == 3) {
+          String temp = tds.get(idx++).text();
+          numberOfPeople = TextUtils.substringBefore(temp, "인");
+          space = TextUtils.stripCursor(temp);
+        }
+        peakPrice = TextUtils.parseLong(tds.get(idx++).text());
+        price = TextUtils.parseLong(tds.get(idx++).text());
       }
       
       Room room = new Room();
@@ -68,10 +72,7 @@ public class R004RoomParser extends AbstractRoomParser {
   
   @Override
   public RoomType getRoomType(String roomNm) {
-    if(TextUtils.contains(roomNm, new String[] {"채송화", "민들레", "원추리", "수선화", "제비꽃"})) {
-      return RoomType.HUT;
-    }
-    return RoomType.CONDO;
+    return RoomType.HUT;
   }
 
 }

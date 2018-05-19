@@ -12,10 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.honsul.inthewood.core.Parser;
-import com.honsul.inthewood.core.model.Room;
-import com.honsul.inthewood.core.model.RoomType;
+import com.honsul.inthewood.core.model.Booking;
 
-public abstract class AbstractRoomParser  implements Parser<Room> {
+public abstract class AbstractBookingParser implements Parser<Booking> {
   
   protected final Logger logger = LoggerFactory.getLogger(this.getClass());
   
@@ -27,15 +26,14 @@ public abstract class AbstractRoomParser  implements Parser<Room> {
     this.headers.put(key, value);
   }
   
-  public AbstractRoomParser() {
-    
+  public AbstractBookingParser() {    
   }
   
-  public AbstractRoomParser(String url) {
+  public AbstractBookingParser(String url) {
     this.pageURL = url;
   }
   
-  public Document getPage() {
+  protected Document thisMonth() {
     try {
       return Jsoup.connect(pageURL).headers(headers).get();
     } catch (IOException e) {
@@ -43,29 +41,23 @@ public abstract class AbstractRoomParser  implements Parser<Room> {
     }
   }
   
-  public List<Document> getPages() {
-    List<Document> pages = new ArrayList<>();
-    pages.add(getPage());
-    return pages;
-  }
+  protected abstract Document nextMonth(Document doc);
   
-  @Override
-  public List<Room> parse() {
-    return extract(getPages());
-  }
+  public abstract List<Booking> extract(Document doc);
   
-  public List<Room> extract(List<Document> docs) {
-    List<Room> roomList = new ArrayList<>();
+  public List<Booking> parse() {
     
-    for(Document doc : docs) {
-      roomList.addAll(extract(doc));
-    }
+    List<Booking> bookingList = new ArrayList<>();
     
-    return roomList;
+    Document doc = thisMonth();
+    
+    bookingList.addAll(extract(doc));
+    
+    bookingList.addAll(extract(nextMonth(doc)));
+
+    logger.debug("parsed Booking List count : {}", bookingList.size());
+    
+    return bookingList;
   }
-  
-  public abstract List<Room> extract(Document doc);
-  
-  protected abstract RoomType getRoomType(String roomNm);
-    
+
 }
