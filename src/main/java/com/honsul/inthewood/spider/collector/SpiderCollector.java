@@ -31,7 +31,7 @@ public class SpiderCollector {
   
   @Scheduled(fixedDelay=3000000)
   private void collectAllBooking() {
-    List<Resort> resorts = dao.selectResorts();
+    List<Resort> resorts = dao.selectResortList();
     for(Resort resort : resorts) {
       collectBooking(resort);
     }

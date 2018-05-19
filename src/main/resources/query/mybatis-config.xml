@@ -17,7 +17,7 @@
   </settings>
 
   <typeAliases>
-    <typeAlias alias="Hotel" type="com.honsul.inthewood.core.model.Hotel"/>
+    <typeAlias alias="Resort" type="com.honsul.inthewood.core.model.Resort"/>
     <typeAlias alias="Booking" type="com.honsul.inthewood.core.model.Booking"/>
     <typeAlias alias="Room" type="com.honsul.inthewood.core.model.Room"/>
   </typeAliases>

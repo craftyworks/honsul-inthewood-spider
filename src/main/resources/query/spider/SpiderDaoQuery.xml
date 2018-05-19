@@ -2,21 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.honsul.inthewood.spider.dao.SpiderDao">
                    
-    <select id="selectHotels" resultType="Hotel">
-      SELECT HOTEL_ID, HOTEL_NM
-        FROM HOTEL
+    <select id="selectResortList" resultType="Resort">
+      SELECT RESORT_ID, RESORT_NM
+        FROM RESORT
     </select>
                       
     <update id="updateBooking" parameterType="Booking">
-      MERGE INTO BOOKING(HOTEL_ID, BOOKING_DT, ROOM_NO, ROOM_NM, INSERT_DT, UPDATE_DT)
-        KEY (HOTEL_ID, BOOKING_DT, ROOM_NO)
-      VALUES(#{hotelId}, #{bookingDt}, #{roomNo}, #{roomNm}, now(), now())    
+      MERGE INTO BOOKING(RESORT_ID, BOOKING_DT, ROOM_NO, ROOM_NM, INSERT_DT, UPDATE_DT)
+        KEY (RESORT_ID, BOOKING_DT, ROOM_NO)
+      VALUES(#{resortId}, #{bookingDt}, #{roomNo}, #{roomNm}, now(), now())    
     </update>    
     
     <update id="updateRoom" parameterType="Room">
-      MERGE INTO ROOM(HOTEL_ID, ROOM_NO, ROOM_NM, ROOM_TYPE, ROOM_TYPE_NM, OCCUPANCY, PRICE, PEAK_PRICE, INSERT_DT, UPDATE_DT)
-        KEY (HOTEL_ID, ROOM_NO)
-      VALUES(#{hotelId}, #{roomNo}, #{roomNm}, #{roomType}, #{roomTypeNm}, #{occupancy}, #{price}, #{peakPrice}, now(), now())    
+      MERGE INTO ROOM(RESORT_ID, ROOM_NO, ROOM_NM, ROOM_TYPE, ROOM_TYPE_NM, OCCUPANCY, PRICE, PEAK_PRICE, INSERT_DT, UPDATE_DT)
+        KEY (RESORT_ID, ROOM_NO)
+      VALUES(#{resortId}, #{roomNo}, #{roomNm}, #{roomType}, #{roomType.name}, #{numberOfPeople}, #{price}, #{peakPrice}, now(), now())    
     </update>        
 </mapper>
 

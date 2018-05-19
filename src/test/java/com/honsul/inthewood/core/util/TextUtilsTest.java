@@ -12,7 +12,18 @@ public class TextUtilsTest {
     assertEquals("내용", TextUtils.stripCursor("첫번째 커서 안의 (내용)만 (뽑아라)."));
     assertEquals("", TextUtils.stripCursor("커서가 없으면 공백 문자"));
   }
-
+ 
+  @Test
+  public void testFindMoney() {
+    String str = "53,000원";
+    assertEquals("53000", TextUtils.findMoney(str));
+    str = "77,000(20%)62,000";
+    assertEquals("77000", TextUtils.findMoney(str));
+    str = "(30%)54,000(50%)39,000";
+    assertEquals("30", TextUtils.findMoney(str));
+    
+  }
+  
   @Test
   public void testSubstringBefore() {
     String str = "커서 안의 (내용)만 뽑아라.";

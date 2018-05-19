@@ -17,6 +17,6 @@ public interface SpiderDao {
 
   void updateRoom(Room item);
 
-  List<Resort> selectResorts();
+  List<Resort> selectResortList();
 
 }

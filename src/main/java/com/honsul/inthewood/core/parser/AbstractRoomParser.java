@@ -35,15 +35,11 @@ public abstract class AbstractRoomParser  implements Parser<Room> {
     this.pageURL = url;
   }
   
-  public Document getPage() {
-    try {
-      return Jsoup.connect(pageURL).headers(headers).get();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public Document getPage() throws IOException {
+    return Jsoup.connect(pageURL).headers(headers).get();
   }
   
-  public List<Document> getPages() {
+  public List<Document> getPages() throws IOException {
     List<Document> pages = new ArrayList<>();
     pages.add(getPage());
     return pages;
@@ -51,7 +47,11 @@ public abstract class AbstractRoomParser  implements Parser<Room> {
   
   @Override
   public List<Room> parse() {
-    return extract(getPages());
+    try {
+      return extract(getPages());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   public List<Room> extract(List<Document> docs) {

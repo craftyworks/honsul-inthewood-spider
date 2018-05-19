@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 public class TextUtils {
   private static Pattern P_CURSOR = Pattern.compile("\\(([^\\(\\)]*)\\)");
   
+  private static Pattern P_MONEY = Pattern.compile("([0-9,]+)");
   /**
    * 괄호 내부의 문자열을 리턴
    * <p>예: stripCursor("8인(51㎡)") 리턴 51㎡ 
@@ -20,6 +21,18 @@ public class TextUtils {
     }
     return "";
   }
+  
+  public static String findMoney(String str) {
+    Matcher matcher = P_MONEY.matcher(str);
+    if(matcher.find()) {
+      return matcher.group(1).replaceAll(",", "");
+    }
+    return "0";
+  }
+  
+  public static long findMoneyLong(String str) {
+    return parseLong(findMoney(str));
+  }
 
   /**
    * <p>Gets the substring before the first occurrence of a separator.
@@ -27,6 +40,10 @@ public class TextUtils {
    */
   public static String substringBefore(final String str, final String separator) {
     return StringUtils.substringBefore(str, separator);
+  }
+  
+  public static String substringAfter(final String str, final String separator) {
+    return StringUtils.substringAfter(str, separator);
   }
   
   /**
