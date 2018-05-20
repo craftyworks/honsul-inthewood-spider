@@ -7,17 +7,24 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class WebDriverUtils {
   static {
+    System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");
     System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
   }
   
+  public static WebDriver createDriver() {
+    return new PhantomJSDriver();
+  }
+  
   public static Document getDocument(String url) {
-    WebDriver driver = new PhantomJSDriver();
+    //WebDriver driver = new PhantomJSDriver();
+    WebDriver driver = new ChromeDriver();
     
     driver.get(url);
     
@@ -29,7 +36,8 @@ public class WebDriverUtils {
   }
   
   public static Document getDocument(String url, DriverCallback callback) {
-    WebDriver driver = new PhantomJSDriver();
+    //WebDriver driver = new PhantomJSDriver();
+    WebDriver driver = new ChromeDriver();
     
     driver.get(url);
     

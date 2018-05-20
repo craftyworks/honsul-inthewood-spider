@@ -33,15 +33,11 @@ public abstract class AbstractBookingParser implements Parser<Booking> {
     this.pageURL = url;
   }
   
-  protected Document thisMonth() {
-    try {
-      return Jsoup.connect(pageURL).headers(headers).get();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  protected Document thisMonth() throws IOException {
+    return Jsoup.connect(pageURL).headers(headers).get();
   }
   
-  protected abstract Document nextMonth(Document doc);
+  protected abstract Document nextMonth(Document doc) throws IOException;
   
   public abstract List<Booking> extract(Document doc);
   
@@ -49,13 +45,19 @@ public abstract class AbstractBookingParser implements Parser<Booking> {
     
     List<Booking> bookingList = new ArrayList<>();
     
-    Document doc = thisMonth();
+    try {
+      Document doc = thisMonth();
+  
+      bookingList.addAll(extract(doc));
+      
+      bookingList.addAll(extract(nextMonth(doc)));
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
     
-    bookingList.addAll(extract(doc));
-    
-    bookingList.addAll(extract(nextMonth(doc)));
-
-    logger.debug("parsed Booking List count : {}", bookingList.size());
+    if(logger.isDebugEnabled()) {
+      logger.debug("parsed Booking List count : {} [{}]", bookingList.size(), bookingList.get(0));
+    }
     
     return bookingList;
   }
