@@ -14,8 +14,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class WebDriverUtils {
   static {
-    System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");
-    System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
+    //System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");
+    //System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
+    System.setProperty("phantomjs.binary.path", "/home/ec2-user/tools/webdriver/phantomjs-2.1.1-linux-x86_64/bin/phantomjs");
   }
   
   public static WebDriver createDriver() {
