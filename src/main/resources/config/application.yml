@@ -7,8 +7,6 @@ spring:
     platform: h2
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:honsuldb;DB_CLOSE_DELAY=-1
-    #driverClassName: net.sf.log4jdbc.DriverSpy
-    #url: jdbc:log4jdbc:h2:mem:honsuldb;DB_CLOSE_DELAY=-1
   h2:
     console:
       enabled: true

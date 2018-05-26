@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.honsul.inthewood.core.Parser;
@@ -29,17 +28,20 @@ public class SpiderCollector {
   @Autowired
   SpiderDao dao;
   
-  @Scheduled(fixedDelay=3000000)
-  private void collectAllBooking() {
-    List<Resort> resorts = dao.selectResortList();
-    for(Resort resort : resorts) {
-      collectBooking(resort);
-    }
-  }
-
   public void collect(Resort resort) {
     collectRoom(resort);
     collectBooking(resort);
+  }
+  
+  /**
+   * 전체 휴양림 예약현황 수집
+   */
+  public void collectAllBooking() {
+    List<Resort> resorts = dao.selectResortList();
+    
+    for(Resort resort : resorts) {
+      collectBooking(resort);
+    }
   }
   
   /**

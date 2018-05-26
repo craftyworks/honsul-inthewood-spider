@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honsul.inthewood.api.dao.ApiDao">
+
+    <select id="getResort" parameterType="map" resultType="Resort">
+      SELECT RESORT_ID, RESORT_NM
+        FROM RESORT
+       WHERE RESORT_ID = #{resortId}
+    </select>  
+    
+    <select id="selectResort" resultType="Resort">
+      SELECT RESORT_ID, RESORT_NM
+        FROM RESORT
+    </select>  
+    
+    <select id="selectResortRoom" parameterType="map" resultType="Room">
+      SELECT *
+        FROM ROOM
+       WHERE RESORT_ID = #{resortId}
+    </select>      
+    
+    <select id="selectResortBooking" parameterType="map" resultType="Booking">
+      SELECT *
+        FROM BOOKING a
+       WHERE a.RESORT_ID = #{resortId}
+       <if test="bookingDt != null and !bookingDt.equals('')">
+         AND a.BOOKING_DT = #{bookingDt}
+       </if>
+       ORDER BY a.BOOKING_DT
+    </select>     
+    
+    <select id="selectBooking" parameterType="map" resultType="Booking">
+      SELECT *
+        FROM BOOKING a
+       WHERE 1 = 1
+       <choose>
+          <when test="!bookingDt.equals('holiday')">    
+            AND a.BOOKING_DT = #{bookingDt}
+          </when>
+          <otherwise>
+            AND a.BOOKING_DT = #{bookingDt}
+          </otherwise>
+       </choose>     
+       ORDER BY a.RESORT_ID 
+    </select> 
+    
+    <select id="selectHolidayBooking" parameterType="map" resultType="Booking">
+      SELECT *
+        FROM BOOKING a
+       WHERE 1 = 1
+       <if test="bookingDt != null and !bookingDt.equals('')">
+         AND a.BOOKING_DT = #{bookingDt}
+       </if>       
+       ORDER BY a.RESORT_ID 
+    </select>     
+    
+</mapper>
+

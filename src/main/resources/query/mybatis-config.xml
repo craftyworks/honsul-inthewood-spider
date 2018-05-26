@@ -28,6 +28,7 @@
   </typeHandlers>
   
   <mappers>
+    <mapper resource="query/api/ApiDaoQuery.xml"/>
     <mapper resource="query/spider/SpiderDaoQuery.xml"/>
   </mappers>  
    
