@@ -23,6 +23,7 @@ import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
 import com.honsul.inthewood.core.model.RoomType;
+import com.honsul.inthewood.core.util.WebDriverUtils;
 
 /**
  * 좌구산자연휴양림 숙소현황 파서.
@@ -112,8 +113,8 @@ public class R001RoomParser implements Parser<Room>{
     //System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");
     //WebDriver driver = new ChromeDriver();
     
-    System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
-    WebDriver driver = new PhantomJSDriver();
+    //System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
+    WebDriver driver = WebDriverUtils.createDriver();
     
     List<Room> roomList = new ArrayList<>();
     
