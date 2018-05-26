@@ -18,7 +18,7 @@ public class R001ResortParser implements Parser<Resort>{
     return null;
   }
   
-  public static void main(String[] args) throws IOException {
+  public static void main2(String[] args) throws IOException {
 
     Document doc = Jsoup.connect("https://terms.naver.com/entry.nhn?docId=1999034&amp;amp;&cid=42856&categoryId=42856").get();
     String resortNm = doc.select("h2.headword").first().text();

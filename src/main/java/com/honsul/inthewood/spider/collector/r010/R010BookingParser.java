@@ -86,7 +86,7 @@ public class R010BookingParser extends AbstractBookingParser {
     HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());    
   }
   
-  public static void main(String[] args) throws Exception {
+  public static void main2(String[] args) throws Exception {
     trustAllCertificate();
     System.out.println(new Date(1525878000));
     System.out.println(LocalDate.now().atStartOfDay(ZoneOffset.ofHours(9)).toInstant().getEpochSecond() + ", " + System.currentTimeMillis());
