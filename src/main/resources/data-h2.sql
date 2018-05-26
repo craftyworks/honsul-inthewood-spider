@@ -7,3 +7,4 @@ INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('R006', '계명산자연휴양�
 INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('R007', '가리산자연휴양림');
 INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('R008', '봉수산자연휴양림');
 INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('R009', '구재봉자연휴양림');
+INSERT INTO RESORT(RESORT_ID, RESORT_NM) VALUES('R010', '군위장곡자연휴양림');
