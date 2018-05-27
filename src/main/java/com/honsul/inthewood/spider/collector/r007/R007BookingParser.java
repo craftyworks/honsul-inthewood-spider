@@ -18,7 +18,7 @@ import com.honsul.inthewood.core.parser.AbstractBookingParser;
 import com.honsul.inthewood.core.util.TextUtils;
 
 /**
- * rkfi산자연휴양림 예약현황 파서.
+ * 가리산자연휴양림 예약현황 파서.
  */
 @BookingParser(resortId="R007")
 public class R007BookingParser extends AbstractBookingParser {

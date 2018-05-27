@@ -1,15 +1,8 @@
-debug: true
-
 spring:
+  profiles:
+    active: prod
   aop:
     proxy-target-class: true
-  datasource:
-    platform: h2
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:honsuldb;DB_CLOSE_DELAY=-1
-  h2:
-    console:
-      enabled: true
 
 mybatis:
   config-location: classpath:query/mybatis-config.xml
@@ -21,14 +14,43 @@ server:
 
 logging:
   level:
-    com: DEBUG
-    log4jdbc: 
-      debug: DEBUG
+    root: INFO
+    com:
+      honsul: DEBUG
     jdbc:
       sqlonly: OFF 
       audit: OFF
       resultset: OFF
       connection: OFF
       sqltiming: DEBUG
-    
+---
+# Local Development Configuration 
+spring:
+  profiles: local
 
+phantomjs:
+  binary:
+    path: E:/ProjectHome/tools/webdriver/phantomjs.exe
+webdriver:
+  chrome:
+    driver: E:/ProjectHome/tools/webdriver/chromedriver.exe
+
+debug: true
+    
+---
+# Production Configuration 
+spring:
+  profiles: prod
+        
+phantomjs:
+  binary:
+    path: /home/ec2-user/tools/webdriver/phantomjs-2.1.1-linux-x86_64/bin/phantomjs
+webdriver:
+  chrome:
+    driver: E:/ProjectHome/tools/webdriver/chromedriver.exe
+    
+debug: false
+
+logging:
+  level:
+    root: INFO

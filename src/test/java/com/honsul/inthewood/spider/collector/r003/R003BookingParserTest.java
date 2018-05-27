@@ -15,6 +15,7 @@ public class R003BookingParserTest {
   
   @BeforeClass
   public static void setup() {
+    System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
     parser = new R003BookingParser();
   }
   

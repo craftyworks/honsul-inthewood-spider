@@ -35,7 +35,7 @@
        WHERE 1 = 1
        <choose>
           <when test="!bookingDt.equals('holiday')">    
-            AND a.BOOKING_DT = #{bookingDt}
+            AND WEEKDAY(a.BOOKING_DT) = 5 /* 토요일만 */*
           </when>
           <otherwise>
             AND a.BOOKING_DT = #{bookingDt}

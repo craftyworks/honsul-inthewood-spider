@@ -20,4 +20,13 @@ public class SpiderScheduller {
     collector.collectAllBooking();
   }
   
+  /**
+   * 30분 간격으로 전체 휴양림의 숙소정보 집계
+   */
+  @Scheduled(fixedDelay=18000000)
+  private void collectAllRoom() {
+    collector.collectAllRoom();
+  }
+  
+  
 }

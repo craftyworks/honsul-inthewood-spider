@@ -40,7 +40,26 @@ public class SpiderCollector {
     List<Resort> resorts = dao.selectResortList();
     
     for(Resort resort : resorts) {
-      collectBooking(resort);
+      try {
+        collectBooking(resort);
+      } catch(Throwable e) {
+        logger.error("error", e);
+      }
+    }
+  }
+  
+  /**
+   * 전체 휴양림 숙소정보 수집
+   */
+  public void collectAllRoom() {
+    List<Resort> resorts = dao.selectResortList();
+    
+    for(Resort resort : resorts) {
+      try {
+        collectRoom(resort);
+      } catch(Throwable e) {
+        logger.error("error", e);
+      }
     }
   }
   

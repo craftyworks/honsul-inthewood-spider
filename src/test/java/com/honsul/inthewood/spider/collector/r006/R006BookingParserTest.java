@@ -16,6 +16,7 @@ static R006BookingParser parser;
   
   @BeforeClass
   public static void setup() {
+    System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
     parser = new R006BookingParser();
   }
   

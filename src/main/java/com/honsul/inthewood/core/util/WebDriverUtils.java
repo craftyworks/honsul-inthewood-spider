@@ -7,7 +7,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -16,7 +15,6 @@ public class WebDriverUtils {
   static {
     //System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");
     //System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
-    System.setProperty("phantomjs.binary.path", "/home/ec2-user/tools/webdriver/phantomjs-2.1.1-linux-x86_64/bin/phantomjs");
   }
   
   public static WebDriver createDriver() {
@@ -24,43 +22,42 @@ public class WebDriverUtils {
   }
   
   public static Document getDocument(String url) {
-    //WebDriver driver = new PhantomJSDriver();
-    WebDriver driver = new ChromeDriver();
+    WebDriver driver = createDriver();
     
-    driver.get(url);
-    
-    Document doc = Jsoup.parse(driver.getPageSource());
-
-    driver.quit();
-    
-    return doc;
+    try {
+      driver.get(url);
+      
+      return Jsoup.parse(driver.getPageSource());
+    } finally {
+      driver.quit();
+    }
   }
   
   public static Document getDocument(String url, DriverCallback callback) {
-    //WebDriver driver = new PhantomJSDriver();
-    WebDriver driver = new ChromeDriver();
-    
-    driver.get(url);
-    
-    callback.callback(driver);
-    
-    Document doc = Jsoup.parse(driver.getPageSource());
-
-    driver.quit();
-    
-    return doc;
+    WebDriver driver = createDriver();
+    try {
+      driver.get(url);
+      
+      callback.callback(driver);
+      
+      return Jsoup.parse(driver.getPageSource());
+    } finally {
+      driver.quit();
+    }
   }
   
   public static List<Document> getDocuments(String... urls) {
     WebDriver driver = new PhantomJSDriver();
     
     List<Document> docs = new ArrayList<>();
-    for(String u : urls) {
-      driver.get(u);
-      docs.add(Jsoup.parse(driver.getPageSource()));
+    try {
+      for(String u : urls) {
+        driver.get(u);
+        docs.add(Jsoup.parse(driver.getPageSource()));
+      }
+    } finally {
+      driver.quit();
     }
-    
-    driver.quit();
     return docs;
   }
   

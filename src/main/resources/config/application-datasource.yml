@@ -1,0 +1,18 @@
+# Local Development Configuration 
+spring:
+  profiles: local
+  datasource:
+        url: jdbc:log4jdbc:mariadb://honsuldb.cnqzbfhc19ls.ap-northeast-2.rds.amazonaws.com:3306/honsuldb
+        username: honsul
+        password: honsulpassword
+        #driver-class-name: org.mariadb.jdbc.Driver
+        driver-class-name: net.sf.log4jdbc.DriverSpy
+---
+# Production Configuration 
+spring:
+  profiles: prod
+  datasource:
+        url: jdbc:mariadb://honsuldb.cnqzbfhc19ls.ap-northeast-2.rds.amazonaws.com:3306/honsuldb
+        username: honsul
+        password: honsulpassword
+        driver-class-name: org.mariadb.jdbc.Driver

@@ -11,7 +11,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -110,10 +109,6 @@ public class R001RoomParser implements Parser<Room>{
 
   @Override
   public List<Room> parse() {
-    //System.setProperty("webdriver.chrome.driver", "E:/ProjectHome/tools/webdriver/chromedriver.exe");
-    //WebDriver driver = new ChromeDriver();
-    
-    //System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
     WebDriver driver = WebDriverUtils.createDriver();
     
     List<Room> roomList = new ArrayList<>();
