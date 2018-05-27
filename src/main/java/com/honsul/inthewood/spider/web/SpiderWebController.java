@@ -36,6 +36,4 @@ public class SpiderWebController {
     resort.setResortId(resortId);
     collector.collectRoom(resort);
   }
-  
-
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honsul.inthewood.holiday.dao.HolidayDao">
+
+    <update id="clearCalendarHoliday">
+      UPDATE CALENDAR a
+         SET a.DAYOFF_YN = CASE WHEN DAY_NM IN ('Saturday', 'Sunday') THEN 'Y' ELSE 'N' END
+           , a.HOLIDAY_YN = 'N'
+    </update>   
+    
+    <update id="updateCalendarOffday" parameterType="String">
+      UPDATE CALENDAR
+         SET DAYOFF_YN = 'Y'
+       WHERE DT = #{value}
+    </update>    
+    
+    <select id="selectHolidayList" resultType="map">
+      SELECT a.DT
+        FROM CALENDAR a
+       WHERE a.DAYOFF_YN = 'Y'
+         AND EXISTS (SELECT DAYOFF_YN
+                       FROM CALENDAR
+                      WHERE DT = a.DT+1
+                        AND DAYOFF_YN = 'Y')
+    </select>    
+    
+    <update id="updateCalendarHoliday" parameterType="map">
+      UPDATE CALENDAR
+         SET HOLIDAY_YN = 'Y'
+       WHERE DT = #{DT}
+    </update>      
+</mapper>
+

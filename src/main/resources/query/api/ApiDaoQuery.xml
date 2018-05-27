@@ -13,6 +13,23 @@
         FROM RESORT
     </select>  
     
+    <select id="getResortRoom" parameterType="map" resultType="Room">
+      SELECT b.RESORT_ID
+           , b.RESORT_NM
+           , a.ROOM_NO
+           , a.ROOM_NM
+           , a.ROOM_TYPE
+           , a.ROOM_TYPE_NM
+           , a.OCCUPANCY
+           , a.PRICE
+           , a.PEAK_PRICE
+        FROM ROOM a
+        JOIN RESORT b
+          ON ( b.RESORT_ID = a.RESORT_ID )
+       WHERE a.RESORT_ID = #{resortId}
+         AND a.ROOM_NO = #{roomNo}
+    </select>     
+    
     <select id="selectResortRoom" parameterType="map" resultType="Room">
       SELECT b.RESORT_ID
            , b.RESORT_NM
@@ -24,9 +41,13 @@
            , a.PRICE
            , a.PEAK_PRICE
         FROM ROOM a
-           , RESORT b
-       WHERE b.RESORT_ID = a.RESORT_ID
-         AND a.RESORT_ID = #{resortId}
+        JOIN RESORT b
+          ON ( b.RESORT_ID = a.RESORT_ID )
+       WHERE a.RESORT_ID = #{resortId}
+        <if test="roomNo != null and !roomNo.equals('')">    
+          AND a.ROOM_NO = #{roomNo}
+        </if>       
+       ORDER BY a.ROOM_NO
     </select>      
     
     <select id="selectResortBooking" parameterType="map" resultType="Booking">
@@ -35,19 +56,29 @@
            , a.BOOKING_DT
            , a.ROOM_NO
            , a.ROOM_NM
+           , c.ROOM_TYPE
+           , c.ROOM_TYPE_NM
+           , c.OCCUPANCY
+           , c.SPACE
+           , c.PRICE
+           , c.PEAK_PRICE
         FROM BOOKING a
-           , RESORT b
-       WHERE b.RESORT_ID = a.RESORT_ID
-         AND a.RESORT_ID = #{resortId}
+        JOIN RESORT b
+          ON ( b.RESORT_ID = a.RESORT_ID )
+        JOIN CALENDAR cal
+          ON ( cal.DT = a.BOOKING_DT )
+        LEFT JOIN ROOM c
+          ON ( c.RESORT_ID = a.RESORT_ID AND c.ROOM_NO = a.ROOM_NO )
+       WHERE a.RESORT_ID = #{resortId}
        <choose>
           <when test="bookingDt != null and bookingDt.equals('holiday')">    
-            AND WEEKDAY(a.BOOKING_DT) = 5
+            AND cal.HOLIDAY_YN = 'Y'
           </when>
           <when test="bookingDt != null and !bookingDt.equals('')">
             AND a.BOOKING_DT = #{bookingDt}
           </when>          
        </choose>         
-       ORDER BY a.BOOKING_DT
+       ORDER BY a.BOOKING_DT, a.ROOM_NO
     </select>     
     
     <select id="selectBooking" parameterType="map" resultType="Booking">
@@ -56,18 +87,29 @@
            , a.BOOKING_DT
            , a.ROOM_NO
            , a.ROOM_NM
+           , c.ROOM_TYPE
+           , c.ROOM_TYPE_NM
+           , c.OCCUPANCY
+           , c.SPACE
+           , c.PRICE
+           , c.PEAK_PRICE           
         FROM BOOKING a
-           , RESORT b
-       WHERE b.RESORT_ID = a.RESORT_ID
+        JOIN RESORT b
+          ON ( b.RESORT_ID = a.RESORT_ID )
+        JOIN CALENDAR cal
+          ON ( cal.DT = a.BOOKING_DT)
+        LEFT JOIN ROOM c
+          ON ( c.RESORT_ID = a.RESORT_ID AND c.ROOM_NO = a.ROOM_NO )          
+       WHERE 1 = 1
        <choose>
           <when test="bookingDt != null and bookingDt.equals('holiday')">    
-            AND WEEKDAY(a.BOOKING_DT) = 5
+            AND cal.HOLIDAY_YN = 'Y'
           </when>
           <otherwise>
             AND a.BOOKING_DT = #{bookingDt}
           </otherwise>
        </choose>     
-       ORDER BY a.RESORT_ID 
+       ORDER BY a.RESORT_ID, a.BOOKING_DT, a.ROOM_NO 
     </select>
     
 </mapper>

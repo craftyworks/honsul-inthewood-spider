@@ -36,6 +36,11 @@ public class ApiController {
     return service.resortRoomList(resortId);
   }
   
+  @GetMapping("resort/{resortId}/room/{roomNo}") 
+  public Room getResortRoom(@PathVariable("resortId") String resortId, @PathVariable("roomNo") String roomNo) {
+    return service.getResortRoom(resortId, roomNo);
+  }
+  
   @GetMapping("resort/{resortId}/bookings") 
   public List<Booking> resortBookingList(
       @PathVariable("resortId") String resortId, 

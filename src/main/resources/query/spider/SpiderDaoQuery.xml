@@ -26,6 +26,7 @@
            , PRICE = #{price}
            , PEAK_PRICE = #{peakPrice}
            , UPDATE_DT = now()
-    </update>        
+    </update>     
+      
 </mapper>
 

@@ -1,11 +1,9 @@
 package com.honsul.inthewood.core.model;
 
-import com.honsul.inthewood.core.Item;
-
 import lombok.Data;
 
 @Data
-public class Room implements Item {
+public class Room {
   private String resortId;
   private String resortNm;
   private String roomNo;

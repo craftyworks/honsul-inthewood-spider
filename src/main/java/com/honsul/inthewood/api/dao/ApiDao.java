@@ -14,16 +14,18 @@ import com.honsul.inthewood.core.model.Room;
 @Repository
 public interface ApiDao {
 
-  Resort getResort(String resortId);
+  Resort getResort(Map<String, Object> param);
 
   List<Resort> selectResort();
 
-  Resort getResort(Map<String, Object> param);
-
+  Room getResortRoom(Map<String, Object> param);
+  
   List<Room> selectResortRoom(Map<String, Object> param);
 
   List<Booking> selectResortBooking(Map<String, Object> param);
 
   List<Booking> selectBooking(Map<String, Object> param);
+
+
 
 }

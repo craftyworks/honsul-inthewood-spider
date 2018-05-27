@@ -2,12 +2,10 @@ package com.honsul.inthewood.core.model;
 
 import java.time.LocalDate;
 
-import com.honsul.inthewood.core.Item;
-
 import lombok.Data;
 
 @Data
-public class Booking implements Item {
+public class Booking {
   private String resortId;
   private String resortNm;
   private LocalDate bookingDt;

@@ -35,6 +35,14 @@ public class ApiService {
     return dao.selectResortRoom(param);
   }
 
+  public Room getResortRoom(String resortId, String roomNo) {
+    Map<String, Object> param = new HashMap<>();
+    param.put("resortId", resortId);
+    param.put("roomNo", roomNo);
+    
+    return dao.getResortRoom(param);
+  }
+  
   public List<Booking> resortBookingList(String resortId, String bookingDt) {
     Map<String, Object> param = new HashMap<>();
     param.put("resortId", resortId);
@@ -49,5 +57,7 @@ public class ApiService {
     
     return dao.selectBooking(param);    
   }
+
+
 
 }
