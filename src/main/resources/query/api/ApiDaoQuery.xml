@@ -14,45 +14,61 @@
     </select>  
     
     <select id="selectResortRoom" parameterType="map" resultType="Room">
-      SELECT *
-        FROM ROOM
-       WHERE RESORT_ID = #{resortId}
+      SELECT b.RESORT_ID
+           , b.RESORT_NM
+           , a.ROOM_NO
+           , a.ROOM_NM
+           , a.ROOM_TYPE
+           , a.ROOM_TYPE_NM
+           , a.OCCUPANCY
+           , a.PRICE
+           , a.PEAK_PRICE
+        FROM ROOM a
+           , RESORT b
+       WHERE b.RESORT_ID = a.RESORT_ID
+         AND a.RESORT_ID = #{resortId}
     </select>      
     
     <select id="selectResortBooking" parameterType="map" resultType="Booking">
-      SELECT *
+      SELECT b.RESORT_ID
+           , b.RESORT_NM
+           , a.BOOKING_DT
+           , a.ROOM_NO
+           , a.ROOM_NM
         FROM BOOKING a
-       WHERE a.RESORT_ID = #{resortId}
-       <if test="bookingDt != null and !bookingDt.equals('')">
-         AND a.BOOKING_DT = #{bookingDt}
-       </if>
+           , RESORT b
+       WHERE b.RESORT_ID = a.RESORT_ID
+         AND a.RESORT_ID = #{resortId}
+       <choose>
+          <when test="bookingDt != null and bookingDt.equals('holiday')">    
+            AND WEEKDAY(a.BOOKING_DT) = 5
+          </when>
+          <when test="bookingDt != null and !bookingDt.equals('')">
+            AND a.BOOKING_DT = #{bookingDt}
+          </when>          
+       </choose>         
        ORDER BY a.BOOKING_DT
     </select>     
     
     <select id="selectBooking" parameterType="map" resultType="Booking">
-      SELECT *
+      SELECT b.RESORT_ID
+           , b.RESORT_NM
+           , a.BOOKING_DT
+           , a.ROOM_NO
+           , a.ROOM_NM
         FROM BOOKING a
-       WHERE 1 = 1
+           , RESORT b
+       WHERE b.RESORT_ID = a.RESORT_ID
        <choose>
-          <when test="!bookingDt.equals('holiday')">    
-            AND WEEKDAY(a.BOOKING_DT) = 5 /* 토요일만 */*
+          <when test="bookingDt != null and bookingDt.equals('holiday')">    
+            AND WEEKDAY(a.BOOKING_DT) = 5
           </when>
           <otherwise>
             AND a.BOOKING_DT = #{bookingDt}
           </otherwise>
        </choose>     
        ORDER BY a.RESORT_ID 
-    </select> 
-    
-    <select id="selectHolidayBooking" parameterType="map" resultType="Booking">
-      SELECT *
-        FROM BOOKING a
-       WHERE 1 = 1
-       <if test="bookingDt != null and !bookingDt.equals('')">
-         AND a.BOOKING_DT = #{bookingDt}
-       </if>       
-       ORDER BY a.RESORT_ID 
-    </select>     
+    </select>
     
 </mapper>
 

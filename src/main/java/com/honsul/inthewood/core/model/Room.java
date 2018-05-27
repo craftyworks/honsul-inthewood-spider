@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class Room implements Item {
   private String resortId;
+  private String resortNm;
   private String roomNo;
   private String roomNm;
   private RoomType roomType;

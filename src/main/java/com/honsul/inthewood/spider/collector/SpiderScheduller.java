@@ -15,15 +15,15 @@ public class SpiderScheduller {
   /**
    * 10분 간격으로 전체 휴양림의 예약현황 집계
    */
-  @Scheduled(fixedDelay=6000000)
+  @Scheduled(cron = "0 */10 * * * *" )
   private void collectAllBooking() {
     collector.collectAllBooking();
   }
   
   /**
-   * 30분 간격으로 전체 휴양림의 숙소정보 집계
+   * 매 시 정각 전체 휴양림의 숙소정보 집계
    */
-  @Scheduled(fixedDelay=18000000)
+  @Scheduled(cron="0 0 * * * *")
   private void collectAllRoom() {
     collector.collectAllRoom();
   }
