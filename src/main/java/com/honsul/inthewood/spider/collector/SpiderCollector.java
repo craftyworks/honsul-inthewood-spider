@@ -68,6 +68,7 @@ public class SpiderCollector {
    */
   public void collectBooking(Resort resort) {
     SpiderContext.setResort(resort);
+    dao.deleteBooking(resort);
     List<Booking> items = lookupBookingParser(resort.getResortId()).parse();
     for(Booking item : items) {
       dao.updateBooking(item);      
@@ -79,6 +80,7 @@ public class SpiderCollector {
    */
   public void collectRoom(Resort resort) {
     SpiderContext.setResort(resort);
+    dao.deleteRoom(resort);
     List<Room> items = lookupRoomParser(resort.getResortId()).parse();
     for(Room item : items) {
       dao.updateRoom(item);      

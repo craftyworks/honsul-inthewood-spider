@@ -19,4 +19,8 @@ public interface SpiderDao {
 
   List<Resort> selectResortList();
 
+  void deleteBooking(Resort resort);
+
+  void deleteRoom(Resort resort);
+
 }
