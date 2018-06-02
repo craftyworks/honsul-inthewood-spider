@@ -48,6 +48,9 @@ public class R009BookingParser extends AbstractBookingParser {
       String title = row.text();
       String roomTypeNm = TextUtils.substringBefore(title, "(");
       String roomNm = TextUtils.substringAfter(title, ")");
+      if(StringUtils.isEmpty(roomNm)) {
+        continue;
+      }
       String attr = row.attr("href");
       //javascript:reserve('56', '1', '1', '2018-05-20')
       Pattern p = Pattern.compile("javascript:reserve\\('[0-9]+', '[0-9]+', '([0-9]+)',");
