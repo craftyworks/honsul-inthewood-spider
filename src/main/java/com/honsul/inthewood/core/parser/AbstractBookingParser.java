@@ -56,7 +56,10 @@ public abstract class AbstractBookingParser implements Parser<Booking> {
       if(doc != null) {
         bookingList.addAll(extract(doc));
         
-        bookingList.addAll(extract(nextMonth(doc)));
+        Document nextMonth = nextMonth(doc);
+        if(nextMonth != null) {
+          bookingList.addAll(extract(nextMonth));
+        }
       }
       
       bookingList.addAll(extractCustom());
