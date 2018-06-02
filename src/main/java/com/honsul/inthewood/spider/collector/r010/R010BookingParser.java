@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,7 +15,7 @@ import org.jsoup.nodes.Element;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.parser.AbstractBookingParser;
+import com.honsul.inthewood.core.parser.JsoupBookingParser;
 import com.honsul.inthewood.core.util.DateUtils;
 import com.honsul.inthewood.core.util.TextUtils;
 
@@ -22,38 +23,25 @@ import com.honsul.inthewood.core.util.TextUtils;
  * 군위장곡자연휴양림 예약현황 파서.
  */
 @BookingParser(resortId="R010")
-public class R010BookingParser extends AbstractBookingParser {
+public class R010BookingParser extends JsoupBookingParser {
 
   private static final String CONNECT_URL = "https://janggok.gunwi.go.kr:6449/new/reservation/reserve_status.html?todayed=";
-  
-  public R010BookingParser() {
-  }
-  
-  @Override
-  protected Document thisMonth() throws IOException {
-    return null;
-  }
-  
-  @Override
-  protected Document nextMonth(Document doc) throws IOException {
-    return null;
-  }
 
   @Override
-  protected List<Booking> extractCustom() throws IOException {
-    List<Booking> bookingList = new ArrayList<>();
+  protected List<Document> documents() throws IOException {
+    List<Document> documentList = new ArrayList<>();
     
     LocalDate now = LocalDate.now();
     LocalDate nextMonth = now.plusMonths(1);
     while(now.isBefore(nextMonth)) {
       String url = CONNECT_URL + DateUtils.getEpochSecond(now);
-      System.out.println(url);
       
-      bookingList.addAll(extract(Jsoup.connect(url).get()));
+      documentList.add(Jsoup.connect(url).get());
+      
       now = now.plusWeeks(1);
     }
     
-    return bookingList;
+    return documentList;
   }
   
   @Override
@@ -65,7 +53,7 @@ public class R010BookingParser extends AbstractBookingParser {
         continue;
       }
       String title = row.selectFirst("td").text();
-      String roomNm = TextUtils.substringBefore(title, "(");
+      String roomNm = StringUtils.substringBefore(title, "(");
       String space = TextUtils.stripCursor(title);
       
       for(Element link : row.select("a[href^=./reserve.html]")) {

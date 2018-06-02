@@ -1,8 +1,11 @@
 package com.honsul.inthewood.spider.collector.r004;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -11,7 +14,7 @@ import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
 import com.honsul.inthewood.core.model.RoomType;
-import com.honsul.inthewood.core.parser.AbstractRoomParser;
+import com.honsul.inthewood.core.parser.JsoupRoomParser;
 import com.honsul.inthewood.core.util.TextUtils;
 
 /**
@@ -20,14 +23,15 @@ import com.honsul.inthewood.core.util.TextUtils;
  * <p>JSoup 으로 처리. 예약페이지 내 메뉴판에서 스크랩
  */
 @RoomParser(resortId="R004")
-public class R004RoomParser extends AbstractRoomParser {
+public class R004RoomParser extends JsoupRoomParser {
   
   private static final String CONNECT_URL = "http://msf.cj100.net/reservation.asp?location=001";
   
-  public R004RoomParser() {
-    super(CONNECT_URL);
+  @Override
+  protected Document document() throws IOException {
+    return Jsoup.connect(CONNECT_URL).header("Referer", CONNECT_URL).get();
   }
-
+  
   @Override
   public List<Room> extract(Document doc) {
 
@@ -43,7 +47,7 @@ public class R004RoomParser extends AbstractRoomParser {
       Elements tds = row.select("td");
       if(!tds.isEmpty()) {
         String temp = tds.get(0).text();
-        numberOfPeople = TextUtils.substringBefore(temp, "인");
+        numberOfPeople = StringUtils.substringBefore(temp, "인");
         space = TextUtils.stripCursor(temp);
         peakPrice = TextUtils.parseLong(tds.get(1).text());
         price = TextUtils.parseLong(tds.get(2).text());

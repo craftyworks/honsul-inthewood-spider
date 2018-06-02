@@ -22,6 +22,15 @@ public class TextUtils {
     return "";
   }
   
+  public static String stripCursorLast(String str) {
+    Matcher matcher = P_CURSOR.matcher(str);
+    String rtn = "";
+    while(matcher.find()) {
+      rtn = matcher.group(1);
+    }
+    return rtn;
+  }
+  
   public static String findMoney(String str) {
     Matcher matcher = P_MONEY.matcher(str);
     if(matcher.find()) {
@@ -32,18 +41,6 @@ public class TextUtils {
   
   public static long findMoneyLong(String str) {
     return parseLong(findMoney(str));
-  }
-
-  /**
-   * <p>Gets the substring before the first occurrence of a separator.
-   * The separator is not returned.</p>
-   */
-  public static String substringBefore(final String str, final String separator) {
-    return StringUtils.substringBefore(str, separator);
-  }
-  
-  public static String substringAfter(final String str, final String separator) {
-    return StringUtils.substringAfter(str, separator);
   }
   
   /**

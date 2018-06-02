@@ -3,6 +3,7 @@ package com.honsul.inthewood.spider.collector.r003;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -47,7 +48,7 @@ public class R003RoomParser extends AbstractRoomParser {
       String space = tds.get(1).text();
       String numberOfPeople = tds.get(2).text();
       long peakPrice = TextUtils.parseLong(tds.get(3).text());
-      String sPrice = TextUtils.substringBefore(tds.get(5).text(), "(");
+      String sPrice = StringUtils.substringBefore(tds.get(5).text(), "(");
       long price = TextUtils.parseLong(sPrice);
       
       Room room = new Room();

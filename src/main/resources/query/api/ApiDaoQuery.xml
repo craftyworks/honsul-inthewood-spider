@@ -2,15 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.honsul.inthewood.api.dao.ApiDao">
 
-    <select id="getResort" parameterType="map" resultType="Resort">
-      SELECT RESORT_ID, RESORT_NM
-        FROM RESORT
-       WHERE RESORT_ID = #{resortId}
+    <sql id="selectResortList">
+      SELECT a.RESORT_ID
+           , a.RESORT_NM
+           , COUNT(b.BOOKING_DT) as BOOKING_CNT
+           , SUM(CASE WHEN c.HOLIDAY_YN = 'Y' THEN 1 ELSE 0 END) as HOLIDAY_CNT
+           , MIN(b.INSERT_DT) as INSERT_DT
+        FROM RESORT a
+        JOIN BOOKING b
+          ON (b.RESORT_ID = a.RESORT_ID)
+        JOIN CALENDAR c
+          ON (c.DT = b.BOOKING_DT)
+        <if test="resortId != null and !resortId.equals('')">    
+       WHERE a.RESORT_ID = #{resortId}
+        </if>               
+       GROUP BY a.RESORT_ID, a.RESORT_NM
+    </sql>
+    
+    <select id="getResort" parameterType="map" resultType="map">
+      <include refid="selectResortList"/>
     </select>  
     
-    <select id="selectResort" resultType="Resort">
-      SELECT RESORT_ID, RESORT_NM
-        FROM RESORT
+    <select id="selectResort" resultType="map">
+      <include refid="selectResortList"/>
     </select>  
     
     <select id="getResortRoom" parameterType="map" resultType="Room">

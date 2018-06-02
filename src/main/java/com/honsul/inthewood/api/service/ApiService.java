@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.honsul.inthewood.api.dao.ApiDao;
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Room;
 
 @Service
@@ -17,11 +16,11 @@ public class ApiService {
   @Autowired
   ApiDao dao;
 
-  public List<Resort> resortList() {
+  public List<Map> resortList() {
     return dao.selectResort();
   }
 
-  public Resort getResort(String resortId) {
+  public Map getResort(String resortId) {
     Map<String, Object> param = new HashMap<>();
     param.put("resortId", resortId);
     

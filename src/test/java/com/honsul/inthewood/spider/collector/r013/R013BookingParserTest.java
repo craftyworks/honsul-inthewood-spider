@@ -1,36 +1,14 @@
 package com.honsul.inthewood.spider.collector.r013;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.BeforeClass;
-import org.junit.Test;
-import org.springframework.util.CollectionUtils;
 
-import com.honsul.inthewood.core.SpiderContext;
-import com.honsul.inthewood.core.annotation.BookingParser;
-import com.honsul.inthewood.core.util.SSLTrustUtils;
+import com.honsul.inthewood.spider.collector.BookingParserTest;
 
-public class R013BookingParserTest {
+public class R013BookingParserTest extends BookingParserTest {
 
-
-  static R013BookingParser parser;
-  
   @BeforeClass
   public static void setup() {
-    parser = new R013BookingParser();
-    SSLTrustUtils.trustAllCertificate();
+    BookingParserTest.setup("R013", new R013BookingParser());
   }
   
-  @Test
-  public void testResortId() {
-    BookingParser annotation = parser.getClass().getAnnotation(BookingParser.class);
-    assertEquals("R013", annotation.resortId());
-  }
-  
-  @Test
-  public void testParse() {
-    SpiderContext.setResortId("R013");
-    assertTrue(!CollectionUtils.isEmpty(parser.parse()));
-  }
 }

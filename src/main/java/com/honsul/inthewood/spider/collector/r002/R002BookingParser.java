@@ -13,32 +13,38 @@ import org.jsoup.nodes.Element;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.parser.AbstractBookingParser;
+import com.honsul.inthewood.core.parser.JsoupBookingParser;
 
 /**
  * 충북알프스자연휴양림 예약현황 파서.
  */
 @BookingParser(resortId="R002")
-public class R002BookingParser extends AbstractBookingParser {
+public class R002BookingParser extends JsoupBookingParser {
   
   private static final String CONNECT_URL = "http://alpshuyang.boeun.go.kr/reservation.asp?location=002";
   
-  public R002BookingParser() {
-    super(CONNECT_URL);
-  }
-  
-  protected Document nextMonth(Document doc) {
-    Element elm = doc.selectFirst("form[name=form_next]");
-    String year = elm.selectFirst("input[name=wh_year]").val();
-    String month = elm.selectFirst("input[name=wh_month]").val();
+  @Override
+  protected List<Document> documents() throws IOException {
+    List<Document> documentList = new ArrayList<>();
     
-    try {
-      return Jsoup.connect(CONNECT_URL).data("wh_year", year).data("wh_month", month).post();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    //this month
+    Document doc = Jsoup.connect(CONNECT_URL).get();
+    documentList.add(doc);
+
+    //next month
+    Element elm = doc.selectFirst("form[name=form_next]");
+    if(elm != null) {
+      String year = elm.selectFirst("input[name=wh_year]").val();
+      String month = elm.selectFirst("input[name=wh_month]").val();
+    
+      Document next = Jsoup.connect(CONNECT_URL).data("wh_year", year).data("wh_month", month).post();
+      documentList.add(next);
     }
+    
+    return documentList;
   }
   
+  @Override
   public List<Booking> extract(Document doc) {
 
     List<Booking> bookingList = new ArrayList<>();

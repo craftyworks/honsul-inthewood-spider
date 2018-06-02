@@ -13,7 +13,7 @@ import org.jsoup.nodes.Element;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.parser.AbstractBookingParser;
+import com.honsul.inthewood.core.parser.JsoupBookingParser;
 
 /**
  * 봉황자연휴양림 예약현황 파서.
@@ -21,27 +21,32 @@ import com.honsul.inthewood.core.parser.AbstractBookingParser;
  * <p>JSoup 으로 처리.
  */
 @BookingParser(resortId="R005")
-public class R005BookingParser extends AbstractBookingParser {
+public class R005BookingParser extends JsoupBookingParser {
 
   private static final String CONNECT_URL = "http://bhf.cj100.net/reservation.asp?location=002";
-  
-  public R005BookingParser() {
-    super(CONNECT_URL);
-    header("Referer", "http://bhf.cj100.net/reservation.asp");
-  }
-  
-  protected Document nextMonth(Document doc) {
-    Element elm = doc.selectFirst("form[name=form_next]");
-    String year = elm.selectFirst("input[name=wh_year]").val();
-    String month = elm.selectFirst("input[name=wh_month]").val();
+
+  @Override
+  protected List<Document> documents() throws IOException {
+    List<Document> documentList = new ArrayList<>();
     
-    try {
-      return Jsoup.connect(CONNECT_URL).header("Referer", "http://bhf.cj100.net/reservation.asp").data("wh_year", year).data("wh_month", month).post();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    //this month
+    Document doc = Jsoup.connect(CONNECT_URL).header("Referer", CONNECT_URL).get();
+    documentList.add(doc);
+
+    //next month
+    Element elm = doc.selectFirst("form[name=form_next]");
+    if(elm != null) {
+      String year = elm.selectFirst("input[name=wh_year]").val();
+      String month = elm.selectFirst("input[name=wh_month]").val();
+    
+      Document next = Jsoup.connect(CONNECT_URL).header("Referer", CONNECT_URL).data("wh_year", year).data("wh_month", month).post();
+      documentList.add(next);
     }
+    
+    return documentList;
   }
   
+  @Override
   public List<Booking> extract(Document doc) {
     List<Booking> bookingList = new ArrayList<>();
     for(Element row : doc.select("#contents form[action=reservation.asp?location=002_00]")) {

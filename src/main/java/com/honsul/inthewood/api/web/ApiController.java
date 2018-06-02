@@ -1,6 +1,7 @@
 package com.honsul.inthewood.api.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.honsul.inthewood.api.service.ApiService;
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Room;
 
 @RestController
@@ -22,12 +22,12 @@ public class ApiController {
   private ApiService service;
   
   @GetMapping("resorts") 
-  public List<Resort> resortList() {
+  public List<Map> resortList() {
     return service.resortList();
   }
   
   @GetMapping("resort/{resortId}") 
-  public Resort getResort(@PathVariable("resortId") String resortId) {
+  public Map getResort(@PathVariable("resortId") String resortId) {
     return service.getResort(resortId);
   }
   

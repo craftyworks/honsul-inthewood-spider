@@ -7,16 +7,15 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Room;
 
 @Mapper
 @Repository
 public interface ApiDao {
 
-  Resort getResort(Map<String, Object> param);
+  Map getResort(Map<String, Object> param);
 
-  List<Resort> selectResort();
+  List<Map> selectResort();
 
   Room getResortRoom(Map<String, Object> param);
   

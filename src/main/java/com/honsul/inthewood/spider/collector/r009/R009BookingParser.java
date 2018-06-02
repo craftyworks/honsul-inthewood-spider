@@ -16,28 +16,30 @@ import org.jsoup.nodes.Element;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
-import com.honsul.inthewood.core.parser.AbstractBookingParser;
-import com.honsul.inthewood.core.util.TextUtils;
+import com.honsul.inthewood.core.parser.JsoupBookingParser;
 
 /**
  * 봉수산자연휴양림 예약현황 파서.
  */
 @BookingParser(resortId="R009")
-public class R009BookingParser extends AbstractBookingParser {
+public class R009BookingParser extends JsoupBookingParser {
 
   private static final String CONNECT_URL = "http://hadongforest.co.kr/?r=MAIN&m=hyr&kind=108";
   
-  public R009BookingParser() {
-    super(CONNECT_URL);
-  }
-  
-  protected Document nextMonth(Document doc) throws IOException {
+  @Override
+  protected List<Document> documents() throws IOException {
+    List<Document> documentList = new ArrayList<>();
+    
+    documentList.add(Jsoup.connect(CONNECT_URL).get());
+    
     LocalDate next = LocalDate.now().plusMonths(1);
     String url = CONNECT_URL + "&yy=" + next.getYear() + "&mm=" + next.getMonthValue();
-    return Jsoup.connect(url).get();
+    documentList.add(Jsoup.connect(url).get());
     
+    return documentList;
   }
   
+  @Override
   public List<Booking> extract(Document doc) {
     List<Booking> bookingList = new ArrayList<>();
 
@@ -46,8 +48,8 @@ public class R009BookingParser extends AbstractBookingParser {
     
     for(Element row : doc.select("a[href^=javascript:reserve(]")) {
       String title = row.text();
-      String roomTypeNm = TextUtils.substringBefore(title, "(");
-      String roomNm = TextUtils.substringAfter(title, ")");
+      String roomTypeNm = StringUtils.substringBefore(title, "(");
+      String roomNm = StringUtils.substringAfter(title, ")");
       if(StringUtils.isEmpty(roomNm)) {
         continue;
       }
