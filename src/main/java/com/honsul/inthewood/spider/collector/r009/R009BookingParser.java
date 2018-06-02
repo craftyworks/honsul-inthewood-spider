@@ -19,7 +19,7 @@ import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.parser.JsoupBookingParser;
 
 /**
- * 봉수산자연휴양림 예약현황 파서.
+ * 구재봉자연휴양림 예약현황 파서.
  */
 @BookingParser(resortId="R009")
 public class R009BookingParser extends JsoupBookingParser {
@@ -47,12 +47,13 @@ public class R009BookingParser extends JsoupBookingParser {
     String month = StringUtils.leftPad(doc.selectFirst("#mm>option[selected]").val(), 2, '0');
     
     for(Element row : doc.select("a[href^=javascript:reserve(]")) {
-      String title = row.text();
-      String roomTypeNm = StringUtils.substringBefore(title, "(");
-      String roomNm = StringUtils.substringAfter(title, ")");
-      if(StringUtils.isEmpty(roomNm)) {
+      String roomNm = row.text();
+      if(StringUtils.contains(roomNm, "세미나실")) {
         continue;
-      }
+      }      
+      String roomTypeNm = StringUtils.contains(roomNm, "숲속휴양관") ? "휴양관" : "숲속의집";
+      String roomNo = StringUtils.contains(roomNm, "숲속휴양관") ? StringUtils.substringBefore(roomNm, "(") : StringUtils.substringAfter(roomNm, ")");
+
       String attr = row.attr("href");
       //javascript:reserve('56', '1', '1', '2018-05-20')
       Pattern p = Pattern.compile("javascript:reserve\\('[0-9]+', '[0-9]+', '([0-9]+)',");
@@ -62,8 +63,8 @@ public class R009BookingParser extends JsoupBookingParser {
         Booking booking = new Booking();
         booking.setResortId(SpiderContext.getResortId());
         booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyyMMdd")));
-        booking.setRoomNo(roomNm);
-        booking.setRoomNm(roomNm);
+        booking.setRoomNo(StringUtils.trim(roomNo));
+        booking.setRoomNm(StringUtils.trim(roomNo));
         if(LocalDate.now().isAfter(booking.getBookingDt())) {
           continue;
         }
