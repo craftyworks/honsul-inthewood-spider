@@ -37,6 +37,9 @@ public class R007BookingParser extends AbstractBookingParser {
   public List<Booking> extract(Document doc) {
     List<Booking> bookingList = new ArrayList<>();
     for(Element row : doc.select("a[href^=http://garisan.nowr-b.net/m_member/room_check.html]")) {
+      if(!"darkgreen".equals(row.selectFirst("font").attr("color"))) {
+        continue;
+      }
       String queryString = TextUtils.substringAfter(row.attr("href"), "?");
 
       Pattern p = Pattern.compile("s_year=([0-9]+)&s_month=([0-9]+)&s_day=([0-9]+)&room_num=([0-9]+)&");

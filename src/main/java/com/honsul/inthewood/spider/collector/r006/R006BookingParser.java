@@ -29,7 +29,6 @@ public class R006BookingParser extends WebDriverBookingParser {
   @Override
   protected Document thisMonth(WebDriver driver) {
     driver.get(CONNECT_URL);
-logger.debug(driver.getPageSource());
     new Actions(driver)
       .moveToElement(driver.findElement(By.cssSelector("a[href='/reservation.asp']")))
       .click(driver.findElement(By.cssSelector("a[href='/reservation.asp?location=002']")))

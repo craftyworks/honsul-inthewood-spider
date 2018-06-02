@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -47,6 +48,9 @@ public class R008BookingParser extends AbstractBookingParser {
       String bookingDt = attr[2];
       String roomType = attr[5];
       String roomNm = row.selectFirst("button").text().replaceAll("\\*", "");
+      if(StringUtils.contains(roomNm, "강당")) {
+        continue;
+      }
       Booking booking = new Booking();
       booking.setResortId(SpiderContext.getResortId());
       booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
