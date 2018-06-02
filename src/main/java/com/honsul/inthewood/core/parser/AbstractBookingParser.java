@@ -2,6 +2,7 @@ package com.honsul.inthewood.core.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,10 @@ public abstract class AbstractBookingParser implements Parser<Booking> {
   
   public abstract List<Booking> extract(Document doc);
   
+  protected List<Booking> extractCustom() throws IOException {
+    return Collections.emptyList();
+  }
+  
   public List<Booking> parse() {
     
     List<Booking> bookingList = new ArrayList<>();
@@ -48,9 +53,14 @@ public abstract class AbstractBookingParser implements Parser<Booking> {
     try {
       Document doc = thisMonth();
   
-      bookingList.addAll(extract(doc));
+      if(doc != null) {
+        bookingList.addAll(extract(doc));
+        
+        bookingList.addAll(extract(nextMonth(doc)));
+      }
       
-      bookingList.addAll(extract(nextMonth(doc)));
+      bookingList.addAll(extractCustom());
+      
     } catch(IOException e) {
       throw new RuntimeException(e);
     }

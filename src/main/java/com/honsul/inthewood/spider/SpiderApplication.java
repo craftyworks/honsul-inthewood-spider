@@ -9,6 +9,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import com.honsul.inthewood.core.util.SSLTrustUtils;
+
 @EnableScheduling
 @SpringBootApplication
 @MapperScan("com.honsul.inthewood")
@@ -26,6 +28,8 @@ public class SpiderApplication {
 	  
 	  System.setProperty("phantomjs.binary.path", context.getEnvironment().getProperty("phantomjs.binary.path"));
 	  System.setProperty("webdriver.chrome.driver", context.getEnvironment().getProperty("webdriver.chrome.driver"));
+	  
+	  SSLTrustUtils.trustAllCertificate();
 	}
   
 }

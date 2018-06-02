@@ -56,14 +56,19 @@ public class R001BookingParser implements Parser<Booking>{
   
   private R001BookingParser nextMonth(WebDriver driver) {
     logger.debug("moving to next month");
-    driver.findElement(By.cssSelector("input.next")).click();
+
+    WebElement btnNext = driver.findElement(By.cssSelector("input.next"));
+    if(btnNext.isDisplayed()) {
+      btnNext.click();
+      waitForJQuery(driver);
+      return this;
+    }
     
-    waitForJQuery(driver);
-    
-    return this;
+    return null;
   }
   
   private List<Booking> extract(WebDriver driver) {
+    System.out.println("EXTRACT");
     List<Booking> bookingList = new ArrayList<>();
     
     List<WebElement> bookingIcons = driver.findElements(By.cssSelector("#tableBody>tr>td>img.cp"));
@@ -86,6 +91,7 @@ public class R001BookingParser implements Parser<Booking>{
         bookingList.add(booking);
       }
     }
+    logger.info("extracting bookings {}", bookingList.size());
     return bookingList;
   }
   
@@ -108,7 +114,9 @@ public class R001BookingParser implements Parser<Booking>{
     
     bookingList.addAll(thisMonth(driver).extract(driver));
     
-    bookingList.addAll(nextMonth(driver).extract(driver));
+    if(nextMonth(driver) != null) {
+      bookingList.addAll(extract(driver));
+    }
     
     driver.quit();
     
