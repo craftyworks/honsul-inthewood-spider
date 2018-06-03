@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.util.CommandUtils;
+import com.honsul.inthewood.postman.PostmanService;
 
 @Component
 @Profile("prod")
@@ -20,6 +21,9 @@ public class SpiderScheduller {
   
   @Autowired
   SpiderCollector collector;
+  
+  @Autowired
+  PostmanService postman;
   
   @Autowired
   Environment env;
@@ -33,6 +37,7 @@ public class SpiderScheduller {
       try {
         collector.collectBooking(resort);
         
+        postman.publishBookingChanges(resort);
       } catch(Throwable e) {
         logger.error("error", e);
       }
