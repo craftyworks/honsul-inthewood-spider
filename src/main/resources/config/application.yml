@@ -23,6 +23,11 @@ logging:
       resultset: OFF
       connection: OFF
       sqltiming: DEBUG
+      
+slack:
+  config:
+    channels:
+      honsul-holiday: https://hooks.slack.com/services/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
 ---
 # Local Development Configuration 
 spring:

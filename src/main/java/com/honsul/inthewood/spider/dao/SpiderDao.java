@@ -29,4 +29,6 @@ public interface SpiderDao {
 
   void insertBooking(Booking item);
 
+  List<Booking> selectNewEntryBookings(Resort resort);
+
 }

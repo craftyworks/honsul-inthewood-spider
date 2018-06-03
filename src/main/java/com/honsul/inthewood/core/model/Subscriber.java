@@ -5,10 +5,9 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-public class Booking {
-  private String resortId;
-  private String resortNm;
+public class Subscriber {
+  private String subscriberId;
   private LocalDate bookingDt;
-  private String roomNm;
+  private String resortId;
   private RoomType roomType;
 }

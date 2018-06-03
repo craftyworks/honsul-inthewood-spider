@@ -8,5 +8,20 @@
     "name": "webdriver.chrome.driver",
     "type": "java.lang.String",
     "description": "A description for 'webdriver.chrome.driver'"
+  },
+  {
+    "name": "slack.channedl.honsul-holiday",
+    "type": "java.lang.String",
+    "description": "A description for 'slack.channedl.honsul-holiday'"
+  },
+  {
+    "name": "slack.channel.honsul-holiday",
+    "type": "java.lang.String",
+    "description": "A description for 'slack.channel.honsul-holiday'"
+  },
+  {
+    "name": "slack.config.channels.honsul-holiday",
+    "type": "java.lang.String",
+    "description": "A description for 'slack.config.channels.honsul-holiday'"
   }
 ]}

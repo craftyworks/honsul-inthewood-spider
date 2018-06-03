@@ -21,6 +21,7 @@
     <typeAlias alias="Resort" type="com.honsul.inthewood.core.model.Resort"/>
     <typeAlias alias="Booking" type="com.honsul.inthewood.core.model.Booking"/>
     <typeAlias alias="Room" type="com.honsul.inthewood.core.model.Room"/>    
+    <typeAlias alias="Subscriber" type="com.honsul.inthewood.core.model.Subscriber"/>
   </typeAliases>
   
   <typeHandlers>
@@ -32,6 +33,7 @@
     <mapper resource="query/api/ApiDaoQuery.xml"/>
     <mapper resource="query/holiday/HolidayDaoQuery.xml"/>
     <mapper resource="query/spider/SpiderDaoQuery.xml"/>
+    <mapper resource="query/spider/PublisherDaoQuery.xml"/>
   </mappers>  
    
 

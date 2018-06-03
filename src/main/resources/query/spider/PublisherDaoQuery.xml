@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honsul.inthewood.spider.dao.PublisherDao">
+                   
+    <select id="selectNewEntryBookings" resultType="Booking" parameterType="Resort">
+      SELECT a.RESORT_ID
+           , h.RESORT_NM
+           , a.BOOKING_DT
+           , a.ROOM_NM
+           , r.ROOM_TYPE
+        FROM BOOKING a
+        JOIN RESORT h
+          ON h.RESORT_ID = a.RESORT_ID
+        JOIN ROOM r
+          ON r.ROOM_NM = a.ROOM_NM
+        LEFT JOIN BOOKING_PREV b 
+          ON b.RESORT_ID = a.RESORT_ID
+         AND b.BOOKING_DT = a.BOOKING_DT
+         AND b.ROOM_NM = a.ROOM_NM
+       WHERE a.RESORT_ID = #{resortId}
+         AND b.RESORT_ID IS NULL
+    </select>
+    
+    <select id="selectBookingSubscriber" resultType="Subscriber" parameterType="Booking">
+      SELECT a.SUBSCRIBER_ID
+        FROM SUBSCRIBER a
+       WHERE a.BOOKING_DT = 'holiday'
+         AND EXISTS (SELECT 1
+                   FROM CALENDAR
+                  WHERE HOLIDAY_YN = 'Y'
+                    AND DT = #{bookingDt})
+         AND a.RESORT_ID IN (#{resortId}, '*')
+         AND a.ROOM_TYPE IN (#{roomType}, '*')
+       UNION
+      SELECT a.SUBSCRIBER_ID
+        FROM SUBSCRIBER a
+       WHERE a.BOOKING_DT = DATE_FORMAT(#{bookingDt}, '%Y%m%d')
+         AND a.RESORT_ID IN (#{resortId}, '*')
+         AND a.ROOM_TYPE IN (#{roomType}, '*')
+    </select>    
+      
+</mapper>
+

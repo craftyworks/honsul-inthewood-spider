@@ -29,9 +29,6 @@ public class SpiderCollector {
   @Autowired
   SpiderDao dao;
   
-  //@Autowired
-  //BookingNotifier bookingNotifier;
-  
   public void collect(Resort resort) {
     collectRoom(resort);
     collectBooking(resort);
@@ -61,9 +58,7 @@ public class SpiderCollector {
     for(Booking item : items) {
       dao.insertBooking(item);      
     }
-    
-    // 예약변동 알림
-    //bookingNotifier.publistEvent(dao.selectBookingChanges(resort));
+
   }
   
   /**
