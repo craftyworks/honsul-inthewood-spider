@@ -8,7 +8,7 @@ public class R012RoomParserTest extends RoomParserTest {
 
   @BeforeClass
   public static void setup() {
-    RoomParserTest.setup("R011", new R012RoomParser());
+    RoomParserTest.setup("R012", new R012RoomParser());
   }
 
 }
