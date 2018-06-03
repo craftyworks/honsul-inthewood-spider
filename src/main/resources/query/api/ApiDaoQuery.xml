@@ -7,7 +7,7 @@
            , a.RESORT_NM
            , COUNT(b.BOOKING_DT) as BOOKING_CNT
            , SUM(CASE WHEN c.HOLIDAY_YN = 'Y' THEN 1 ELSE 0 END) as HOLIDAY_CNT
-           , MIN(b.INSERT_DT) as INSERT_DT
+           , DATE_FORMAT(MIN(b.INSERT_DT), '%Y-%m-%d %T') as INSERT_DT
         FROM RESORT a
         JOIN BOOKING b
           ON (b.RESORT_ID = a.RESORT_ID)

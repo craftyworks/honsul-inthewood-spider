@@ -54,3 +54,11 @@ debug: false
 logging:
   level:
     root: INFO
+    com:
+      honsul: INFO
+    jdbc:
+      sqlonly: OFF 
+      audit: OFF
+      resultset: OFF
+      connection: OFF
+      sqltiming: INFO
