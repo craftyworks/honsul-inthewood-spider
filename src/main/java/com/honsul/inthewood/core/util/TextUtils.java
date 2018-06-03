@@ -67,4 +67,5 @@ public class TextUtils {
   public static boolean contains(String str, String[] strings) {
     return ArrayUtils.contains(strings, str);
   }
+
 }

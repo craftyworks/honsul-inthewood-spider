@@ -8,11 +8,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.honsul.inthewood.core.util.SSLTrustUtils;
 
 @EnableScheduling
 @SpringBootApplication
+@EnableTransactionManagement
 @MapperScan("com.honsul.inthewood")
 @ComponentScan("com.honsul.inthewood")
 public class SpiderApplication {

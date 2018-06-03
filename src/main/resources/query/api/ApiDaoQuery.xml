@@ -19,11 +19,11 @@
        GROUP BY a.RESORT_ID, a.RESORT_NM
     </sql>
     
-    <select id="getResort" parameterType="map" resultType="map">
+    <select id="getResort" parameterType="map" resultType="cmap">
       <include refid="selectResortList"/>
     </select>  
     
-    <select id="selectResort" resultType="map">
+    <select id="selectResort" resultType="cmap">
       <include refid="selectResortList"/>
     </select>  
     

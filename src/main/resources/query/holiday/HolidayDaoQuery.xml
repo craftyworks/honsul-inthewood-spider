@@ -14,7 +14,7 @@
        WHERE DT = #{value}
     </update>    
     
-    <select id="selectHolidayList" resultType="map">
+    <select id="selectHolidayList" resultType="cmap">
       SELECT a.DT
         FROM CALENDAR a
        WHERE a.DAYOFF_YN = 'Y'
