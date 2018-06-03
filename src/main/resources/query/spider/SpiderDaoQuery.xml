@@ -26,13 +26,14 @@
     </delete>   
         
     <update id="updateRoom" parameterType="Room">
-      INSERT INTO ROOM(RESORT_ID, ROOM_NO, ROOM_NM, ROOM_TYPE, ROOM_TYPE_NM, OCCUPANCY, PRICE, PEAK_PRICE, INSERT_DT, UPDATE_DT)
-      VALUES (#{resortId}, #{roomNo}, #{roomNm}, #{roomType}, #{roomType.name}, #{numberOfPeople}, #{price}, #{peakPrice}, now(), now())    
+      INSERT INTO ROOM(RESORT_ID, ROOM_NO, ROOM_NM, ROOM_TYPE, ROOM_TYPE_NM, OCCUPANCY, SPACE, PRICE, PEAK_PRICE, INSERT_DT, UPDATE_DT)
+      VALUES (#{resortId}, #{roomNo}, #{roomNm}, #{roomType}, #{roomType.name}, #{numberOfPeople}, #{space}, #{price}, #{peakPrice}, now(), now())    
           ON DUPLICATE KEY
       UPDATE ROOM_NM = #{roomNm}
            , ROOM_TYPE = #{roomType}
            , ROOM_TYPE_NM = #{roomType.name}
            , OCCUPANCY = #{numberOfPeople}
+           , SPACE = #{space}
            , PRICE = #{price}
            , PEAK_PRICE = #{peakPrice}
            , UPDATE_DT = now()
