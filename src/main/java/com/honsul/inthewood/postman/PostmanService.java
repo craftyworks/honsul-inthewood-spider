@@ -1,6 +1,5 @@
 package com.honsul.inthewood.postman;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Subscriber;
-import com.honsul.inthewood.postman.slack.SlackBot;
 import com.honsul.inthewood.spider.dao.PublisherDao;
 
 @Service
@@ -22,8 +20,8 @@ public class PostmanService {
   @Autowired
   PublisherDao dao;
 
-  @Autowired
-  SlackBot slackBot;
+  //@Autowired
+  //SlackBot slackBot;
   
   /**
    * 휴양림 예약변경현황 알림 발송
@@ -32,10 +30,10 @@ public class PostmanService {
   public void publishBookingChanges(Resort resort) {
     for(Booking booking : dao.selectNewEntryBookings(resort)) {
       List<Subscriber> subscribers = dao.selectBookingSubscriber(booking);
-      publishNotification(subscribers, booking);
+      //publishNotification(subscribers, booking);
     }
   }
-
+  /*
   public void publishNotification(List<Subscriber> subscribers, Booking booking) {
     logger.info("publishe booking notifications");
     for(Subscriber target : subscribers) {
@@ -46,6 +44,6 @@ public class PostmanService {
       slackBot.sendMessage(target.getSubscriberId(), message);
     }
   }
-  
+  */
   
 }
