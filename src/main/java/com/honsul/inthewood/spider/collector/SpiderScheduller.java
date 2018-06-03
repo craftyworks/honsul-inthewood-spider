@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.util.CommandUtils;
 
 @Component
@@ -28,7 +29,13 @@ public class SpiderScheduller {
    */
   @Scheduled(cron = "0 */10 * * * *" )
   private void collectAllBooking() {
-    collector.collectAllBooking();
+    for(Resort resort : collector.selectAllResort()) {
+      try {
+        collector.collectBooking(resort);
+      } catch(Throwable e) {
+        logger.error("error", e);
+      }
+    }
   }
   
   /**
@@ -36,13 +43,19 @@ public class SpiderScheduller {
    */
   @Scheduled(cron="0 0 * * * *")
   private void collectAllRoom() {
-    collector.collectAllRoom();
+    for(Resort resort : collector.selectAllResort()) {
+      try {
+        collector.collectRoom(resort);
+      } catch(Throwable e) {
+        logger.error("error", e);
+      }
+    }
   }
   
   /**
    * 30분 간격으로 phantomjs process kill
    */
-  @Scheduled(cron="0 */30 * * * *")
+  @Scheduled(cron="0 */10 * * * *")
   private void killPhantomjsProcess() {
     if(!env.acceptsProfiles("prod")) {
       return;

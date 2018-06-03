@@ -80,7 +80,6 @@ public class R012RoomParser extends JsoupRoomParser {
         roomName = StringUtils.substringBefore(roomName, "(");
         Room room = new Room();
         room.setResortId(SpiderContext.getResortId());
-        room.setRoomNo(roomName);
         room.setRoomNm(roomName);
         room.setRoomType(getRoomType(roomTypeNm));
         room.setSpace(space);

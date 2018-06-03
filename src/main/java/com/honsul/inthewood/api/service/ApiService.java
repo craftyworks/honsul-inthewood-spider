@@ -34,10 +34,10 @@ public class ApiService {
     return dao.selectResortRoom(param);
   }
 
-  public Room getResortRoom(String resortId, String roomNo) {
+  public Room getResortRoom(String resortId, String roomNm) {
     Map<String, Object> param = new HashMap<>();
     param.put("resortId", resortId);
-    param.put("roomNo", roomNo);
+    param.put("roomNm", roomNm);
     
     return dao.getResortRoom(param);
   }

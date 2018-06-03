@@ -23,4 +23,10 @@ public interface SpiderDao {
 
   void deleteRoom(Resort resort);
 
+  void deleteBookingPrevious(Resort resort);
+
+  void insertBookingPrevious(Resort resort);
+
+  void insertBooking(Booking item);
+
 }

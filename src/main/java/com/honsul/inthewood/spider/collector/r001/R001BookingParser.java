@@ -80,12 +80,10 @@ public class R001BookingParser implements Parser<Booking>{
         //"A", "3101", "길잡이별(114)", "4", "2018-05-17", "2018-05-18", 1, "1", "70000", "50000"
         String[] arguments = m.group(1).split(",\\s*");
         arguments = Arrays.stream(arguments).map(s -> s.replaceAll("\"", "")).toArray(String[]::new);
-        String roomNo = arguments[1];
         String roomNm = arguments[2];
         String bookingDt = arguments[4];
         Booking booking = new Booking();
         booking.setResortId(SpiderContext.getResortId());
-        booking.setRoomNo(roomNo);
         booking.setRoomNm(roomNm);
         booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         bookingList.add(booking);

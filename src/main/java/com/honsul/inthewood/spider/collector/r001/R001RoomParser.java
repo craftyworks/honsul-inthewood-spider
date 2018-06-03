@@ -75,7 +75,6 @@ public class R001RoomParser implements Parser<Room>{
           //"A", "3101", "길잡이별(114)", "4", "2018-05-17", "2018-05-18", 1, "1", "70000", "50000"
           String[] arguments = m.group(1).split(",\\s*");
           arguments = Arrays.stream(arguments).map(s -> s.replaceAll("\"", "")).toArray(String[]::new);
-          String roomNo = arguments[1];
           String roomNm = arguments[2];
           String occupancy = arguments[3];
           long peakPrice = Long.parseLong(arguments[8]);
@@ -83,7 +82,6 @@ public class R001RoomParser implements Parser<Room>{
 
           Room room = new Room();
           room.setResortId(SpiderContext.getResortId());
-          room.setRoomNo(roomNo);
           room.setRoomNm(roomNm);
           room.setRoomType(RoomType.getRoomType(roomTypeNm));
           room.setNumberOfPeople(occupancy);

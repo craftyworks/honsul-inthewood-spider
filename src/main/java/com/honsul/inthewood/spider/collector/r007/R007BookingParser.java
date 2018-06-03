@@ -53,14 +53,12 @@ public class R007BookingParser extends JsoupBookingParser {
       Pattern p = Pattern.compile("s_year=([0-9]+)&s_month=([0-9]+)&s_day=([0-9]+)&room_num=([0-9]+)&");
       Matcher matcher = p.matcher(queryString);
       if(matcher.find()) {
-        String roomNo = matcher.group(4);
         String bookingDt = matcher.group(1) + matcher.group(2) + matcher.group(3);
         String roomNm = row.selectFirst("font").text();
 
         Booking booking = new Booking();
         booking.setResortId(SpiderContext.getResortId());
         booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyyMMdd")));
-        booking.setRoomNo(roomNm);
         booking.setRoomNm(roomNm);
         bookingList.add(booking);
       }

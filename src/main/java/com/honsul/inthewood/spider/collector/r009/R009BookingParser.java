@@ -63,7 +63,6 @@ public class R009BookingParser extends JsoupBookingParser {
         Booking booking = new Booking();
         booking.setResortId(SpiderContext.getResortId());
         booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyyMMdd")));
-        booking.setRoomNo(StringUtils.trim(roomNo));
         booking.setRoomNm(StringUtils.trim(roomNo));
         if(LocalDate.now().isAfter(booking.getBookingDt())) {
           continue;

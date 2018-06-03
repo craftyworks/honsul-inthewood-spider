@@ -58,7 +58,6 @@ public class R005RoomParser extends JsoupRoomParser {
       
       Room room = new Room();
       room.setResortId(SpiderContext.getResortId());
-      room.setRoomNo(roomNm);
       room.setRoomNm(roomNm);
       room.setRoomType(getRoomType(roomNm));
       room.setNumberOfPeople(numberOfPeople);

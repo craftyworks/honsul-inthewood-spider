@@ -49,7 +49,6 @@ public class R003BookingParser extends AbstractBookingParser {
       Booking booking = new Booking();
       booking.setResortId(SpiderContext.getResortId());
       booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-      booking.setRoomNo(roomNm);
       booking.setRoomNm(roomNm);
       bookingList.add(booking);
     }

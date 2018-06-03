@@ -10,5 +10,4 @@ public class Booking {
   private String resortNm;
   private LocalDate bookingDt;
   private String roomNm;
-  private String roomNo;
 }

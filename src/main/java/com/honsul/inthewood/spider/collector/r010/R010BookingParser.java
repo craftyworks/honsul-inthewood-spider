@@ -61,12 +61,10 @@ public class R010BookingParser extends JsoupBookingParser {
         Matcher matcher = p.matcher(link.attr("href"));
         if(matcher.find()) {
           LocalDate bookingDt = DateUtils.fromEpochSecond(Long.parseLong(matcher.group(1)));
-          String roomNo = matcher.group(2);
           
           Booking booking = new Booking();
           booking.setResortId(SpiderContext.getResortId());
           booking.setBookingDt(bookingDt);
-          booking.setRoomNo(roomNo);
           booking.setRoomNm(roomNm);
 
           bookingList.add(booking);          
