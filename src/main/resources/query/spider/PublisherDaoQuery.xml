@@ -12,7 +12,8 @@
         JOIN RESORT h
           ON h.RESORT_ID = a.RESORT_ID
         JOIN ROOM r
-          ON r.ROOM_NM = a.ROOM_NM
+          ON r.RESORT_ID = a.RESORT_ID
+         AND r.ROOM_NM = a.ROOM_NM
         LEFT JOIN BOOKING_PREV b 
           ON b.RESORT_ID = a.RESORT_ID
          AND b.BOOKING_DT = a.BOOKING_DT

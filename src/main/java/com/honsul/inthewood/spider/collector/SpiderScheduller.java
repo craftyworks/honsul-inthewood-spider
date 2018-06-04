@@ -39,7 +39,7 @@ public class SpiderScheduller {
         
         postman.publishBookingChanges(resort);
       } catch(Throwable e) {
-        logger.error("error", e);
+        logger.error(resort.getResortId() + " collect booking failed" , e);
       }
     }
   }
@@ -53,7 +53,7 @@ public class SpiderScheduller {
       try {
         collector.collectRoom(resort);
       } catch(Throwable e) {
-        logger.error("error", e);
+        logger.error(resort.getResortId() + " collect room failed" , e);
       }
     }
   }
