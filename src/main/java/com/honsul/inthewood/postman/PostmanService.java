@@ -39,15 +39,19 @@ public class PostmanService {
       }
     }
   }
+  
+  public void publishBookingChangesSync(Resort resort) {
+    publishBookingChanges(resort);
+  }
 
   public void publishNotification(List<Subscriber> subscribers, Booking booking) {
     logger.info("booking notifications");
     for(Subscriber target : subscribers) {
       logger.info("sending {} : {}", target.getSubscriberId(), booking);
-      String message = booking.getResortNm() 
-          + " " + booking.getBookingDt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+      String message = "[" + booking.getBookingDt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) +"]" 
+          + " " + "*"+booking.getResortNm()+"*" 
           + " " + booking.getRoomNm()
-          + " " + (RoomType.HUT.equals(booking.getRoomType()) ? "숲속의집" : "휴양관");
+          + " (" + (RoomType.HUT.equals(booking.getRoomType()) ? "숲속의집" : "휴양관") + ")";
       slackBot.sendMessage(target.getSubscriberId(), message);
     }
   }

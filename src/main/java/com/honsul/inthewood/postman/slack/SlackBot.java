@@ -18,8 +18,8 @@ public class SlackBot {
     WebHookToken token = slackChannels.getWebhookToken(channel);
 
     MessageRequest messageRequest = MessageRequest.builder()
-        .username("혼술")
-        .iconEmoji(":smile:")
+        .username("빈방 있어요!")
+        //.iconEmoji(":smile:")
         .text(textMessage)
         .build();
     

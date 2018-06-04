@@ -27,7 +27,7 @@ public class PostmanServiceTest {
     Resort resort = new Resort();
     resort.setResortId("R014");
     
-    postman.publishBookingChanges(resort);
+    postman.publishBookingChangesSync(resort);
   }
   
   //@Test
