@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.honsul.inthewood.core.model.Booking;
+import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Subscriber;
 import com.honsul.inthewood.spider.SpiderApplication;
 
@@ -22,6 +23,14 @@ public class PostmanServiceTest {
   PostmanService postman;
   
   @Test
+  public void testPublishBookingChanges() {
+    Resort resort = new Resort();
+    resort.setResortId("R014");
+    
+    postman.publishBookingChanges(resort);
+  }
+  
+  //@Test
   public void test() {
     List<Subscriber> subscribers = new ArrayList<>();
     Subscriber sub = new Subscriber();

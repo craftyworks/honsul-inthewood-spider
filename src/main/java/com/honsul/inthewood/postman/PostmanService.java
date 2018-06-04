@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.model.Resort;
+import com.honsul.inthewood.core.model.RoomType;
 import com.honsul.inthewood.core.model.Subscriber;
 import com.honsul.inthewood.postman.slack.SlackBot;
 import com.honsul.inthewood.spider.dao.PublisherDao;
@@ -32,17 +34,20 @@ public class PostmanService {
   public void publishBookingChanges(Resort resort) {
     for(Booking booking : dao.selectNewEntryBookings(resort)) {
       List<Subscriber> subscribers = dao.selectBookingSubscriber(booking);
-      publishNotification(subscribers, booking);
+      if(!CollectionUtils.isEmpty(subscribers)) {
+        publishNotification(subscribers, booking);
+      }
     }
   }
 
   public void publishNotification(List<Subscriber> subscribers, Booking booking) {
-    logger.info("publishe booking notifications");
+    logger.info("booking notifications");
     for(Subscriber target : subscribers) {
-      logger.info("publishe {} to {}", booking, target);
+      logger.info("sending {} : {}", target.getSubscriberId(), booking);
       String message = booking.getResortNm() 
           + " " + booking.getBookingDt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-          + " " + booking.getRoomNm();
+          + " " + booking.getRoomNm()
+          + " " + (RoomType.HUT.equals(booking.getRoomType()) ? "숲속의집" : "휴양관");
       slackBot.sendMessage(target.getSubscriberId(), message);
     }
   }

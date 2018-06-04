@@ -51,9 +51,7 @@ public class SpiderCollector {
     
     // 신규 등록
     dao.deleteBooking(resort);
-    if(resort.getResortId().equals("R011")) {
-      throw new RuntimeException("FAIL");
-    }
+
     List<Booking> items = lookupBookingParser(resort.getResortId()).parse();
     for(Booking item : items) {
       dao.insertBooking(item);      

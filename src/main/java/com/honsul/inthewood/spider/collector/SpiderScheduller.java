@@ -59,9 +59,11 @@ public class SpiderScheduller {
   }
   
   /**
-   * 30분 간격으로 phantomjs process kill
+   * 10분 간격으로 phantomjs process kill
+   * <p> 사용 안함. crontab 에서 처리
    */
-  @Scheduled(cron="0 */10 * * * *")
+  //@Scheduled(cron="0 */10 * * * *")
+  @Deprecated
   private void killPhantomjsProcess() {
     if(!env.acceptsProfiles("prod")) {
       return;
