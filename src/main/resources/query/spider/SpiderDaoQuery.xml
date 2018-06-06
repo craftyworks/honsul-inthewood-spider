@@ -3,7 +3,13 @@
 <mapper namespace="com.honsul.inthewood.spider.dao.SpiderDao">
                    
     <select id="selectResortList" resultType="Resort">
-      SELECT RESORT_ID, RESORT_NM
+      SELECT RESORT_ID
+           , RESORT_NM
+           , HOMEPAGE
+           , PHOTO
+           , REGION
+           , ADDRESS
+           , PHONE
         FROM RESORT
     </select>
                

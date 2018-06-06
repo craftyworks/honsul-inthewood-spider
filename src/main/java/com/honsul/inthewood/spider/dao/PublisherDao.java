@@ -1,11 +1,11 @@
 package com.honsul.inthewood.spider.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Subscriber;
 
@@ -13,8 +13,8 @@ import com.honsul.inthewood.core.model.Subscriber;
 @Repository
 public interface PublisherDao {
 
-  List<Booking> selectNewEntryBookings(Resort resort);
+  List<Map> selectNewEntryBookings(Resort resort);
 
-  List<Subscriber> selectBookingSubscriber(Booking booking);
+  List<Subscriber> selectBookingSubscriber(Map booking);
 
 }

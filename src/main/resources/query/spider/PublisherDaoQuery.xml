@@ -2,12 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.honsul.inthewood.spider.dao.PublisherDao">
                    
-    <select id="selectNewEntryBookings" resultType="Booking" parameterType="Resort">
+    <select id="selectNewEntryBookings" resultType="cmap" parameterType="Resort">
       SELECT a.RESORT_ID
            , h.RESORT_NM
+           , h.HOMEPAGE
+           , h.PHOTO
+           , h.REGION
+           , h.ADDRESS
+           , h.PHONE
            , a.BOOKING_DT
            , a.ROOM_NM
            , r.ROOM_TYPE
+           , r.ROOM_TYPE_NM
+           , r.OCCUPANCY
+           , r.PEAK_PRICE
+           , r.PRICE
         FROM BOOKING a
         JOIN RESORT h
           ON h.RESORT_ID = a.RESORT_ID
@@ -22,7 +31,7 @@
          AND b.RESORT_ID IS NULL
     </select>
     
-    <select id="selectBookingSubscriber" resultType="Subscriber" parameterType="Booking">
+    <select id="selectBookingSubscriber" resultType="Subscriber" parameterType="map">
       SELECT a.SUBSCRIBER_ID
         FROM SUBSCRIBER a
        WHERE a.BOOKING_DT = 'holiday'

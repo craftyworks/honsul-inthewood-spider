@@ -1,12 +1,18 @@
 package com.honsul.inthewood.core.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TextUtils {
+  private static final Logger logger = LoggerFactory.getLogger(TextUtils.class);
+  
   private static Pattern P_CURSOR = Pattern.compile("\\(([^\\(\\)]*)\\)");
   
   private static Pattern P_MONEY = Pattern.compile("([0-9,]+)");
@@ -68,4 +74,12 @@ public class TextUtils {
     return ArrayUtils.contains(strings, str);
   }
 
+  public static URL toURL(String url) {
+    try {
+      return new URL(url);
+    } catch (MalformedURLException e) {
+      logger.error("failed", e);
+    }
+    return null;
+  }
 }

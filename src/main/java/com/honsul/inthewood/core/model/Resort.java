@@ -9,4 +9,9 @@ import lombok.Data;
 public class Resort {
   private String resortId;
   private String resortNm;
+  private String homepage;
+  private String photo;
+  private String region;
+  private String address;
+  private String phone;
 }
