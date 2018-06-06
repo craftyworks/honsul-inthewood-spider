@@ -13,12 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.honsul.inthewood.HonsulInTheWoodApplication;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Subscriber;
-import com.honsul.inthewood.spider.SpiderApplication;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes= {SpiderApplication.class})
+@SpringBootTest(classes= {HonsulInTheWoodApplication.class})
 public class PostmanServiceTest {
 
   @Autowired

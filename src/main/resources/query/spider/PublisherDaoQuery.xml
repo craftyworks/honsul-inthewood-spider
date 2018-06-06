@@ -42,6 +42,7 @@
     
     <select id="selectBookingSubscriber" resultType="Subscriber" parameterType="map">
       SELECT a.SUBSCRIBER_ID
+           , a.SUBSCRIBER_TYPE
         FROM SUBSCRIBER a
        WHERE a.BOOKING_DT = 'holiday'
          AND EXISTS (SELECT 1
@@ -50,12 +51,15 @@
                     AND DT = #{bookingDt})
          AND a.RESORT_ID IN (#{resortId}, '*')
          AND a.ROOM_TYPE IN (#{roomType}, '*')
+         AND a.USE_YN = 'Y'
        UNION
       SELECT a.SUBSCRIBER_ID
+           , a.SUBSCRIBER_TYPE
         FROM SUBSCRIBER a
        WHERE a.BOOKING_DT = DATE_FORMAT(#{bookingDt}, '%Y%m%d')
          AND a.RESORT_ID IN (#{resortId}, '*')
          AND a.ROOM_TYPE IN (#{roomType}, '*')
+         AND a.USE_YN = 'Y'
     </select>    
       
 </mapper>

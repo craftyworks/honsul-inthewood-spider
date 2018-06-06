@@ -54,7 +54,6 @@ public class PostmanService {
     logger.info("booking notifications");
     for(Subscriber target : subscribers) {
       logger.info("sending {} : {}", target.getSubscriberId(), booking);
-
       
       slackBot.sendMessage(target.getSubscriberId(), buildMessage(booking));
     }
