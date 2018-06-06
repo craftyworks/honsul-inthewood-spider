@@ -32,7 +32,7 @@ public class PostmanServiceTest {
     postman.publishBookingChangesSync(resort);
   }
   
-  @Test
+  //@Test
   public void testPublishNotification() {
     List<Subscriber> subscribers = new ArrayList<>();
     Subscriber sub = new Subscriber();

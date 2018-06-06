@@ -10,13 +10,22 @@
            , h.REGION
            , h.ADDRESS
            , h.PHONE
-           , a.BOOKING_DT
+           , CONCAT(DATE_FORMAT(a.BOOKING_DT, '%Y-%m-%d'), ' ', 
+               CASE DATE_FORMAT(a.BOOKING_DT, '%w') 
+                    WHEN 0 THEN '일요일' 
+                    WHEN 1 THEN '월요일' 
+                    WHEN 2 THEN '화요일' 
+                    WHEN 3 THEN '수요일' 
+                    WHEN 4 THEN '목요일' 
+                    WHEN 5 THEN '금요일' 
+                    WHEN 6 THEN '토요일' 
+                END) as BOOKING_DT
            , a.ROOM_NM
            , r.ROOM_TYPE
            , r.ROOM_TYPE_NM
            , r.OCCUPANCY
-           , r.PEAK_PRICE
-           , r.PRICE
+           , FORMAT(r.PEAK_PRICE, 0) as PEAK_PRICE
+           , FORMAT(r.PRICE, 0) as PRICE
         FROM BOOKING a
         JOIN RESORT h
           ON h.RESORT_ID = a.RESORT_ID
