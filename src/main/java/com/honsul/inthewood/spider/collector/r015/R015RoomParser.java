@@ -1,67 +1,79 @@
 package com.honsul.inthewood.spider.collector.r015;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
 import com.honsul.inthewood.core.model.RoomType;
 import com.honsul.inthewood.core.parser.JsoupRoomParser;
-import com.honsul.inthewood.core.util.TextUtils;
 
 /**
- * 봉수산자연휴양림 숙소현황 파서.
+ * 남이자연휴양림 숙소현황 파서.
  */
 @RoomParser(resortId="R015")
 public class R015RoomParser extends JsoupRoomParser {
   
-  private static final String HUT_URL = "http://www.bongsoosan.com/facilities.asp?location=";
-  private static final String[] LOCATIONS = {
-      "001", "001_02", "001_03", "001_04", "001_05", "001_06", "002"};
+  private static final String CONNECT_URL = "http://forestown.geumsan.go.kr/_prog/reserve/checkroom.php";
+  
+  private static final Map<String, long[]> PRICE_MAP = new HashMap<>();
+  static {
+    PRICE_MAP.put("CONDO|10", new long[] {90000, 130000});
+    PRICE_MAP.put("HUT|4", new long[] {50000, 70000});
+    PRICE_MAP.put("HUT|6", new long[] {60000, 90000});
+    PRICE_MAP.put("층층나무방", new long[] {90000, 130000});
+    PRICE_MAP.put("고로쇠나무방", new long[] {90000, 130000});
+    PRICE_MAP.put("산벚나무", new long[] {95000, 140000});
+    PRICE_MAP.put("구상나무", new long[] {95000, 140000});
+    PRICE_MAP.put("느티방", new long[] {130000, 190000});
+    PRICE_MAP.put("잣나무방", new long[] {190000, 250000});
+  }
   
   @Override
   protected List<Document> documents() throws IOException {
-    List<Document> docs = new ArrayList<>();
-    for(String location : LOCATIONS) {
-      docs.add(Jsoup.connect(HUT_URL + location).get());
-    }
-    return docs;
+    List<Document> documentList = new ArrayList<>();
+    
+    LocalDate now = LocalDate.now();
+
+    //this month
+    documentList.add(Jsoup.connect(CONNECT_URL).data("code", "forest").data("year", ""+now.getYear()).data("mon", ""+now.getMonthValue()).post());
+    documentList.add(Jsoup.connect(CONNECT_URL).data("code", "edu1").data("year", ""+now.getYear()).data("mon", ""+now.getMonthValue()).post());
+    
+    return documentList;
   }
+  
+
   
   @Override
   public List<Room> extract(Document doc) {
     List<Room> roomList = new ArrayList<>();
 
-    String numberOfPeople = "";
-    String space = "";
-    long price = 0, peakPrice = 0;
-
-    String roomTypeNm = doc.select("div#contents > div.title > div.section > h3 > img").attr("alt");
-    for(Element row : doc.select("div.facilities > table > tbody > tr")) {
-      Elements tds = row.select("td");
-      String roomNm = tds.get(0).text();
-      roomNm = StringUtils.substringBefore(roomNm,  "(");
+    for(Element row : doc.select("div.checkroom_tb > table.table2 > tbody > tr > th")) {
+      String roomNm = StringUtils.substringBefore(row.text(), "-");
+      String numberOfPeople = StringUtils.substringAfter(row.text(), "-").replaceAll("인실",  "");
+      RoomType roomType = getRoomType(roomNm);
       
-      if(tds.size() > 1) {
-        space = tds.get(1).text();
-        numberOfPeople = tds.get(2).text().replaceAll("명",  "");
-        peakPrice = TextUtils.parseLong(tds.get(3).text());
-        price = TextUtils.parseLong(tds.get(5).text()); 
+      String key = roomNm;
+      if(PRICE_MAP.containsKey(roomType.getCode() + "|" + numberOfPeople)) {
+        key = roomType.getCode() + "|" + numberOfPeople;
       }
-
+      long price = PRICE_MAP.get(key)[0];
+      long peakPrice = PRICE_MAP.get(key)[1];
+       
       Room room = new Room();
       room.setResortId(SpiderContext.getResortId());
       room.setRoomNm(roomNm);
-      room.setRoomType(getRoomType(roomTypeNm));
-      room.setSpace(space);
+      room.setRoomType(roomType);
       room.setNumberOfPeople(numberOfPeople);
       room.setPeakPrice(peakPrice);
       room.setPrice(price);
@@ -71,8 +83,8 @@ public class R015RoomParser extends JsoupRoomParser {
   }
   
   @Override
-  public RoomType getRoomType(String roomTypeNm) {
-    return "숲속의집".equals(roomTypeNm) ? RoomType.HUT : RoomType.CONDO;
+  public RoomType getRoomType(String roomNm) {
+    return StringUtils.contains(roomNm, "산림휴양관") ? RoomType.CONDO : RoomType.HUT;
   }
 
 }

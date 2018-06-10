@@ -15,55 +15,53 @@ import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.parser.JsoupBookingParser;
+import com.honsul.inthewood.core.util.TextUtils;
 
 /**
- * 봉수산자연휴양림 예약현황 파서.
+ * 남이자연휴양림 예약현황 파서.
  */
 @BookingParser(resortId="R015")
 public class R015BookingParser extends JsoupBookingParser {
 
-  private static final String CONNECT_URL = "http://www.bongsoosan.com/reservation.asp?location=002";
-
+  private static final String CONNECT_URL = "http://forestown.geumsan.go.kr/_prog/reserve/checkroom.php";
   
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();
     
-    //this month
-    Document doc = Jsoup.connect(CONNECT_URL).get();       
-    documentList.add(doc);
-
-    //next month
-    Element elm = doc.selectFirst("form[name=form_next]");
-    if(elm != null) {
-      String year = elm.selectFirst("input[name=wh_year]").val();
-      String month = elm.selectFirst("input[name=wh_month]").val();
+    LocalDate now = LocalDate.now();
+    LocalDate next = now.plusMonths(1);
     
-      documentList.add(Jsoup.connect(CONNECT_URL).data("wh_year", year).data("wh_month", month).post());
-    }
+    //this month
+    documentList.add(Jsoup.connect(CONNECT_URL).data("code", "forest").data("year", ""+now.getYear()).data("mon", ""+now.getMonthValue()).post());
+    documentList.add(Jsoup.connect(CONNECT_URL).data("code", "edu1").data("year", ""+now.getYear()).data("mon", ""+now.getMonthValue()).post());
+    
+    //next month
+    documentList.add(Jsoup.connect(CONNECT_URL).data("code", "forest").data("year", ""+next.getYear()).data("mon", ""+next.getMonthValue()).post());
+    documentList.add(Jsoup.connect(CONNECT_URL).data("code", "edu1").data("year", ""+next.getYear()).data("mon", ""+next.getMonthValue()).post());
+    
     return documentList;
   }
   
   public List<Booking> extract(Document doc) {
     List<Booking> bookingList = new ArrayList<>();
-    for(Element row : doc.select("table.calendar form[action^=/reservation.asp]")) {
-
-      String[] attr = row.selectFirst("input[name=rsv_info]").attr("value").split("#@");
-      String bookingDt = attr[2];
-      String roomNm = row.selectFirst("button").text();
-      if(StringUtils.startsWith(roomNm, "강당")) {
-        continue;
-      }
-      Booking booking = new Booking();
-      booking.setResortId(SpiderContext.getResortId());
-      booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-      booking.setRoomNm(roomNm);
-      bookingList.add(booking);
+    
+    for(Element row : doc.select("div.checkroom_tb > table.table2 > tbody > tr")) {
+      String roomNm = StringUtils.substringBefore(row.selectFirst("th").text(), "-");
+      for(Element tds : row.select("a[onclick^=apply]")) {
+        String bookingDt = TextUtils.stripCursor(tds.attr("onclick"));
+        bookingDt = bookingDt.split(",")[1];
+        bookingDt = bookingDt.replaceAll("[\\s']", "");
+        
+        Booking booking = new Booking();
+        booking.setResortId(SpiderContext.getResortId());
+        booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        booking.setRoomNm(roomNm);
+        bookingList.add(booking);
+      } 
     }
     
     return bookingList;
   }
-
-
 
 }

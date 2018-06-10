@@ -27,7 +27,7 @@ public class StartCommand extends BotCommand {
     messageBuilder.append("Welcome ").append(userName).append("\n");
     messageBuilder.append("this bot will demonstrate you the command feature of the Java TelegramBots API!");
 
-        try {
+    try {
       absSender.execute(new SendMessage(chat.getId(), messageBuilder.toString()));
     } catch (TelegramApiException e) {
       logger.error("error", e);
