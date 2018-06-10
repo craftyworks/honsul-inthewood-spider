@@ -46,7 +46,8 @@ public class HuegoBot extends TelegramLongPollingCommandBot {
 
   @Override
   public String getBotToken() {
-      return "614358181:AAEmj8xNl9gcDfkAaXPihz7Yox2V6yKC2-g";
+      //return "614358181:AAEmj8xNl9gcDfkAaXPihz7Yox2V6yKC2-g";
+    return "520929795:AAHwDezSwwVXMF7NkdfNU2rcW8mQ1-0DC70";
   }
 
 }

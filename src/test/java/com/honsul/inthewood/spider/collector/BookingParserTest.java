@@ -5,13 +5,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.jsoup.nodes.Document;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.honsul.inthewood.core.Parser;
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
+import com.honsul.inthewood.core.parser.JsoupBookingParser;
 
 public abstract class BookingParserTest {
 
@@ -32,6 +35,14 @@ public abstract class BookingParserTest {
     assertEquals(BookingParserTest.RESORT_ID, annotation.resortId());
   }
 
+  @Test
+  public void testDocuments() {
+    if(PARSER instanceof JsoupBookingParser) {
+      List<Document> docs = ReflectionTestUtils.invokeMethod(PARSER, "documents", new Class[] {});
+      assertTrue(!CollectionUtils.isEmpty(docs));
+    }
+  }
+  
   @Test
   public void testParse() {
       List<Booking> bookingList = PARSER.parse();
