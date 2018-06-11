@@ -1,6 +1,7 @@
 spring:
   profiles:
     active: local
+    include: 'datasource'
   aop:
     proxy-target-class: true
 
@@ -25,7 +26,6 @@ logging:
       sqltiming: DEBUG
       
 slack:
-  config:
     channels:
       honsul-holiday: https://hooks.slack.com/services/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
 ---

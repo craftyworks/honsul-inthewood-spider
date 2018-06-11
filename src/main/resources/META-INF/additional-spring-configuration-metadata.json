@@ -23,5 +23,10 @@
     "name": "slack.config.channels.honsul-holiday",
     "type": "java.lang.String",
     "description": "A description for 'slack.config.channels.honsul-holiday'"
+  },
+  {
+    "name": "slack.channels.honsul-holiday",
+    "type": "java.lang.String",
+    "description": "A description for 'slack.channels.honsul-holiday'"
   }
 ]}

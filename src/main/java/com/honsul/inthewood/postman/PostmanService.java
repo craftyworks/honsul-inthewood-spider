@@ -10,10 +10,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.honsul.inthewood.bot.slack.SlackBot;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Subscriber;
 import com.honsul.inthewood.core.util.TextUtils;
-import com.honsul.inthewood.postman.slack.SlackBot;
 import com.honsul.inthewood.spider.dao.PublisherDao;
 import com.palantir.roboslack.api.MessageRequest;
 import com.palantir.roboslack.api.attachments.Attachment;

@@ -1,4 +1,4 @@
-package com.honsul.inthewood.postman.slack;
+package com.honsul.inthewood.bot.slack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
