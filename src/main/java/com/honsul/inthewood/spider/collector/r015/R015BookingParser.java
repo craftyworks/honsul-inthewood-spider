@@ -49,7 +49,7 @@ public class R015BookingParser extends JsoupBookingParser {
     for(Element row : doc.select("div.checkroom_tb > table.table2 > tbody > tr")) {
       String roomNm = StringUtils.substringBefore(row.selectFirst("th").text(), "-");
       for(Element tds : row.select("a[onclick^=apply]")) {
-        String bookingDt = TextUtils.stripCursor(tds.attr("onclick"));
+        String bookingDt = TextUtils.stringInBrackets(tds.attr("onclick"));
         bookingDt = bookingDt.split(",")[1];
         bookingDt = bookingDt.replaceAll("[\\s']", "");
         

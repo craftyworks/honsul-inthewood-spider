@@ -1,7 +1,7 @@
 package com.honsul.inthewood.spider.collector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,6 +36,9 @@ public abstract class RoomParserTest {
   public void testParse() {
       List<Room> roomList = PARSER.parse();
       assertTrue(!CollectionUtils.isEmpty(roomList));
-      assertEquals(RoomParserTest.RESORT_ID, roomList.get(0).getResortId());
+      
+      Room room = roomList.get(0);
+      assertEquals(RoomParserTest.RESORT_ID, room.getResortId());
+      assertThat(room.getPeakPrice(),  greaterThanOrEqualTo(room.getPrice()));
   }
 }

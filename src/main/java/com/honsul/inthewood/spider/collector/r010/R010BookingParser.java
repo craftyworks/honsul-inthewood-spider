@@ -54,7 +54,7 @@ public class R010BookingParser extends JsoupBookingParser {
       }
       String title = row.selectFirst("td").text();
       String roomNm = StringUtils.substringBefore(title, "(");
-      String space = TextUtils.stripCursor(title);
+      String space = TextUtils.stringInBrackets(title);
       
       for(Element link : row.select("a[href^=./reserve.html]")) {
         Pattern p = Pattern.compile("sdate=([0-9]+)\\s*&stateroom=([0-9A-Z_\\-]+)");

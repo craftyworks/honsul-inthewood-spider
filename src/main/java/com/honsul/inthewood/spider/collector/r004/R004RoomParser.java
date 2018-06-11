@@ -3,11 +3,12 @@ package com.honsul.inthewood.spider.collector.r004;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.honsul.inthewood.core.SpiderContext;
@@ -20,45 +21,82 @@ import com.honsul.inthewood.core.util.TextUtils;
 /**
  * 문성자연휴양림 숙소현황 파서.
  * 
- * <p>JSoup 으로 처리. 예약페이지 내 메뉴판에서 스크랩
  */
 @RoomParser(resortId="R004")
 public class R004RoomParser extends JsoupRoomParser {
   
-  private static final String CONNECT_URL = "http://msf.cj100.net/reservation.asp?location=001";
+  private static final String CONNECT_URL = "http://msf.cj100.net/facilities.asp?location=";
   
+  private static final String[] LOCATIONS = {
+      "001", "001_01", "001_02", "001_03", "001_04",
+      "002", "002_01", "002_02", "002_03",
+      "003", "003_01", "003_02", "003_03",
+      "004", "004_01", 
+      "008_01", "008_02", "008_03", "008_04"
+  };
+
   @Override
-  protected Document document() throws IOException {
-    return Jsoup.connect(CONNECT_URL).header("Referer", CONNECT_URL).get();
+  protected List<Document> documents() throws IOException {
+    List<Document> docs = new ArrayList<>();
+    for(String loc : LOCATIONS) {
+      docs.add(Jsoup.connect(CONNECT_URL + loc).get());
+    }
+    return docs;
   }
   
   @Override
   public List<Room> extract(Document doc) {
-
     List<Room> roomList = new ArrayList<>();
+
+    List<String> roomNames = new ArrayList<>();
+    String roomTypeNm = doc.selectFirst("div#nav > h1 > img").attr("alt").replaceAll("\\s", "");
+    RoomType roomType = getRoomType(roomTypeNm);
+    String roomNm = doc.selectFirst("div#contents > div.house_info > h2 > img").attr("alt").replaceAll("\\s", "").replaceAll(roomTypeNm, "");
     
-    String roomNm = "";
-    String numberOfPeople = "";
-    String space = "";
-    long price = 0, peakPrice = 0;
-    
-    for(Element row : doc.select("div#snb>div.group>table>tbody>tr")) {
-      roomNm = row.selectFirst("th").text();
-      Elements tds = row.select("td");
-      if(!tds.isEmpty()) {
-        String temp = tds.get(0).text();
-        numberOfPeople = StringUtils.substringBefore(temp, "인");
-        space = TextUtils.stripCursor(temp);
-        peakPrice = TextUtils.parseLong(tds.get(1).text());
-        price = TextUtils.parseLong(tds.get(2).text());
+    String space = null;
+    String people = null;
+    long peakPrice = 0, price = 0;
+    if("휴양관".equals(roomTypeNm)) {
+      Elements tds = doc.select("div#contents > div.house_info > table.facil > tbody > tr > td");
+      String title = tds.get(0).text();
+      Pattern p = Pattern.compile("([0-9]+)호[~\\+]{1}([0-9]+)호");
+      Matcher m = p.matcher(title);
+      if(m.find()) {
+        int start = Integer.parseInt(m.group(1));
+        int end =  Integer.parseInt(m.group(2));
+        if(StringUtils.contains(title, "단체실")) {
+          roomNames.add("휴양관" + start +"호");
+        } else {
+          for(int i = start; i <=end; i++) {
+            roomNames.add("휴양관" + i + "호");
+          }
+        }
       }
-      
+      space = tds.get(1).text();
+      people = tds.get(2).text().replaceAll("명", "");
+      peakPrice = TextUtils.parseLong(tds.get(3).text());
+      price = TextUtils.parseLong(tds.get(4).text());
+    } else {
+      roomNames.add(roomNm);
+      Elements dds = doc.select("div#contents > div.house_info > dl > dd");
+      space = dds.get(1).text();
+      String priceTag = dds.get(2).text();
+      Pattern p = Pattern.compile("성수기([0-9,]+) / 비수기([0-9,]+)");
+      Matcher m = p.matcher(priceTag);
+      if(m.find()) {
+        peakPrice = TextUtils.parseLong(m.group(1));
+        price = TextUtils.parseLong(m.group(2));
+      }
+      people = dds.get(3).text().replaceAll("명", "");
+    }    
+    
+    for(String name : roomNames) {
       Room room = new Room();
       room.setResortId(SpiderContext.getResortId());
-      room.setRoomNm(roomNm);
-      room.setRoomType(getRoomType(roomNm));
-      room.setNumberOfPeople(numberOfPeople);
+      room.setRoomNm(name);
+      room.setRoomType(roomType);
       room.setSpace(space);
+      room.setNumberOfPeople(people);
       room.setPeakPrice(peakPrice);
       room.setPrice(price);
       roomList.add(room);
@@ -70,11 +108,8 @@ public class R004RoomParser extends JsoupRoomParser {
   }
   
   @Override
-  public RoomType getRoomType(String roomNm) {
-    if(TextUtils.contains(roomNm, new String[] {"채송화", "민들레", "원추리", "수선화", "제비꽃"})) {
-      return RoomType.HUT;
-    }
-    return RoomType.CONDO;
+  public RoomType getRoomType(String roomTypeNm) {
+    return "숲속의집".equals(roomTypeNm) ? RoomType.HUT : RoomType.CONDO;
   }
 
 }

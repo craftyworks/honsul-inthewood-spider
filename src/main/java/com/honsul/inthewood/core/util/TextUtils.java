@@ -17,10 +17,10 @@ public class TextUtils {
   
   private static Pattern P_MONEY = Pattern.compile("([0-9,]+)");
   /**
-   * 괄호 내부의 문자열을 리턴
+   * 괄호 내부의 문자열 추출.
    * <p>예: stripCursor("8인(51㎡)") 리턴 51㎡ 
    */
-  public static String stripCursor(String str) {
+  public static String stringInBrackets(String str) {
     Matcher matcher = P_CURSOR.matcher(str);
     if(matcher.find()) {
       return matcher.group(1);
@@ -28,13 +28,23 @@ public class TextUtils {
     return "";
   }
   
-  public static String stripCursorLast(String str) {
+  /**
+   * 괄호 내부의 문자열 추출. 괄호가 여러개 일 때 뒤에서 첫번째 괄호에서 문자열을 추출한다.
+   */
+  public static String stringInLastBrackets(String str) {
     Matcher matcher = P_CURSOR.matcher(str);
     String rtn = "";
     while(matcher.find()) {
       rtn = matcher.group(1);
     }
     return rtn;
+  }
+  
+  /**
+   * 괄호로 감싸진 문자열을 삭제한다. 괄호를 포함하여 삭제.
+   */
+  public static String removeBrackets(String str) {
+    return str.replaceAll("\\([^\\(\\)]*\\)", "");
   }
   
   public static String findMoney(String str) {
@@ -82,4 +92,6 @@ public class TextUtils {
     }
     return null;
   }
+
+
 }

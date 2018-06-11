@@ -52,10 +52,10 @@ public class R002RoomParser extends JsoupRoomParser {
     long price = 0;
     for(Element tr : doc.select("div#contents>table.house_table>tbody>tr")) {
       Elements tds = tr.select("td");
-      roomNm = tds.get(0).text();
+      roomNm = TextUtils.removeBrackets(tds.get(0).text());
       if(tds.size() > 3) {
         space = tds.get(1).text();
-        numberOfPeople = tds.get(2).text();
+        numberOfPeople = tds.get(2).text().replaceAll("명",  "");
         peakPrice = TextUtils.findMoneyLong(tds.get(3).text());
         if(tds.size() > 5) {
           String sPrice = StringUtils.substringAfter(tds.get(5).text(), "(30%)");

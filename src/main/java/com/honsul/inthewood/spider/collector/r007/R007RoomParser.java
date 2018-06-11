@@ -42,7 +42,7 @@ public class R007RoomParser extends JsoupRoomParser {
         continue;
       }
       String roomNm = StringUtils.substringBeforeLast(tds.get(1).text(), "(");
-      String space = TextUtils.stripCursorLast(tds.get(1).text());
+      String space = TextUtils.stringInLastBrackets(tds.get(1).text());
       String numberOfPeople = tds.get(2).text();
       long price = TextUtils.parseLong(tds.get(5).text()); 
       long peakPrice = TextUtils.parseLong(tds.get(6).text());

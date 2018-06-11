@@ -46,7 +46,7 @@ public class R017RoomParser extends JsoupRoomParser {
       RoomType roomType = getRoomType(roomNm);
       Elements tds = row.select("td");
       String space = tds.get(idx++).text();
-      String numberOfPeople = TextUtils.stripCursor(space);
+      String numberOfPeople = TextUtils.stringInBrackets(space);
       space = StringUtils.substringBefore(space, "(");
       numberOfPeople = StringUtils.substringBefore(numberOfPeople, ",").replaceAll("인용", "");
       

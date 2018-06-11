@@ -48,7 +48,7 @@ public class R016RoomParser extends JsoupRoomParser {
     for(Element row : doc.select("div.facilities > table.fac_table > tbody > tr")) {
       Elements tds = row.select("td");
       String roomNm = tds.get(0).text();
-      space = TextUtils.stripCursor(roomNm);
+      space = TextUtils.stringInBrackets(roomNm);
       roomNm = StringUtils.substringBefore(roomNm, "(");
       if(tds.size() > 1) {
         numberOfPeople = tds.get(1).text().replaceAll("명",  "");

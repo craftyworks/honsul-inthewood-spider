@@ -46,7 +46,7 @@ public class R009RoomParser extends JsoupRoomParser {
       }
       roomTypeNm = StringUtils.contains(roomNm, "숲속휴양관") ? "휴양관" : "숲속의집";
       String roomNo = StringUtils.contains(roomNm, "숲속휴양관") ? StringUtils.substringBefore(roomNm, "(") : StringUtils.substringAfter(roomNm, ")");
-      numberOfPeople = TextUtils.stripCursor(roomNm).replaceAll("인",  "");
+      numberOfPeople = TextUtils.stringInBrackets(roomNm).replaceAll("인",  "");
       
       Elements priceRow = tds.get(3).select("table > tbody > tr > td");
       price = TextUtils.parseLong(priceRow.get(0).text()); 

@@ -50,7 +50,7 @@ public class R005RoomParser extends JsoupRoomParser {
         if(tds.size() == 3) {
           String temp = tds.get(idx++).text();
           numberOfPeople = StringUtils.substringBefore(temp, "인");
-          space = TextUtils.stripCursor(temp);
+          space = TextUtils.stringInBrackets(temp);
         }
         peakPrice = TextUtils.parseLong(tds.get(idx++).text());
         price = TextUtils.parseLong(tds.get(idx++).text());

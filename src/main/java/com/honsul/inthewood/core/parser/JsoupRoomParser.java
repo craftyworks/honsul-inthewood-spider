@@ -37,13 +37,15 @@ public abstract class JsoupRoomParser implements Parser<Room> {
     List<Room> roomList = new ArrayList<>();
     
     try {
-     for(Document doc : documents()) {
-       if(logger.isDebugEnabled()) {
-         logger.debug("extracting document : {}", doc.location());
-       }
-       roomList.addAll(extract(doc));
-     }
-    } catch(IOException e) {
+      List<Document> docs = documents();
+      logger.debug("collected document count : {}", docs.size());
+      for (Document doc : docs) {
+        if (logger.isDebugEnabled()) {
+          logger.debug("extracting document : {}", doc.location());
+        }
+        roomList.addAll(extract(doc));
+      }
+    } catch (IOException e) {
       throw new RuntimeException(e);
     }
     

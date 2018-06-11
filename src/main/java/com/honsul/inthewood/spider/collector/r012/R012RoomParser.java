@@ -70,10 +70,10 @@ public class R012RoomParser extends JsoupRoomParser {
       Matcher m = p.matcher(priceTag);
       long price = 0, peakPrice = 0;
       if(m.find()) {
-        price = TextUtils.parseLong(m.group(1));
+        peakPrice = TextUtils.parseLong(m.group(1));
       }
       if(m.find()) {
-        peakPrice = TextUtils.parseLong(m.group(1));
+        price = TextUtils.parseLong(m.group(1));
       }
         
       for(String roomName : roomNames) {

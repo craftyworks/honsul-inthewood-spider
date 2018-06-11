@@ -38,6 +38,9 @@ public abstract class JsoupBookingParser implements Parser<Booking> {
      List<Document> docs = documents();
      logger.debug("collected document count : {}", docs.size());
      for(Document doc : docs) {
+       if (logger.isDebugEnabled()) {
+         logger.debug("extracting document : {}", doc.location());
+       }       
        bookingList.addAll(extract(doc));
      }
     } catch(IOException e) {

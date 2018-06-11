@@ -52,7 +52,7 @@ public class R010RoomParser extends JsoupRoomParser {
       
       String space = StringUtils.substringBefore(tds.get(tds.size()-4).text(), "(");
       String price = tds.last().text();
-      String numberOfPeople = TextUtils.stripCursor(tds.get(tds.size()-4).text()).replaceAll("명", "");
+      String numberOfPeople = TextUtils.stringInBrackets(tds.get(tds.size()-4).text()).replaceAll("명", "");
       priceMap.put(space, new String[] {price, numberOfPeople});
     }
     
@@ -70,7 +70,7 @@ public class R010RoomParser extends JsoupRoomParser {
       }
       String title = row.selectFirst("td").text();
       String roomNm = StringUtils.substringBefore(title,  "(");
-      String space = TextUtils.stripCursor(title);
+      String space = TextUtils.stringInBrackets(title);
       long peakPrice = TextUtils.parseLong(priceList.get(space)[0]);
       String numberOfPeople = priceList.get(space)[1];
       
