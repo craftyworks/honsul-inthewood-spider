@@ -68,7 +68,6 @@ public class R014RoomParser extends JsoupRoomParser {
       if("도담산봉".equals(roomNm)) {
         roomNm = "도담삼봉";
       }
-      System.out.println(roomNm);
       if(tds.size() > 1) {
         space = tds.get(1).text();
         numberOfPeople = tds.get(2).text().replaceAll("명",  "");

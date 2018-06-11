@@ -68,7 +68,6 @@ public class R001BookingParser implements Parser<Booking>{
   }
   
   private List<Booking> extract(WebDriver driver) {
-    System.out.println("EXTRACT");
     List<Booking> bookingList = new ArrayList<>();
     
     List<WebElement> bookingIcons = driver.findElements(By.cssSelector("#tableBody>tr>td>img.cp"));
