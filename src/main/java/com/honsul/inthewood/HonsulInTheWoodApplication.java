@@ -24,6 +24,7 @@ public class HonsulInTheWoodApplication {
   private final static Logger logger = LoggerFactory.getLogger(HonsulInTheWoodApplication.class);
   
 	public static void main(String[] args) {
+
 	  ConfigurableApplicationContext context = new SpringApplicationBuilder(HonsulInTheWoodApplication.class).properties( 
 	      "spring.config.location=classpath:config/application.yml,classpath:config/application-datasource.yml" 
 	  ) .run(args);

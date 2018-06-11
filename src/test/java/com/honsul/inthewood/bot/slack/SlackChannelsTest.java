@@ -1,4 +1,4 @@
-package com.honsul.inthewood.postman.slack;
+package com.honsul.inthewood.bot.slack;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.honsul.inthewood.HonsulInTheWoodApplication;
-import com.honsul.inthewood.bot.slack.SlackChannels;
 import com.palantir.roboslack.webhook.api.model.WebHookToken;
 
 @RunWith(SpringRunner.class)

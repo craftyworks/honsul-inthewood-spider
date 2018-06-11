@@ -2,6 +2,8 @@ package com.honsul.inthewood.bot.telegram.config;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -16,6 +18,8 @@ import org.telegram.telegrambots.generics.LongPollingBot;
 @Profile({"prod", "bot"})
 @Configuration
 public class PollingBotStarterConfiguration implements CommandLineRunner {
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  
   static {
     ApiContextInitializer.init();
   }
@@ -33,6 +37,7 @@ public class PollingBotStarterConfiguration implements CommandLineRunner {
   public void run(String... args) {
     try {
       for (LongPollingBot bot : longPollingBots) {
+        logger.info("registering Telegram bot : {}, token : {}", bot.getBotUsername(), bot.getBotToken());
         telegramBotsApi.registerBot(bot);
       }
     } catch (TelegramApiException e) {

@@ -1,7 +1,6 @@
 spring:
   profiles:
     active: local
-    include: 'datasource'
   aop:
     proxy-target-class: true
 
@@ -26,8 +25,9 @@ logging:
       sqltiming: DEBUG
       
 slack:
-    channels:
-      honsul-holiday: https://hooks.slack.com/services/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
+  channels:
+    honsul-holiday: https://hooks.slack.com/services/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
+
 ---
 # Local Development Configuration 
 spring:
@@ -40,8 +40,10 @@ webdriver:
   chrome:
     driver: E:/ProjectHome/tools/webdriver/chromedriver.exe
 
-debug: false
-    
+telegram:
+  bot-tokens:
+    HuegoBot: 520929795:AAHwDezSwwVXMF7NkdfNU2rcW8mQ1-0DC70
+        
 ---
 # Production Configuration 
 spring:
@@ -53,8 +55,10 @@ phantomjs:
 webdriver:
   chrome:
     driver: E:/ProjectHome/tools/webdriver/chromedriver.exe
-    
-debug: false
+
+telegram:
+  bot-tokens:
+    HuegoBot: 614358181:AAF2jLdgmlH1MDJ8L37v6GOGZg3TBmhFpGo
 
 logging:
   level:

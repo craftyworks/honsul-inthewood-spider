@@ -2,6 +2,7 @@ package com.honsul.inthewood.bot.telegram;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
@@ -16,6 +17,9 @@ import com.honsul.inthewood.bot.telegram.command.StopCommand;
 public class HuegoBot extends TelegramLongPollingCommandBot {
   private final Logger logger = LoggerFactory.getLogger(HuegoBot.class);
 
+  @Autowired
+  private TelegramBotTokens botTokens;
+  
   public HuegoBot() {
     super("HuegoBot");
     
@@ -46,8 +50,7 @@ public class HuegoBot extends TelegramLongPollingCommandBot {
 
   @Override
   public String getBotToken() {
-      //return "614358181:AAEmj8xNl9gcDfkAaXPihz7Yox2V6yKC2-g";
-    return "520929795:AAHwDezSwwVXMF7NkdfNU2rcW8mQ1-0DC70";
+    return botTokens.getBotToken(getBotUsername());
   }
 
 }
