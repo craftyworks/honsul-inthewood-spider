@@ -50,8 +50,7 @@ public class R008BookingParser extends JsoupBookingParser {
     for(Element row : doc.select("#contents form[action=/reservation.asp?location=002_02]")) {
       String[] attr = row.selectFirst("input[name=rsv_info]").attr("value").split("#@");
       String bookingDt = attr[2];
-      String roomType = attr[5];
-      String roomNm = row.selectFirst("button").text().replaceAll("\\*", "");
+      String roomNm = row.selectFirst("button").text().replaceAll("[\\*\\s]", "");
       if(StringUtils.contains(roomNm, "강당")) {
         continue;
       }

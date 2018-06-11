@@ -43,7 +43,7 @@ public class R005RoomParser extends JsoupRoomParser {
     long price = 0, peakPrice = 0;
     
     for(Element row : doc.select("div#snb>table>tbody>tr")) {
-      roomNm = row.selectFirst("th").text();
+      roomNm = row.selectFirst("th").text() + "집";
       Elements tds = row.select("td");
       if(!tds.isEmpty()) {
         int idx = 0; 

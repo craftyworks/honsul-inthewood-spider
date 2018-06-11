@@ -28,13 +28,20 @@ public class R003RoomParser extends AbstractRoomParser {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
-  private static final String HOUSE_FACILITY_URL = "https://www.kwangchi.or.kr:451/facilities.asp?location=002";
-  
-  private static final String RESORT_FACILITY_URL = "https://www.kwangchi.or.kr:451/facilities.asp?location=001";
+  private static final String[] HOUSE_URLS = {
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=002",
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=002_02",
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=002_03",
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=002_04",
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=002_05",
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=002_06",
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=002_07",
+      "https://www.kwangchi.or.kr:451/facilities.asp?location=001"
+  };
   
   @Override
   public List<Document> getPages() {
-    return WebDriverUtils.getDocuments(HOUSE_FACILITY_URL, RESORT_FACILITY_URL);
+    return WebDriverUtils.getDocuments(HOUSE_URLS);
   }
 
   @Override

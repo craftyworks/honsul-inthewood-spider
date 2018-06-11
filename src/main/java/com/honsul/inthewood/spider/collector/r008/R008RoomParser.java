@@ -45,10 +45,15 @@ public class R008RoomParser extends JsoupRoomParser {
       if(row.selectFirst("th") != null) {
         roomTypeNm = row.selectFirst("th").text();
       }
-      roomNm = tds.get(0).text();
+      roomNm = StringUtils.substringBefore(tds.get(0).text().replaceAll("\\s", ""), "(");
+      //까두리
+      if("까두리".equals(roomNm)) {
+        roomNm = "까투리";
+      }
+      
       if(tds.size() > 1) {
         space = StringUtils.substringBefore(tds.get(1).text(), "(");
-        numberOfPeople = TextUtils.stringInBrackets(tds.get(1).text()).replaceAll("인실",  "");
+        numberOfPeople = TextUtils.stringInBrackets(tds.get(1).text()).replaceAll("[^0-9]*",  "");
         peakPrice = TextUtils.parseLong(tds.get(3).text());
         price = TextUtils.parseLong(tds.get(4).text()); 
       }

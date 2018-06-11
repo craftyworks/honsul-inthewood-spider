@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -79,7 +80,7 @@ public class R001BookingParser implements Parser<Booking>{
         //"A", "3101", "길잡이별(114)", "4", "2018-05-17", "2018-05-18", 1, "1", "70000", "50000"
         String[] arguments = m.group(1).split(",\\s*");
         arguments = Arrays.stream(arguments).map(s -> s.replaceAll("\"", "")).toArray(String[]::new);
-        String roomNm = arguments[2];
+        String roomNm = StringUtils.substringBefore(StringUtils.substringBefore(arguments[2], "("), "-");
         String bookingDt = arguments[4];
         Booking booking = new Booking();
         booking.setResortId(SpiderContext.getResortId());

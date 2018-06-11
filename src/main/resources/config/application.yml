@@ -40,7 +40,7 @@ webdriver:
   chrome:
     driver: E:/ProjectHome/tools/webdriver/chromedriver.exe
 
-debug: true
+debug: false
     
 ---
 # Production Configuration 

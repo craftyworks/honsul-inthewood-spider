@@ -13,15 +13,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
 import com.honsul.inthewood.core.SpiderContext;
-import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.parser.WebDriverBookingParser;
 
 /**
  * 계명산자연휴양림 예약현황 파서.
  */
-@BookingParser(resortId="R006")
 //FIXME
+//@BookingParser(resortId="R006")
 public class R006BookingParser extends WebDriverBookingParser {
 
   private static final String CONNECT_URL = "https://gmf.cj100.net:453/main.asp";

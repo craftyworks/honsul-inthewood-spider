@@ -3,6 +3,9 @@ package com.honsul.inthewood.core.model;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,6 +37,14 @@ public class RoomTest {
   public void testHashCode() {
     assertThat(a.hashCode(), equalTo(b.hashCode()));
     assertThat(a.hashCode(), not(equalTo(c.hashCode())));
+  }
+  
+  @Test
+  public void testHashSet() {
+    Set<Room> roomSet = new HashSet<>();
+    roomSet.add(a);
+    assertThat(roomSet.contains(a), is(true));
+    assertThat(roomSet.contains(b), is(true));
   }
 
 }

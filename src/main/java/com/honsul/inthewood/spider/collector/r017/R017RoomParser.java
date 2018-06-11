@@ -48,7 +48,7 @@ public class R017RoomParser extends JsoupRoomParser {
       String space = tds.get(idx++).text();
       String numberOfPeople = TextUtils.stringInBrackets(space);
       space = StringUtils.substringBefore(space, "(");
-      numberOfPeople = StringUtils.substringBefore(numberOfPeople, ",").replaceAll("인용", "");
+      numberOfPeople = StringUtils.substringBefore(numberOfPeople, ",").replaceAll("[^0-9]*", "");
       
       long peakPrice = TextUtils.parseLong(tds.get(idx++).text());
       long price = TextUtils.parseLong(tds.get(idx++).text()); 

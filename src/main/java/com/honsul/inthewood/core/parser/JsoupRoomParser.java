@@ -29,38 +29,41 @@ public abstract class JsoupRoomParser implements Parser<Room> {
     return documentList;
   }
   
-  public abstract List<Room> extract(Document doc);
+  protected List<Room> extracts(List<Document> docs) {
+    List<Room> roomList = new ArrayList<>();
+    for (Document doc : docs) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("extracting document : {}", doc.location());
+      }
+      roomList.addAll(extract(doc));
+    }
+    return roomList;
+  }
 
   @Override
   public List<Room> parse() {
-    
-    List<Room> roomList = new ArrayList<>();
-    
     try {
       List<Document> docs = documents();
       logger.debug("collected document count : {}", docs.size());
-      for (Document doc : docs) {
-        if (logger.isDebugEnabled()) {
-          logger.debug("extracting document : {}", doc.location());
-        }
-        roomList.addAll(extract(doc));
+      
+      List<Room> roomList  = extracts(docs);
+
+      if(logger.isDebugEnabled()) {
+        logger.debug("parsed Room List count : {}", roomList.size());
+
+        if(roomList.size() > 0) {
+          logger.debug("parsed Room[0] : {}", roomList.get(0));
+          logger.debug("parsed Room[{}] : {}", roomList.size()-1, roomList.get(roomList.size()-1));
+        }      
       }
+      
+      return roomList;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    
-    if(logger.isDebugEnabled()) {
-      logger.debug("parsed Room List count : {}", roomList.size());
-      if(roomList.size() > 0) {
-        logger.debug("parsed Room[0] : {}", roomList.get(0));
-        logger.debug("parsed Room[{}] : {}", roomList.size()-1, roomList.get(roomList.size()-1));
-      }      
-    }
-    
-    return roomList;
   }
-  
-  
+
   protected abstract RoomType getRoomType(String roomNm);
-    
+
+  public abstract List<Room> extract(Document doc);
 }

@@ -7,11 +7,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.generics.LongPollingBot;
 
+@Profile({"prod", "bot"})
 @Configuration
 public class PollingBotStarterConfiguration implements CommandLineRunner {
   static {

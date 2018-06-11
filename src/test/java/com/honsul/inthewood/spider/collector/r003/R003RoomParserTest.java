@@ -1,7 +1,6 @@
 package com.honsul.inthewood.spider.collector.r003;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -18,6 +17,7 @@ public class R003RoomParserTest {
   
   @BeforeClass
   public static void setup() {
+    System.setProperty("phantomjs.binary.path", "E:/ProjectHome/tools/webdriver/phantomjs.exe");
     parser = new R003RoomParser();
   }
   

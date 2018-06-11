@@ -60,7 +60,7 @@ public class R015RoomParser extends JsoupRoomParser {
 
     for(Element row : doc.select("div.checkroom_tb > table.table2 > tbody > tr > th")) {
       String roomNm = StringUtils.substringBefore(row.text(), "-");
-      String numberOfPeople = StringUtils.substringAfter(row.text(), "-").replaceAll("인실",  "");
+      String numberOfPeople = StringUtils.substringAfter(row.text(), "-").replaceAll("[^0-9]*",  "");
       RoomType roomType = getRoomType(roomNm);
       
       String key = roomNm;

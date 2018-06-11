@@ -45,12 +45,17 @@ public abstract class RoomParserTest {
       assertEquals(RoomParserTest.RESORT_ID, room.getResortId());
       assertThat(room.getPeakPrice(),  greaterThanOrEqualTo(room.getPrice()));
       
-      //중복 체크
       for(Room r : roomList) {
+        //공백 체크
+        assertThat("객실명에 공백이 포함되어 있음.", r.getRoomNm().length(), is(r.getRoomNm().trim().length()));
+        
+        assertThat("인원수에 숫자외에 문자가 존재함", r.getNumberOfPeople().length(), is(r.getNumberOfPeople().replaceAll("[^0-9]*", "").length()));
+        
+        //중복 체크
         if(Collections.frequency(roomList, r) > 1) {
           roomList.stream().forEach(x -> logger.debug("room name : {}, count : {}", x.getRoomNm(), Collections.frequency(roomList, x)));
         }
-        assertThat("중복 Room", Collections.frequency(roomList, r), is(1));
+        assertThat("중복된 객실명 발견", Collections.frequency(roomList, r), is(1));
       }
   }
 }
