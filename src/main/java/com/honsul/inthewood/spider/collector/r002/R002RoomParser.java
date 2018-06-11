@@ -80,7 +80,7 @@ public class R002RoomParser extends JsoupRoomParser {
   }
   
   protected RoomType getRoomType(String roomNm) {
-    if(TextUtils.contains(roomNm, new String[] {"알프스빌리지", "숲속의작은집", "숲속의집"})) {
+    if(TextUtils.contains(roomNm, "알프스빌리지", "숲속의작은집", "숲속의집")) {
       return RoomType.HUT;
     }
     return RoomType.CONDO;

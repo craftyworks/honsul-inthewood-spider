@@ -8,7 +8,7 @@ public class R014BookingParserTest extends BookingParserTest {
 
   @BeforeClass
   public static void setup() {
-    BookingParserTest.setup("R014", new R014BookingParser());
+    BookingParserTest.setup("R014", new R014BookingParser(), new R014RoomParser());
   }
   
 }

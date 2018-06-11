@@ -50,7 +50,7 @@ public class R013RoomParser extends JsoupRoomParser {
       String roomNm = row.selectFirst("th").text();
       if(StringUtils.contains(roomNm, ",")) {
         //휴양관
-        String[] names = roomNm.replaceAll("\\[.*\\]", "").trim().split(",");
+        String[] names = roomNm.replaceAll("\\[.*\\]", "").replaceAll("\\s", "").split(",");
         roomNames.addAll(Arrays.asList(names));
       } else {
         roomNames.add(roomNm);

@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,11 +76,13 @@ public class TextUtils {
     return StringUtils.remove(str, remove);
   }
   
-  /**
-   * 문자열이 문자배열 요소에 포함되는지 검사.
-   */
-  public static boolean contains(String str, String[] strings) {
-    return ArrayUtils.contains(strings, str);
+  public static boolean contains(String str, String... strings) {
+    for(String seed : strings) {
+      if(StringUtils.contains(str, seed)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static URL toURL(String url) {

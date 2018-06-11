@@ -25,8 +25,23 @@ public class R011BookingParser extends JsoupBookingParser {
   private static final String CONNECT_URL = "http://gangssibong.gg.go.kr/reservation.asp?location=002";
   
   @Override
-  protected Document document() throws IOException {
-    return Jsoup.connect(CONNECT_URL).get();
+  protected List<Document> documents() throws IOException {
+    List<Document> documentList = new ArrayList<>();
+    
+    //this month
+    Document doc = Jsoup.connect(CONNECT_URL).get();
+    documentList.add(doc);
+    
+    //next month
+    Element elm = doc.selectFirst("form[name=form_next]");
+    if(elm != null) {
+      String year = elm.selectFirst("input[name=wh_year]").val();
+      String month = elm.selectFirst("input[name=wh_month]").val();
+    
+      documentList.add(Jsoup.connect(CONNECT_URL).data("wh_year", year).data("wh_month", month).post());
+    }
+    
+    return documentList;
   }
   
   public List<Booking> extract(Document doc) {

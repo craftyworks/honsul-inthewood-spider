@@ -75,6 +75,7 @@ public abstract class BookingParserTest {
         if(logger.isDebugEnabled() && !CollectionUtils.isEmpty(orphans)) {
           List<String> orphanNames = orphans.stream().map(b -> b.getRoomNm()).distinct().collect(Collectors.toList());
           logger.debug("unknown room names : {}", orphanNames);
+          logger.debug("room list : {}", roomNameSet);
         }
         assertThat("Unknown Room Name!", CollectionUtils.isEmpty(orphans), is(true));
       }

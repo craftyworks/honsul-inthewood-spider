@@ -10,7 +10,7 @@ public class R010BookingParserTest extends BookingParserTest {
   @BeforeClass
   public static void setup() {
     SSLTrustUtils.trustAllCertificate();
-    BookingParserTest.setup("R010", new R010BookingParser());
+    BookingParserTest.setup("R010", new R010BookingParser(), new R010RoomParser());
   }
   
 }

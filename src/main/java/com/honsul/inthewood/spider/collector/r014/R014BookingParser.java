@@ -61,12 +61,18 @@ public class R014BookingParser extends JsoupBookingParser {
   }
   
   public List<Booking> extract(Document doc) {
+    //백두대간 예외처리 (방이름 중복)
+    boolean isBaekdo = "5".equals(doc.selectFirst("form.inquiry > select > option[selected]").val());
+    
     List<Booking> bookingList = new ArrayList<>();
     for(Element row : doc.select("form[action^=reservation.asp]")) {
       String[] attr = row.selectFirst("input[name=rsv_info]").attr("value").split("#@");
       String bookingDt = attr[2];
-      String roomType = attr[5];
-      String roomNm = row.selectFirst("button").text().replaceAll("\\*", "");
+      String roomNm = (isBaekdo ? "(백)" : "") + row.selectFirst("button").text().replaceAll("[\\*\\s]", "");
+      //주목
+      if("주목".equals(roomNm)) {
+        roomNm = "주목나무";
+      }
       Booking booking = new Booking();
       booking.setResortId(SpiderContext.getResortId());
       booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));

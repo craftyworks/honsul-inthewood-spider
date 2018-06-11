@@ -34,7 +34,6 @@ public class R009RoomParser extends JsoupRoomParser {
     List<Room> roomList = new ArrayList<>();
 
     String roomNm = "";
-    String roomTypeNm = "";
     String numberOfPeople = "";
     long price = 0, peakPrice = 0;
 
@@ -44,8 +43,7 @@ public class R009RoomParser extends JsoupRoomParser {
       if("전시설".equals(roomNm)) {
         continue;
       }
-      roomTypeNm = StringUtils.contains(roomNm, "숲속휴양관") ? "휴양관" : "숲속의집";
-      String roomNo = StringUtils.contains(roomNm, "숲속휴양관") ? StringUtils.substringBefore(roomNm, "(") : StringUtils.substringAfter(roomNm, ")");
+      String roomNo = TextUtils.contains(roomNm, "숲속휴양관", "본관", "숙박동") ? StringUtils.substringBefore(roomNm, "(") : StringUtils.substringAfter(roomNm, ")");
       numberOfPeople = TextUtils.stringInBrackets(roomNm).replaceAll("인",  "");
       
       Elements priceRow = tds.get(3).select("table > tbody > tr > td");
@@ -54,8 +52,8 @@ public class R009RoomParser extends JsoupRoomParser {
 
       Room room = new Room();
       room.setResortId(SpiderContext.getResortId());
-      room.setRoomNm(roomNo);
-      room.setRoomType(getRoomType(roomTypeNm));
+      room.setRoomNm(roomNo.trim());
+      room.setRoomType(getRoomType(roomNm));
       room.setNumberOfPeople(numberOfPeople);
       room.setPeakPrice(peakPrice);
       room.setPrice(price);
@@ -70,14 +68,14 @@ public class R009RoomParser extends JsoupRoomParser {
 
     roomList.addAll(extractInternal(doc, 1));
     roomList.addAll(extractInternal(doc, 3));
-    roomList.addAll(extractInternal(doc, 3));
+    roomList.addAll(extractInternal(doc, 4));
     
     return roomList;
   }
   
   @Override
-  public RoomType getRoomType(String roomTypeNm) {
-    return StringUtils.contains(roomTypeNm, "숲속의집")? RoomType.HUT : RoomType.CONDO;
+  public RoomType getRoomType(String roomNm) {
+    return TextUtils.contains(roomNm, "숲속휴양관", "본관", "숙박동") ? RoomType.CONDO : RoomType.HUT;
   }
 
 }

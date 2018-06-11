@@ -56,11 +56,19 @@ public class R014RoomParser extends JsoupRoomParser {
     long price = 0, peakPrice = 0;
 
     String roomTypeNm = StringUtils.substringBefore(doc.select("table.table_st2 > caption").text(), "(");
-    System.out.println(roomTypeNm);
     for(Element row : doc.select("table.table_st2 > tbody > tr")) {
       Elements tds = row.select("td");
-      String roomNm = tds.first().text();
+      String roomNm = tds.first().text().replaceAll("\\s", "");
       
+      //백두대간문화휴양관 예외처리
+      if(StringUtils.contains(roomTypeNm, "백두대간문화휴양관")) {
+        roomNm = "(백)" + roomNm;
+      }
+      //도담산봉
+      if("도담산봉".equals(roomNm)) {
+        roomNm = "도담삼봉";
+      }
+      System.out.println(roomNm);
       if(tds.size() > 1) {
         space = tds.get(1).text();
         numberOfPeople = tds.get(2).text().replaceAll("명",  "");

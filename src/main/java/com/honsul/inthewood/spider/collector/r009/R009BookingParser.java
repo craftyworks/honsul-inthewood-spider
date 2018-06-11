@@ -17,6 +17,7 @@ import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.parser.JsoupBookingParser;
+import com.honsul.inthewood.core.util.TextUtils;
 
 /**
  * 구재봉자연휴양림 예약현황 파서.
@@ -24,17 +25,22 @@ import com.honsul.inthewood.core.parser.JsoupBookingParser;
 @BookingParser(resortId="R009")
 public class R009BookingParser extends JsoupBookingParser {
 
-  private static final String CONNECT_URL = "http://hadongforest.co.kr/?r=MAIN&m=hyr&kind=108";
-  
+  private static final String[] CONNECT_URLS = {
+      "http://hadongforest.co.kr/?r=MAIN&m=hyr&kind=108", 
+      "http://hadongforest.co.kr/?r=MAIN&m=hyr&kind=110"
+  };
+    
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();
     
-    documentList.add(Jsoup.connect(CONNECT_URL).get());
-    
-    LocalDate next = LocalDate.now().plusMonths(1);
-    String url = CONNECT_URL + "&yy=" + next.getYear() + "&mm=" + next.getMonthValue();
-    documentList.add(Jsoup.connect(url).get());
+    for(String url : CONNECT_URLS) {
+      documentList.add(Jsoup.connect(url).get());
+      
+      LocalDate next = LocalDate.now().plusMonths(1);
+      String nextUrl = url + "&yy=" + next.getYear() + "&mm=" + next.getMonthValue();
+      documentList.add(Jsoup.connect(nextUrl).get());
+    }
     
     return documentList;
   }
@@ -51,8 +57,7 @@ public class R009BookingParser extends JsoupBookingParser {
       if(StringUtils.contains(roomNm, "세미나실")) {
         continue;
       }      
-      String roomTypeNm = StringUtils.contains(roomNm, "숲속휴양관") ? "휴양관" : "숲속의집";
-      String roomNo = StringUtils.contains(roomNm, "숲속휴양관") ? StringUtils.substringBefore(roomNm, "(") : StringUtils.substringAfter(roomNm, ")");
+      String roomNo = TextUtils.contains(roomNm, "숲속휴양관", "본관", "숙박동") ? StringUtils.substringBefore(roomNm, "(") : StringUtils.substringAfter(roomNm, ")");
 
       String attr = row.attr("href");
       //javascript:reserve('56', '1', '1', '2018-05-20')
