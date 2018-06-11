@@ -25,7 +25,7 @@ public class R016RoomParser extends JsoupRoomParser {
   
   private static final String HUT_URL = "http://chilgap.cheongyang.go.kr/facilities.asp?location=";
   private static final String[] LOCATIONS = {
-      "001", "001_02", "001_03", "001_04", "001_05", "001_06", "001_07", "001_08", "001_09", "001_10", "001_11", "002_2", "002_3", "002_4", "002_5"};
+      "001", "001_02", "001_03", "001_04", "001_05", "001_06", "001_07", "001_08", "001_09", "001_10", "001_11", "002_02", "002_03", "002_04", "002_05"};
   
   @Override
   protected List<Document> documents() throws IOException {
@@ -55,16 +55,27 @@ public class R016RoomParser extends JsoupRoomParser {
         peakPrice = TextUtils.parseLong(tds.get(2).text());
         price = TextUtils.parseLong(tds.get(3).text()); 
       }
+      
+      List<String> roomNames = new ArrayList<>();
+      //가족의집 A,B 예외처리
+      if("가족의집".equals(roomNm)) {
+        roomNames.add(roomNm + "A");
+        roomNames.add(roomNm + "B");
+      } else {
+        roomNames.add(roomNm);
+      }
 
-      Room room = new Room();
-      room.setResortId(SpiderContext.getResortId());
-      room.setRoomNm(roomNm);
-      room.setRoomType(getRoomType(roomTypeNm));
-      room.setSpace(space);
-      room.setNumberOfPeople(numberOfPeople);
-      room.setPeakPrice(peakPrice);
-      room.setPrice(price);
-      roomList.add(room);
+      for(String name : roomNames) {
+        Room room = new Room();
+        room.setResortId(SpiderContext.getResortId());
+        room.setRoomNm(name);
+        room.setRoomType(getRoomType(roomTypeNm));
+        room.setSpace(space);
+        room.setNumberOfPeople(numberOfPeople);
+        room.setPeakPrice(peakPrice);
+        room.setPrice(price);
+        roomList.add(room);
+      }
     }
     return roomList;
   }

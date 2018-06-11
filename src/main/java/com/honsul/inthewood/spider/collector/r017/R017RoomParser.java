@@ -55,7 +55,7 @@ public class R017RoomParser extends JsoupRoomParser {
 
       List<String> roomNms = new ArrayList<>();
       if(roomType.equals(RoomType.CONDO)) {
-        int start = ("6".equals(space)) ? 101 : 201;
+        int start = ("6".equals(numberOfPeople)) ? 101 : 201;
         for(int i=start; i<start+8; i++) {
           roomNms.add("휴양관 " + i + "호");
         }
