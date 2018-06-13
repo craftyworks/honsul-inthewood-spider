@@ -7,11 +7,10 @@ import org.springframework.web.socket.WebSocketSession;
 
 import me.ramswaroop.jbot.core.common.Controller;
 import me.ramswaroop.jbot.core.common.EventType;
-import me.ramswaroop.jbot.core.common.JBot;
 import me.ramswaroop.jbot.core.slack.Bot;
 import me.ramswaroop.jbot.core.slack.models.Event;
 
-@JBot
+//@JBot
 public class HugoSlackBot extends Bot {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
