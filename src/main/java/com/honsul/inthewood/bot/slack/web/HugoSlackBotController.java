@@ -16,7 +16,7 @@ public class HugoSlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
   @PostMapping("action")
-  public Map action(@RequestBody Map request) {
+  public Map actionCommand(@RequestBody Map request) {
     logger.info("received incoming message : {}", request);
     return request;
   }
@@ -26,4 +26,10 @@ public class HugoSlackBotController {
     logger.info("received incoming menu : {}", request);
     return request;
   }  
+  
+  @PostMapping("slash")
+  public Map slashCommand(@RequestBody Map request) {
+    logger.info("received slash command : {}", request);
+    return request;
+  }    
 }
