@@ -21,7 +21,8 @@ public class HugoSlackBotController {
   }
   
   @PostMapping("actionMenu")
-  public void menuAction(@RequestBody Map request) {
+  public Map menuAction(@RequestBody Map request) {
     logger.debug("received incoming menu : {}", request);
+    return request;
   }  
 }
