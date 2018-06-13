@@ -18,7 +18,7 @@ import com.honsul.inthewood.core.util.SSLTrustUtils;
 @EnableScheduling
 @EnableAsync
 @EnablePollingBots
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"me.ramswaroop.jbot", "com.honsul.inthewood"})
 @EnableTransactionManagement
 public class HonsulInTheWoodApplication {
   private final static Logger logger = LoggerFactory.getLogger(HonsulInTheWoodApplication.class);

@@ -1,4 +1,4 @@
-package com.honsul.inthewood.postman;
+package com.honsul.inthewood.spider;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +42,7 @@ public class PostmanServiceTest {
     Map<String, String> booking = new HashMap<>();
     
     booking.put("resortId", "R001");
-    booking.put("resortNm", "좌구산자연휴양림");
+    booking.put("resortNm", "테스트자연휴양림");
     booking.put("address",  "충청북도 충주시 노은면 우성1길 191");
     booking.put("homepage", "http://honsul.kr");
     booking.put("bookingDt", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 토요일" );

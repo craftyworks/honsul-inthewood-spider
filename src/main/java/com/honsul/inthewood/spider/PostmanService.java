@@ -1,4 +1,4 @@
-package com.honsul.inthewood.postman;
+package com.honsul.inthewood.spider;
 
 import java.util.List;
 import java.util.Map;

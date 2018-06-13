@@ -1,4 +1,4 @@
-package com.honsul.inthewood.spider.collector;
+package com.honsul.inthewood.spider;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.util.CommandUtils;
-import com.honsul.inthewood.postman.PostmanService;
+import com.honsul.inthewood.spider.collector.SpiderCollector;
 
 @Component
 @Profile("prod")
@@ -29,7 +29,7 @@ public class SpiderScheduller {
   Environment env;
   
   /**
-   * 10분 간격으로 전체 휴양림의 예약현황 집계
+   * 10분 간격으로 전체 휴양림의 예약현황 집계 후 알림
    */
   @Scheduled(cron = "0 */10 * * * *" )
   private void collectAllBooking() {
