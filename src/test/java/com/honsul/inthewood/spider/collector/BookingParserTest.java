@@ -3,6 +3,7 @@ package com.honsul.inthewood.spider.collector;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,7 +66,20 @@ public abstract class BookingParserTest {
       List<Booking> bookingList = PARSER.parse();
       assertTrue(!CollectionUtils.isEmpty(bookingList));
       assertEquals(BookingParserTest.RESORT_ID, bookingList.get(0).getResortId());
+
+      for(Booking b : bookingList) {
+        //중복 체크
+        if(Collections.frequency(bookingList, b) > 1) {
+          bookingList.stream().forEach(x -> {
+            if(Collections.frequency(bookingList, x) > 1) {
+              logger.debug("booking : {}, count : {}", x, Collections.frequency(bookingList, x));
+            }
+          });
+        }
+        assertThat("중복된 예약현황 발견", Collections.frequency(bookingList, b), is(1));
+      }
       
+      // 예약현황의 숙소정보가 수집되는지 확인
       if(ROOM_PARSER != null) {
         List<Room> roomList = ROOM_PARSER.parse();
         final Set<String> roomNameSet = roomList.stream().map(r -> r.getRoomNm()).collect(Collectors.toSet());
@@ -77,7 +91,7 @@ public abstract class BookingParserTest {
           logger.debug("unknown room names : {}", orphanNames);
           logger.debug("room list : {}", roomNameSet);
         }
-        assertThat("Unknown Room Name!", CollectionUtils.isEmpty(orphans), is(true));
+        assertThat("알려지지 않은 숙소정보 발견", CollectionUtils.isEmpty(orphans), is(true));
       }
   }
 }

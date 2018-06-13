@@ -31,12 +31,14 @@ public class R007BookingParser extends JsoupBookingParser {
     List<Document> documentList = new ArrayList<>();
     
     //this month
-    documentList.add(Jsoup.connect(CONNECT_URL).get());
+    LocalDate now = LocalDate.now();
+    String url1 = CONNECT_URL + "?year=" + now.getYear() + "&month=" + now.getMonthValue();
+    documentList.add(Jsoup.connect(url1).get());
 
     //next month
-    LocalDate next = LocalDate.now().plusMonths(1);
-    String url = CONNECT_URL + "?year=" + next.getYear() + "&month=" + next.getMonthValue();
-    documentList.add(Jsoup.connect(url).get());
+    LocalDate next = now.plusMonths(1);
+    String url2 = CONNECT_URL + "?year=" + next.getYear() + "&month=" + next.getMonthValue();
+    documentList.add(Jsoup.connect(url2).get());
     
     return documentList;
   }

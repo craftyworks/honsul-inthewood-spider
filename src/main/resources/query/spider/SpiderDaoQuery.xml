@@ -11,6 +11,7 @@
            , ADDRESS
            , PHONE
         FROM RESORT
+       WHERE USE_YN = 'Y'
     </select>
                
     <!-- 방금전 예약현황 삭제 -->
