@@ -16,13 +16,14 @@ public class HugoSlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
   @PostMapping("action")
-  public void action(@RequestBody Map request) {
-    logger.debug("received incoming message : {}", request);
+  public Map action(@RequestBody Map request) {
+    logger.info("received incoming message : {}", request);
+    return request;
   }
   
   @PostMapping("actionMenu")
   public Map menuAction(@RequestBody Map request) {
-    logger.debug("received incoming menu : {}", request);
+    logger.info("received incoming menu : {}", request);
     return request;
   }  
 }
