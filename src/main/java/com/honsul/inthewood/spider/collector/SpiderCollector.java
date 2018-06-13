@@ -43,7 +43,7 @@ public class SpiderCollector {
    */
   @Transactional
   public void collectBooking(Resort resort) {
-    logger.info("start collect Booking [{}]", resort);
+    logger.info("start collect Booking [{}, {}]", resort.getResortId(), resort.getResortNm());
     SpiderContext.setResort(resort);
     
     // 이력 생성
@@ -65,7 +65,7 @@ public class SpiderCollector {
    */
   @Transactional
   public void collectRoom(Resort resort) {
-    logger.info("start collect Room [{}]", resort);
+    logger.info("start collect Room [{}, {}]", resort.getResortId(), resort.getResortNm());
     SpiderContext.setResort(resort);
     dao.deleteRoom(resort);
     List<Room> items = lookupRoomParser(resort.getResortId()).parse();
