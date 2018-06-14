@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,13 +20,13 @@ public class HugoSlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  public void actionCommand(Map message, HttpServletRequest request) {
+  public void actionCommand(@RequestBody Map<String, Object> payload, HttpServletRequest request) {
     Enumeration<String> enums = request.getParameterNames();
     while(enums.hasMoreElements()) {
       String key = enums.nextElement();
       logger.info("received params : {} : {}", key, request.getParameter(key));
     }
-    logger.info("received incoming message : {}", message);
+    logger.info("received incoming message : {}", payload);
   }
   
   @PostMapping(value = "actionMenu", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -35,8 +36,14 @@ public class HugoSlackBotController {
   }  
   
   @PostMapping(value = "slash", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  public Map slashCommand(Map request) {
+  public Map slashCommand(Map payload, HttpServletRequest request) {
+    Enumeration<String> enums = request.getParameterNames();
+    while(enums.hasMoreElements()) {
+      String key = enums.nextElement();
+      logger.info("received params : {} : {}", key, request.getParameter(key));
+    }
+    logger.info("received incoming message : {}", payload);
     logger.info("received slash command : {}", request);
-    return request;
+    return payload;
   }    
 }
