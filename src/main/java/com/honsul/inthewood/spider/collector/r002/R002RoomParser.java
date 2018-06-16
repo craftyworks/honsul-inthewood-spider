@@ -56,6 +56,10 @@ public class R002RoomParser extends JsoupRoomParser {
       if(tds.size() > 3) {
         space = tds.get(1).text();
         numberOfPeople = tds.get(2).text().replaceAll("명",  "");
+        //6~8명 처리
+        if(StringUtils.contains(numberOfPeople, "~")) {
+          numberOfPeople = StringUtils.substringAfter(numberOfPeople, "~");
+        }
         peakPrice = TextUtils.findMoneyLong(tds.get(3).text());
         if(tds.size() > 5) {
           String sPrice = StringUtils.substringAfter(tds.get(5).text(), "(30%)");
