@@ -23,7 +23,9 @@ logging:
       resultset: OFF
       connection: OFF
       sqltiming: DEBUG
-      
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%logger{40}.%method){cyan} %clr(:){faint} %m%n"
+    
 slack:
   channels:
     honsul-holiday: https://hooks.slack.com/services/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
