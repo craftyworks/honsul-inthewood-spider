@@ -15,9 +15,9 @@
 
 STS.exe 가 존재하는 폴더의 STS.ini 파일을 열어 맨 아래에 아래 문자열을 삽입한다. 삽입 시 설치 경로는 적절하게 수정한다.
 
-<code>
+```
 -javaagent:E:\ProjectHome\tools\sts-bundle\sts-3.9.4.RELEASE\lombok.jar
-</code>
+```
 
 STS.exe 실행 후 Help > About Spring Tool Suite 으로 실행되는 About 창에 아래와 같은 문구가 포함되어 있는지 확인한다.
 
@@ -48,6 +48,33 @@ STS.exe 실행 후 Window > Preferences 메뉴로 이동하여 아래와 같이 
   - Perform the selected action on save : 체크
   - Organize imports : 체크
   
+### Project Import
+
+STR 실행 후 gitlab 으로부터 프로젝트를 내려 받는다.
+
+- File > Import
+  1. Git > Projects from Git : 선택 -> Next
+  2. Clone URI : 선택 -> Next
+  3. URI : https://gitlab.com/craftyworks/honsul-inthewood-spider.git
+  4. User : <너의 gitlab 계정 이메일>
+  5. Password : <너의 gitlab 계정 패스워드>
+  6. Store in Secure Store : 체크 -> Next
+
+```
+이 후로는 선택지가 거의 단방향이다. 
+Next 연타 후 Finish 까지 진행해도 무방하다.
+```
+   
+- Local Destination 창이 나오면 Directory 를 너의 STS workspace 경로로 변경한다.
+  - 예) E:\temp\ProjectHome\workspace\honsul-inthewood-spider
+  
+- Import existing Eclipse Projects 선택
+  - Finish
+
+
+이제 Package Explorer 에 *honsul-inthewood-spider* 프로젝트가 보일 것이고, 빌드 작업이 진행된다. 
+
+빌드 작업이 성공하면 붉은색의 경고등이 사라진다.
 
 ## 도메인 용어
 
