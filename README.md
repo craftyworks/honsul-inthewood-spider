@@ -75,17 +75,20 @@ Next 연타 후 Finish 까지 진행해도 무방하다.
 
 빌드 작업이 성공하면 붉은색의 경고등이 사라진다.
 
-## Git-Flow
+## GitHub Flow
 
-너는 아래와 같이 작업하여 수정된 내용을 서버에 반영해야 한다.
+너는 아래와 같은 GitHub Flow 를 준수하여 너가 작업한 내용을 서버에 반영해야 한다.
 
-### Pull
+- GitHub Flow 에 대한 친절한 설명은 다음 [문서](https://guides.github.com/introduction/flow/) 를 참고해라.
+- 만약 너가 Git 이 생소하다면 먼저 이 [문서](https://backlog.com/git-tutorial/kr/) 나 요 [문서](https://git-scm.com/book/ko/v2) 부터 읽어보길 바란다.
+
+### 1. Pull
 
 항상 원격지의 **master** branch 에서 최신 변경내용을 받아 동기화 해라.
 
 너의 local branch 를 master 로 유지하고 프로젝트 우클릭 > Team > Pull 명령으로 동기화한다.
 
-### Branch
+### 2. Branch
 
 너는 작업 전에 항상 local branch 를 생성해야 한다.
 
@@ -96,6 +99,42 @@ Branch 명은 너가 지금 작업하려하는 휴양림 ID 로 생성하면 된
 ```
 예) branch name : R018
 ```
+
+### 3. Commit
+
+니가 생성한 local branch 에서의 작업 중인 내용은 수시로 너의 local Repository 에 commit 해라.
+
+너의 Commit 내역은 원격지 서버에는 반영되지 않을 것이다. 그러므로 마음껏 commit 하도록 해라.
+
+### 4. Push 
+
+너의 local branch 작업 내용을 원격지 서버에 등록해라. 우리의 **master** branch 를 오염시킬 염려는 없으므로 부담 갖지 말고 push 해도 된다.
+
+프로젝트 우클릭 > Team > Push Branch'RXXX'... 명령으로 너의 local branch 를 서버에 반영시켜라.
+
+성공한다면 우리의 gitlab 프로젝트 페이지에서 니가 올린 branch 를 확인 할 수 있을 것이다.
+
+### 5. Merge Request
+
+이제 너의 branch 의 작업 내용을 우리의 **master** 에 반영시킬 시간이 되었다.
+
+이 작업은 gitlab 프로젝트 페이지에서 수행해야 한다.
+
+gitlab 프로젝트 > Repository > 브랜치 메뉴로 이동한다.
+
+니가 올린 branch 우측에 **Merge Request** 버튼을 클릭한다.
+
+너의 작업 내용을 성심성의껏 작성한 후 하단의 **Submit Request** 버튼을 클릭한다.
+
+이제 프로젝트 관리자가 너의 요청을 확인하고 문제가 없다면 **master** branch 에 반영시켜 줄 것이다.
+
+> 관리자는 니가 올린 Merge Request 를 승인해 줌과 동시에 니가 올린 branch 를 Remote 저장소에서 삭제 할 것이다. 너의 local branch 는 니가 알아서 삭제하거나 간직하면 된다.
+
+### 6. 다시 Pull
+
+Merge Request 가 성공되었다면 니가 이번에 작업한 휴양림 branch 작업은 완료된 샘이다. 
+
+다시 master branch 로 이동하여 Remote 로부터 동기화를 받고 새로운 휴양림을 선택하여 다시 local branch 생성 후 작업을 시작하면 된다.
 
 ## 도메인 용어
 
