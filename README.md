@@ -71,10 +71,31 @@ Next 연타 후 Finish 까지 진행해도 무방하다.
 - Import existing Eclipse Projects 선택
   - Finish
 
-
 이제 Package Explorer 에 *honsul-inthewood-spider* 프로젝트가 보일 것이고, 빌드 작업이 진행된다. 
 
 빌드 작업이 성공하면 붉은색의 경고등이 사라진다.
+
+## Git-Flow
+
+너는 아래와 같이 작업하여 수정된 내용을 서버에 반영해야 한다.
+
+### Pull
+
+항상 원격지의 **master** branch 에서 최신 변경내용을 받아 동기화 해라.
+
+너의 local branch 를 master 로 유지하고 프로젝트 우클릭 > Team > Pull 명령으로 동기화한다.
+
+### Branch
+
+너는 작업 전에 항상 local branch 를 생성해야 한다.
+
+프로젝트 우클릭 > Team > Switch To > New Branch 명령으로 새로운 Branch 를 생성한다.
+
+Branch 명은 너가 지금 작업하려하는 휴양림 ID 로 생성하면 된다.
+
+```
+예) branch name : R018
+```
 
 ## 도메인 용어
 
