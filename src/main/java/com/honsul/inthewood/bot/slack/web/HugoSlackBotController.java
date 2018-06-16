@@ -1,6 +1,5 @@
 package com.honsul.inthewood.bot.slack.web;
 
-import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,19 +22,15 @@ public class HugoSlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  public void actionCommand(@RequestBody Map<String, Object> payload, HttpServletRequest request) {
-    Enumeration<String> enums = request.getParameterNames();
-    while(enums.hasMoreElements()) {
-      String key = enums.nextElement();
-      logger.info("received params : {} : {}", key, request.getParameter(key));
-    }
-    logger.info("received incoming message : {}", payload);
+  public String actionCommand(HttpServletRequest request) {
+    logger.info("received action : {}", request.getParameter("payload"));
+    return "action ok";
   }
   
   @PostMapping(value = "actionMenu", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  public Map menuAction(Map request) {
-    logger.info("received incoming menu : {}", request);
-    return request;
+  public String menuAction(HttpServletRequest request) {
+    logger.info("received incoming menu : {}", request.getParameter("payload"));
+    return "menuAction ok";
   }  
   
   @PostMapping(value = "slash", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
