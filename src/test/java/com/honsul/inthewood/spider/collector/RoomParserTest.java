@@ -49,10 +49,10 @@ public abstract class RoomParserTest {
         //공백 체크
         assertThat("객실명에 공백이 포함되어 있음.", r.getRoomNm().length(), is(r.getRoomNm().trim().length()));
         
-        if(r.getNumberOfPeople().length() != r.getNumberOfPeople().replaceAll("[^0-9]*", "").length()) {
+        if(r.getNumberOfPeople().length() != r.getNumberOfPeople().replaceAll("[^0-9~\\-]*", "").length()) {
           logger.debug("Room : {}", r);
         }
-        assertThat("인원수에 숫자외에 문자가 존재함", r.getNumberOfPeople().length(), is(r.getNumberOfPeople().replaceAll("[^0-9]*", "").length()));
+        assertThat("인원수에 숫자외에 문자가 존재함", r.getNumberOfPeople().length(), is(r.getNumberOfPeople().replaceAll("[^0-9~\\-]*", "").length()));
         
         //중복 체크
         if(Collections.frequency(roomList, r) > 1) {
