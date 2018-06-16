@@ -23,6 +23,10 @@ logging:
       resultset: OFF
       connection: OFF
       sqltiming: DEBUG
+    org:
+      apache:
+        coyote:
+          http11: DEBUG
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%logger{40}.%method){cyan} %clr(:){faint} %m%n"
     
