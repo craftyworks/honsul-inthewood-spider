@@ -73,7 +73,7 @@ public class R004RoomParser extends JsoupRoomParser {
         }
       }
       space = tds.get(1).text();
-      people = tds.get(2).text().replaceAll("명", "");
+      people = tds.get(2).text().replaceAll("[\\s명]", "");
       peakPrice = TextUtils.parseLong(tds.get(3).text());
       price = TextUtils.parseLong(tds.get(4).text());
     } else {
@@ -87,7 +87,7 @@ public class R004RoomParser extends JsoupRoomParser {
         peakPrice = TextUtils.parseLong(m.group(1));
         price = TextUtils.parseLong(m.group(2));
       }
-      people = dds.get(3).text().replaceAll("명", "");
+      people = dds.get(3).text().replaceAll("[\\s명]", "");
     }    
     
     for(String name : roomNames) {
