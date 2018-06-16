@@ -45,6 +45,7 @@ STS.exe 실행 후 Window > Preferences 메뉴로 이동하여 아래와 같이 
 - Java > Code Style > Organize Imports
   - Number of static imports needed for .* : 99 에서 0 으로 변경
 - Java > Editor > Save Actions
+  - Perform the selected action on save : 체크
   - Organize imports : 체크
   
 
