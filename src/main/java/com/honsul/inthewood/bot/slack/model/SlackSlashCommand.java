@@ -7,7 +7,9 @@ import lombok.Data;
 @Data
 public class SlackSlashCommand {
   private String token;
+  
   private String command;
+  
   private String text;
 
   @JsonProperty("team_id")
