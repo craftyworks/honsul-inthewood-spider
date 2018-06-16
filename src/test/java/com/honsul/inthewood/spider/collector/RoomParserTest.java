@@ -43,14 +43,23 @@ public abstract class RoomParserTest {
       
       Room room = roomList.get(0);
       assertEquals(RoomParserTest.RESORT_ID, room.getResortId());
-      assertThat(room.getPeakPrice(),  greaterThanOrEqualTo(room.getPrice()));
+      
       
       for(Room r : roomList) {
-        //공백 체크
+        // 객실 이용료 체크
+        if(r.getPeakPrice() == 0 || r.getPrice() == 0 || r.getPrice() > r.getPeakPrice()) {
+          logger.debug("요금 오류 : {}", r);
+        }
+        assertThat("성수기 요금이 비수기보다 싸면 안됨", r.getPeakPrice(),  greaterThanOrEqualTo(r.getPrice()));
+        assertThat("성수기 숙박요금은 0원보다 커야 함", r.getPeakPrice(), greaterThan(0L));
+        assertThat("숙박요금은 0원보다 커야 함", r.getPrice(), greaterThan(0L));
+        
+        // 객실명 공백 체크
         assertThat("객실명에 공백이 포함되어 있음.", r.getRoomNm().length(), is(r.getRoomNm().trim().length()));
         
+        // 인워수 체크
         if(r.getNumberOfPeople().length() != r.getNumberOfPeople().replaceAll("[^0-9~\\-]*", "").length()) {
-          logger.debug("Room : {}", r);
+          logger.debug("인원수 오류 : {}", r);
         }
         assertThat("인원수에 숫자외에 문자가 존재함", r.getNumberOfPeople().length(), is(r.getNumberOfPeople().replaceAll("[^0-9~\\-]*", "").length()));
         
