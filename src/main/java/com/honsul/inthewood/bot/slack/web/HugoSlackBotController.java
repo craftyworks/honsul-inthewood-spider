@@ -22,9 +22,9 @@ public class HugoSlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  public String actionCommand(HttpServletRequest request) {
-    logger.info("received action : {}", request.getParameter("payload"));
-    return "action ok";
+  public String actionCommand(@ModelAttribute("payload") Map<String, Object> request) {
+    logger.info("received action : {}", request);
+    return "ok";
   }
   
   @PostMapping(value = "actionMenu", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
