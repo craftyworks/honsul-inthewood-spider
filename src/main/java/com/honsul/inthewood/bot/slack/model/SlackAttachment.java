@@ -20,6 +20,10 @@ public class SlackAttachment {
   private String fallback;
   private String color;
   private String pretext;
+  @JsonProperty("callback_id")
+  private String callbackId;
+  @JsonProperty("attachment_type")
+  private String attachmentType;
   @JsonProperty("author_name")
   private String authorName;
   @JsonProperty("author_link")
