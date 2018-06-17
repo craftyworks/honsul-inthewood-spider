@@ -2,6 +2,7 @@ package com.honsul.inthewood.bot.slack.message;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 
 import com.honsul.inthewood.bot.slack.model.SlackAttachment;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
@@ -16,6 +17,7 @@ public class UnknownSlashCommandResponseMessage {
     SlackMessageBuilder builder = SlackMessage.builder();
     builder.username("SnapBot")
       .text(text)
+      .responseType("in_channel")
       .attachments(
           new SlackAttachment[] {
               SlackAttachment.builder()
@@ -23,6 +25,7 @@ public class UnknownSlashCommandResponseMessage {
                 .color("warning")
                 .ts("" + LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond())
                 .footerIcon("https://platform.slack-edge.com/img/default_application_icon.png")
+                .markdownIn(Arrays.asList(new String[] {"text"}))
                 .build()
           }
       );

@@ -25,6 +25,12 @@ public class SlackActionCommand {
   @JsonProperty("message_ts")
   private String messageTs;  
   
+  @JsonProperty("attachment_id")
+  private String attachmentId;  
+  
+  @JsonProperty("is_app_unfurl")
+  private String isAppUnfurl;  
+  
   private SlackTeam team;
 
   private SlackChannel channel;
@@ -32,4 +38,6 @@ public class SlackActionCommand {
   private SlackUser user;
   
   private SlackActionMessage message;
+  
+  private SlackAction[] actions;
 }
