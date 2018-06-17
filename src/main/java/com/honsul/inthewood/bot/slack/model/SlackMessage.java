@@ -22,9 +22,18 @@ public class SlackMessage {
   @JsonProperty("icon_emoji")
   private String iconEmoji;
   
+  @JsonProperty("bot_id")
+  private String botId;
+  
   private String channel;
   
   private String text;
+  
+  private String type;
+  
+  private String subtype;
+  
+  private String ts;
   
   @JsonProperty("response_type")
   private String responseType;

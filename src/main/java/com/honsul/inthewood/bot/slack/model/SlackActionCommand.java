@@ -40,4 +40,7 @@ public class SlackActionCommand {
   private SlackActionMessage message;
   
   private SlackAction[] actions;
+  
+  @JsonProperty("original_message")
+  private SlackMessage originalMessage;
 }
