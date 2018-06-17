@@ -1,5 +1,7 @@
 package com.honsul.inthewood.bot.slack.message;
 
+import java.util.Arrays;
+
 import com.honsul.inthewood.bot.slack.model.SlackAction;
 import com.honsul.inthewood.bot.slack.model.SlackAttachment;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
@@ -14,7 +16,11 @@ public class StopNotificationConfirmMessage {
     builder.text("휴양림 예약현황 알림을 중지하시겠습니까?")
       .attachments(new SlackAttachment[] {
           SlackAttachment.builder()
-            .color("good")
+            .text("*확인* 버튼을 클릭하면 예약현황 알림 서비스가 중지 됩니다.\n중지된 예약현황 알림 서비스를 재시작하려면 */start* 명령을 사용하세요.")
+            .callbackId("stop-notification")
+            .markdownIn(Arrays.asList(new String[] {"text"}))
+            .color("#3AA3E3")
+            .attachmentType("default")            
             .actions(new SlackAction[] {
                 SlackAction.builder()
                   .name("stop-notification")
