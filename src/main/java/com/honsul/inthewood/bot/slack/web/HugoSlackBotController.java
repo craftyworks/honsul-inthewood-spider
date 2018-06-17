@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
@@ -18,16 +17,12 @@ import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 @RequestMapping("/bot/slack/hugo")
 public class HugoSlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private static final ObjectMapper mapper = new ObjectMapper();
-  
   /**
    * Slack Action Handler
    */
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public SlackMessage actionCommand(@RequestBody SlackActionCommand command) {
+  public void actionCommand(@RequestBody SlackActionCommand command) {
     logger.info("received action command : {}", command);
-    
-    return SlackMessage.builder().text("너의 명령을 잘 받았다.").build();
   }
   
   /**
