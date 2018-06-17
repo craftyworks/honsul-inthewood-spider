@@ -3,6 +3,8 @@ package com.honsul.inthewood.spider.collector.r018;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -40,49 +42,61 @@ public class R018RoomParser extends JsoupRoomParser {
   @Override
   public List<Room> extract(Document doc) {
     List<Room> roomList = new ArrayList<>();
-
-    String numberOfPeople = "";
-    String space = "";
-    long price = 0, peakPrice = 0;
     
-    System.out.println(doc.select("ol.location"));
-
-    String roomTypeNm = StringUtils.substringBefore(doc.select("table.table_st2 > caption").text(), "(");
-    for(Element row : doc.select("table.table_st2 > tbody > tr")) {
-      Elements tds = row.select("td");
-      String roomNm = tds.first().text().replaceAll("\\s", "");
+    String roomTypeNm = doc.selectFirst("div#container > div.wrap > h3").text().replaceAll("\\s", "");
+    RoomType roomType = getRoomType(roomTypeNm);
+    
+    for(Element tr : doc.select("div#detail_con > div.tableScroll > table > tbody > tr")) {
+      Elements roomNames = tr.select("ul > li");
       
-      //백두대간문화휴양관 예외처리
-      if(StringUtils.contains(roomTypeNm, "백두대간문화휴양관")) {
-        roomNm = "(백)" + roomNm;
-      }
-      //도담산봉
-      if("도담산봉".equals(roomNm)) {
-        roomNm = "도담삼봉";
-      }
-      if(tds.size() > 1) {
-        space = tds.get(1).text();
-        numberOfPeople = tds.get(2).text().replaceAll("명",  "");
-        peakPrice = TextUtils.parseLong(tds.get(4).text().replaceAll("원",  ""));
-        price = TextUtils.parseLong(tds.get(5).text().replaceAll("원",  "")); 
+      int idx = RoomType.HUT.equals(roomType) ? 1 : 2;
+      
+      Elements tds = tr.select("td");
+      String people = tds.get(idx++).text();
+      String space = "";
+      String priceText = tds.get(idx++).text();
+      long price = 0, peakPrice = 0;
+      Pattern p = Pattern.compile("수용인원 : ([0-9]+)인[\\s,]*실당 총면적 : ([0-9\\.]+㎡)");
+      Matcher m = p.matcher(people);
+      if(m.find()) {
+        people = m.group(1);
+        space = m.group(2);
       }
       
-      Room room = new Room();
-      room.setResortId(SpiderContext.getResortId());
-      room.setRoomNm(roomNm);
-      room.setRoomType(getRoomType(roomTypeNm));
-      room.setSpace(space);
-      room.setNumberOfPeople(numberOfPeople);
-      room.setPeakPrice(peakPrice);
-      room.setPrice(price);
-      roomList.add(room);
+      if(RoomType.HUT.equals(roomType)) {
+        Pattern pricePattern = Pattern.compile("성수기 : ([0-9,]+) 비성수기\\(공휴일\\) : ([0-9,]+) 비성수기\\(평일\\) : ([0-9,]+)");
+        Matcher priceMatcher = pricePattern.matcher(priceText);
+        priceMatcher.find();
+        peakPrice = TextUtils.findMoneyLong(priceMatcher.group(1));
+        price = TextUtils.findMoneyLong(priceMatcher.group(3));
+      } else {
+        Pattern pricePattern = Pattern.compile("일반 : ([0-9,]+) 휴일 : ([0-9,]+) 성수기 : ([0-9,]+)");
+        Matcher priceMatcher = pricePattern.matcher(priceText);
+        priceMatcher.find();
+        price = TextUtils.findMoneyLong(priceMatcher.group(1));
+        peakPrice = TextUtils.findMoneyLong(priceMatcher.group(3));        
+      }
+      for(Element roomName : roomNames) {
+        String name = RoomType.HUT.equals(roomType) ? StringUtils.substringBefore(roomName.text(), " ") : TextUtils.stringInBrackets(roomName.text());
+        
+        Room room = new Room();
+        room.setResortId(SpiderContext.getResortId());
+        room.setRoomNm(name);
+        room.setRoomType(roomType);
+        room.setSpace(space);
+        room.setNumberOfPeople(people);
+        room.setPeakPrice(peakPrice);
+        room.setPrice(price);
+        roomList.add(room);        
+      }
     }
+    
     return roomList;
   }
   
   @Override
   public RoomType getRoomType(String roomTypeNm) {
-    return StringUtils.contains(roomTypeNm, "집") ? RoomType.HUT : RoomType.CONDO;
+    return StringUtils.equals(roomTypeNm, "숲속의집") ? RoomType.HUT : RoomType.CONDO;
   }
 
 }
