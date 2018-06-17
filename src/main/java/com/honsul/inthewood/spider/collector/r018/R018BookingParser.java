@@ -53,7 +53,6 @@ public class R018BookingParser extends JsoupBookingParser {
       for(Element info : tr.select("td > a > span")) {       
     	String[] attr = info.attr("title").split("\\)");
         String bookingDt = attr[1].split("\\(")[0].replaceAll("\\s|일", "").replaceAll("년|월", "-");
-        System.out.println(roomNm + " " +bookingDt);
         
         Booking booking = new Booking();
         booking.setResortId(SpiderContext.getResortId());
@@ -62,7 +61,7 @@ public class R018BookingParser extends JsoupBookingParser {
         bookingList.add(booking);
       }
     }
-    System.out.println(bookingList);
+    //System.out.println(bookingList);
     
     return bookingList;
   }
