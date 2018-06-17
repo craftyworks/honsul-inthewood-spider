@@ -1,17 +1,15 @@
 package com.honsul.inthewood.bot.slack.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SlackSlashCommand {
   private String token;
   
-  private String command;
-  
-  private String text;
-
   @JsonProperty("team_id")
   private String teamId;
 
@@ -23,14 +21,21 @@ public class SlackSlashCommand {
 
   @JsonProperty("channel_name")
   private String channelName;
-
+  
   @JsonProperty("user_id")
   private String userId;
 
   @JsonProperty("user_name")
   private String userName;
+  
+  private String command;
+  
+  private String text;
 
   @JsonProperty("response_url")
   private String responseUrl;
 
+  @JsonProperty("trigger_id")
+  private String triggerId;
+  
 }
