@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonInclude(Include.NON_NULL)
 public class SlackAction {
+  private String id;
+  
   private String name;
   
   private String text;

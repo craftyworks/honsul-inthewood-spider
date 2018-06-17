@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonInclude(Include.NON_NULL)
 public class SlackAttachment {
+  private String id;
   private String fallback;
   private String color;
   private String pretext;
