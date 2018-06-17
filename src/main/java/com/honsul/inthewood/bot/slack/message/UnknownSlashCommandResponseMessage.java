@@ -11,14 +11,16 @@ import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 public class UnknownSlashCommandResponseMessage {
 
   public static SlackMessage build(SlackSlashCommand slashCommand) {
+    String text = "*" + slashCommand.getCommand() + "* 는 유효한 명령이 아닙니다.\\n";
+    
     SlackMessageBuilder builder = SlackMessage.builder();
     builder.username("SnapBot")
-      .text("문의하신 내용을 처리할 수 없습니다.")
+      .text(text)
       .attachments(
           new SlackAttachment[] {
               SlackAttachment.builder()
-                .text("시스템에 문제가 발생했습니다.")
-                .color("bad")
+                .text("슬랙에서 \"/\"문자로 시작하는 모든 메시지는 명령으로 해석됩니다. \\n메시지를 보내고 명령을 실행하지 않으려는 경우 \"/\"앞에 공백을 넣으십시오.")
+                .color("warning")
                 .ts("" + LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond())
                 .footerIcon("https://platform.slack-edge.com/img/default_application_icon.png")
                 .build()

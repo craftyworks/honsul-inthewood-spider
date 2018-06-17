@@ -17,11 +17,18 @@ public class StopNotificationConfirmMessage {
             .color("good")
             .actions(new SlackAction[] {
                 SlackAction.builder()
+                  .name("stop-notification")
                   .text("확인")
                   .value("YES")
                   .type("button")
                   .style("primary")
-                  .build()
+                  .build(),
+                SlackAction.builder()
+                  .name("stop-notification")
+                  .text("취소")
+                  .value("NO")
+                  .type("button")
+                  .build()                  
             })
             .build()
       });
