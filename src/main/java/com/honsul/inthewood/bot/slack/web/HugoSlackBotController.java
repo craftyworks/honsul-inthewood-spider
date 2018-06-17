@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.honsul.inthewood.bot.slack.SlackBotAPI;
 import com.honsul.inthewood.bot.slack.action.ActionCommandHandler;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
@@ -23,7 +24,7 @@ import com.honsul.inthewood.bot.slack.slash.SlashCommandHandler;
 
 @RestController
 @RequestMapping("/bot/slack/hugo")
-public class HugoSlackBotController {
+public class HugoSlackBotController implements SlackBotAPI {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final RestTemplate restTemplate = new RestTemplate();
   
@@ -42,7 +43,7 @@ public class HugoSlackBotController {
     
     for(ActionCommandHandler handler : actionCommandHandlers) {
       if(handler.support(command)) {
-        handler.execute(command);
+        handler.execute(this, command);
         break;
       }
     }    
@@ -86,6 +87,7 @@ public class HugoSlackBotController {
     return eventMessage;
   }    
   
+  @Override
   public void sendMessage(String url, SlackMessage slackMessage) {
 
     ResponseEntity<String> response = restTemplate.postForEntity(url, slackMessage, String.class);
