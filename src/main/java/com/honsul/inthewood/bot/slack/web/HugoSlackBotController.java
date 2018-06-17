@@ -17,6 +17,7 @@ import com.honsul.inthewood.bot.slack.SlackBotAPI;
 import com.honsul.inthewood.bot.slack.action.ActionCommandHandler;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackDeleteMessage;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
@@ -94,4 +95,12 @@ public class HugoSlackBotController implements SlackBotAPI {
     
     logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
   }
+  
+  @Override
+  public void deleteMessage(SlackDeleteMessage message) {
+
+    ResponseEntity<String> response = restTemplate.postForEntity("https://slack.com/api/chat.delete", message, String.class);
+    
+    logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
+  }  
 }
