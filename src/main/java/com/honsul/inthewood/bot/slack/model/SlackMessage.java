@@ -1,14 +1,31 @@
 package com.honsul.inthewood.bot.slack.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@JsonInclude(Include.NON_NULL)
 public class SlackMessage {
-  private String type;
+  private String username;
   
-  private String user;
+  @JsonProperty("icon_emoji")
+  private String iconEmoji;
   
-  private String ts;
+  private String channel;
   
   private String text;
+  
+  @JsonProperty("response_type")
+  private String responseType;
+  
+  private SlackAttachment[] attachments;
 }
