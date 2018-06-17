@@ -2,6 +2,8 @@ package com.honsul.inthewood.bot.slack.action;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.honsul.inthewood.bot.slack.SlackBotAPI;
@@ -13,7 +15,8 @@ import com.honsul.inthewood.bot.slack.model.SlackMessage;
 
 @Component
 public class StopNotificationActionCommandHandler extends ActionCommandHandler {
-
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+  
   public StopNotificationActionCommandHandler() {
     super("/stop/confirm");
   }
@@ -22,6 +25,7 @@ public class StopNotificationActionCommandHandler extends ActionCommandHandler {
   public void execute(SlackBotAPI api, SlackActionCommand command) {
     SlackAction action = command.getActions()[0];
     if("cancel".equals(action.getValue())) {
+      logger.debug("deleting message : {}", command.getToken(), command.getChannel(), command.getMessageTs());
       SlackDeleteMessage message = SlackDeleteMessage.builder()
         .token(command.getToken())
         .channel(command.getChannel().getId())
@@ -39,7 +43,6 @@ public class StopNotificationActionCommandHandler extends ActionCommandHandler {
           .attachmentType("default")
           .build()
       });
-  
       api.sendMessage(command.getResponseUrl(), message);
     }
   }
