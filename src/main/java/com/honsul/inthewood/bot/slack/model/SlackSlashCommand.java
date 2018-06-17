@@ -32,4 +32,5 @@ public class SlackSlashCommand {
 
   @JsonProperty("response_url")
   private String responseUrl;
+
 }
