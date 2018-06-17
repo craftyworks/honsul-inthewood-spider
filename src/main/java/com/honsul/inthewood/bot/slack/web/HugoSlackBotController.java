@@ -3,10 +3,12 @@ package com.honsul.inthewood.bot.slack.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
@@ -17,6 +19,8 @@ import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 @RequestMapping("/bot/slack/hugo")
 public class HugoSlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final RestTemplate restTemplate = new RestTemplate();
+  
   /**
    * Slack Action Handler
    */
@@ -51,4 +55,11 @@ public class HugoSlackBotController {
     logger.info("received event : {}", eventMessage);
     return eventMessage;
   }    
+  
+  public void sendMessage(String url, SlackMessage slackMessage) {
+    
+    ResponseEntity<String> response = restTemplate.postForEntity(url, slackMessage, String.class);
+    
+    logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
+  }
 }

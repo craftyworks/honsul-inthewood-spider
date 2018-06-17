@@ -23,7 +23,7 @@ public class SlackSlashCommandConverter extends AbstractHttpMessageConverter<Sla
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private static final FormHttpMessageConverter formHttpMessageConverter = new FormHttpMessageConverter();
   private static final ObjectMapper mapper = new ObjectMapper();
-
+  
   public SlackSlashCommandConverter() {
     super(new MediaType("application","x-www-form-urlencoded", Charset.forName("UTF-8")));
   }
