@@ -87,7 +87,7 @@ public class HugoSlackBotController {
   }    
   
   public void sendMessage(String url, SlackMessage slackMessage) {
-    
+
     ResponseEntity<String> response = restTemplate.postForEntity(url, slackMessage, String.class);
     
     logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());

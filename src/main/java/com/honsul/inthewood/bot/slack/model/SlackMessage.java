@@ -30,4 +30,8 @@ public class SlackMessage {
   private String responseType;
   
   private SlackAttachment[] attachments;
+
+  public String getText() {
+    return this.text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+  }
 }
