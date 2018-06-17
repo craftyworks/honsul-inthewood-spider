@@ -13,7 +13,7 @@ import com.honsul.inthewood.bot.slack.model.SlackMessage;
 public class StartNotificationActionCommandHandler extends ActionCommandHandler {
 
   public StartNotificationActionCommandHandler() {
-    super("/stop/confirm");
+    super("/start/confirm");
   }
 
   @Override

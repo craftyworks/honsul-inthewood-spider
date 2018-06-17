@@ -24,6 +24,7 @@ public class StopNotificationActionCommandHandler extends ActionCommandHandler {
   @Override
   public void execute(SlackBotAPI api, SlackActionCommand command) {
     SlackAction action = command.getActions()[0];
+    logger.debug("##### : {}, {}", action.getValue(), action);
     if("cancel".equals(action.getValue())) {
       logger.debug("deleting message : {}", command.getToken(), command.getChannel(), command.getMessageTs());
       SlackDeleteMessage message = SlackDeleteMessage.builder()
