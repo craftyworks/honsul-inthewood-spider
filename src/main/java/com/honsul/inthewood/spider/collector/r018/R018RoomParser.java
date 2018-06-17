@@ -18,69 +18,71 @@ import com.honsul.inthewood.core.parser.JsoupRoomParser;
 import com.honsul.inthewood.core.util.TextUtils;
 
 /**
- * 방화동자연휴양림 숙소현황 파서.
+ * 석모도자연휴양림 숙소현황 파서.
  */
 @RoomParser(resortId="R018")
 public class R018RoomParser extends JsoupRoomParser {
   
-  private static final String HUT_URL = "http://www.jangsuhuyang.kr/Banghwa1/reserve/house_main.asp";
-
+  private static final String[] LOCATIONS = {
+      "http://forest.ganghwa.go.kr/facility/resort4.jsp"
+    , "http://forest.ganghwa.go.kr/facility/house.jsp"
+  };
+  
   @Override
-  protected Document document() throws IOException {
-    return Jsoup.connect(HUT_URL).get();
+  protected List<Document> documents() throws IOException {
+    List<Document> docs = new ArrayList<>();
+    for(String location : LOCATIONS) {
+      docs.add(Jsoup.connect(location).get());
+    }
+    return docs;
   }
   
   @Override
   public List<Room> extract(Document doc) {
     List<Room> roomList = new ArrayList<>();
 
+    String numberOfPeople = "";
+    String space = "";
+    long price = 0, peakPrice = 0;
     
-    String roomNm = "";
-    for(Element row : doc.select("div.col-md-9 > table:first-of-type > tbody > tr.tac")) {
-      int idx = 0;
-      Element title = row.selectFirst("td > a > span.text-primary");
-      if(title != null) {
-        roomNm = title.text();
-        idx = 2;
-      } 
-      RoomType roomType = getRoomType(roomNm);
-      Elements tds = row.select("td");
-      String space = tds.get(idx++).text();
-      String numberOfPeople = TextUtils.stringInBrackets(space);
-      space = StringUtils.substringBefore(space, "(");
-      numberOfPeople = StringUtils.substringBefore(numberOfPeople, ",").replaceAll("[^0-9]*", "");
-      
-      long peakPrice = TextUtils.parseLong(tds.get(idx++).text());
-      long price = TextUtils.parseLong(tds.get(idx++).text()); 
+    System.out.println(doc.select("ol.location"));
 
-      List<String> roomNms = new ArrayList<>();
-      if(roomType.equals(RoomType.CONDO)) {
-        int start = ("6".equals(numberOfPeople)) ? 101 : 201;
-        for(int i=start; i<start+8; i++) {
-          roomNms.add("휴양관 " + i + "호");
-        }
-      } else {
-        roomNms.add(roomNm);
+    String roomTypeNm = StringUtils.substringBefore(doc.select("table.table_st2 > caption").text(), "(");
+    for(Element row : doc.select("table.table_st2 > tbody > tr")) {
+      Elements tds = row.select("td");
+      String roomNm = tds.first().text().replaceAll("\\s", "");
+      
+      //백두대간문화휴양관 예외처리
+      if(StringUtils.contains(roomTypeNm, "백두대간문화휴양관")) {
+        roomNm = "(백)" + roomNm;
+      }
+      //도담산봉
+      if("도담산봉".equals(roomNm)) {
+        roomNm = "도담삼봉";
+      }
+      if(tds.size() > 1) {
+        space = tds.get(1).text();
+        numberOfPeople = tds.get(2).text().replaceAll("명",  "");
+        peakPrice = TextUtils.parseLong(tds.get(4).text().replaceAll("원",  ""));
+        price = TextUtils.parseLong(tds.get(5).text().replaceAll("원",  "")); 
       }
       
-      for(String roomName : roomNms) {
-        Room room = new Room();
-        room.setResortId(SpiderContext.getResortId());
-        room.setRoomNm(roomName);
-        room.setRoomType(roomType);
-        room.setSpace(space);
-        room.setNumberOfPeople(numberOfPeople);
-        room.setPeakPrice(peakPrice);
-        room.setPrice(price);
-        roomList.add(room);
-      }
+      Room room = new Room();
+      room.setResortId(SpiderContext.getResortId());
+      room.setRoomNm(roomNm);
+      room.setRoomType(getRoomType(roomTypeNm));
+      room.setSpace(space);
+      room.setNumberOfPeople(numberOfPeople);
+      room.setPeakPrice(peakPrice);
+      room.setPrice(price);
+      roomList.add(room);
     }
     return roomList;
   }
   
   @Override
-  public RoomType getRoomType(String roomNm) {
-    return StringUtils.contains(roomNm, "휴양관") ? RoomType.CONDO : RoomType.HUT;
+  public RoomType getRoomType(String roomTypeNm) {
+    return StringUtils.contains(roomTypeNm, "집") ? RoomType.HUT : RoomType.CONDO;
   }
 
 }

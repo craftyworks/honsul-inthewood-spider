@@ -29,30 +29,32 @@ public class R018BookingParser extends JsoupBookingParser {
     
     LocalDate now = LocalDate.now();
     
-    documentList.add(Jsoup.connect(CONNECT_URL).data("schym", "" + now.getYear() + "-" + now.getMonthValue()).get());
+    documentList.add(Jsoup.connect(CONNECT_URL).data("schym", "" + now.getYear() + "-" + String.format("%02d", now.getMonthValue())).get());
     if (now.getMonthValue() < 12) {
-    	documentList.add(Jsoup.connect(CONNECT_URL).data("schym", "" + now.getYear() + "-" + now.plusMonths(1).getMonthValue()).get());
+    	documentList.add(Jsoup.connect(CONNECT_URL).data("schym", "" + now.getYear() + "-" + String.format("%02d", now.plusMonths(1).getMonthValue())).get());
     } else {
-    	documentList.add(Jsoup.connect(CONNECT_URL).data("schym", "" + now.plusYears(1) + "-" + now.plusMonths(1).getMonthValue()).get());
+    	documentList.add(Jsoup.connect(CONNECT_URL).data("schym", "" + now.plusYears(1) + "-" + String.format("%02d", now.plusMonths(1).getMonthValue())).get());
     }
-    System.out.println(documentList);
+    //System.out.println(documentList);
     
     return documentList;
   }
   
   @Override
   public List<Booking> extract(Document doc) {
-    List<Booking> bookingList = new ArrayList<>();
+    List<Booking> bookingList = new ArrayList<>();    
+    
     for(Element tr : doc.select("div.calendarBox > table > tbody > tr.con")) {
       String roomNm = tr.selectFirst("th").text();
-      if("회의실".equals(roomNm) || "단체식당".equals(roomNm)) {
+      if(roomNm.contains("회의실")) {
         continue;
-      }
-
-      for(Element info : tr.select("td > a > span")) {
-        String[] attr = info.attr("title").split(")");
-        String bookingDt = attr[1].split("(")[0].replaceAll("\\s|년|월|일", "");
-
+      }      
+      
+      for(Element info : tr.select("td > a > span")) {       
+    	String[] attr = info.attr("title").split("\\)");
+        String bookingDt = attr[1].split("\\(")[0].replaceAll("\\s|일", "").replaceAll("년|월", "-");
+        System.out.println(roomNm + " " +bookingDt);
+        
         Booking booking = new Booking();
         booking.setResortId(SpiderContext.getResortId());
         booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-M-d")));
