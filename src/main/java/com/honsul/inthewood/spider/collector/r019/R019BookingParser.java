@@ -46,8 +46,6 @@ public class R019BookingParser extends JsoupBookingParser {
             .post();
     
     documentList.add(doc);
-    //System.out.println(documentList);
-    
     return documentList;
   }
 
@@ -60,34 +58,32 @@ public class R019BookingParser extends JsoupBookingParser {
     String month = title.split("/")[1].replaceAll("\\s", "");
     
     for(Element tr : doc.select("table.mt10.table01 > tbody > tr")) {
-    	//System.out.println(tr);  
-        for(Element td : tr.select("td")) {
+    	for(Element td : tr.select("td")) {
         	if (td.select("table > tbody > tr > td > div").text().isEmpty()) {
     			continue;
     		}
-        	String day = td.selectFirst("table > tbody > tr > td > div").text();
-        	//System.out.println(td.selectFirst("table > tbody > tr > td > div"));
-        	System.out.println("day: " + day);
+        	String day = td.select("table > tbody > tr").select(" td > div > font").text();
         	
-        	for (Element roomTr : tr.select("table > tbody > tr+tr > td > div > div")) {
-        		if (roomTr.text().contains("예약종료") || roomTr.select("td > a[href]") == null) {
+        	for (Element div : td.select("table > tbody > tr+tr > td > div > div")) {
+        		if (div.text().contains("예약종료")) {
         			continue;
         		}
-            	
-        		String roomNm = roomTr.text().split("\\(")[0];
-	        	if (roomNm.contains("야영데크")) {
-	        		continue;
-	        	}
-        		System.out.println(roomTr.text() + " / " + roomNm);
-        		Booking booking = new Booking();
-    	        booking.setResortId(SpiderContext.getResortId());
-    	        booking.setBookingDt(LocalDate.parse(year + "-" + month + "-" + day, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-    	        booking.setRoomNm(roomNm);
-    	        bookingList.add(booking);
+        		for (Element roomTr : div.select(" a > b")) {
+        			String roomNm = roomTr.text().split("\\(")[0];
+		        	if (roomNm.contains("야영데크")) {
+		        		continue;
+		        	}
+	        		//System.out.println(year + month + day + " / " + roomNm);
+	        		Booking booking = new Booking();
+	    	        booking.setResortId(SpiderContext.getResortId());
+	    	        booking.setBookingDt(LocalDate.parse(year + "-" + month + "-" + day, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+	    	        booking.setRoomNm(roomNm);
+	    	        bookingList.add(booking);
+        		}
         	}
         }
     }
-    //System.out.println(bookingList);  
+    System.out.println(bookingList);  
     return bookingList;
   }
 }
