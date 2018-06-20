@@ -73,7 +73,6 @@ public class R019BookingParser extends JsoupBookingParser {
 		        	if (roomNm.contains("야영데크")) {
 		        		continue;
 		        	}
-	        		//System.out.println(year + month + day + " / " + roomNm);
 	        		Booking booking = new Booking();
 	    	        booking.setResortId(SpiderContext.getResortId());
 	    	        booking.setBookingDt(LocalDate.parse(year + "-" + month + "-" + day, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -83,7 +82,7 @@ public class R019BookingParser extends JsoupBookingParser {
         	}
         }
     }
-    System.out.println(bookingList);  
+    //System.out.println(bookingList);  
     return bookingList;
   }
 }
