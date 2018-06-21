@@ -27,9 +27,12 @@ public class R020BookingParser extends JsoupBookingParser {
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();
     
-    LocalDate next = LocalDate.now().plusMonths(1);
-    
     documentList.add(Jsoup.connect(CONNECT_URL).data("bo_table","booking").get());
+    
+    LocalDate next = LocalDate.now().plusMonths(1);
+    documentList.add(Jsoup.connect(CONNECT_URL).data("bo_table","booking").data("select", next.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).get());
+
+    next = next.plusMonths(1);
     documentList.add(Jsoup.connect(CONNECT_URL).data("bo_table","booking").data("select", next.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).get());
     
     return documentList;
