@@ -12,4 +12,19 @@ cache:
     
 maven_build:
   stage: test
-  script: mvn test
+  script: mvn surefire-report:report
+  allow_failure: true  
+  artifacts:
+    paths:
+      - target/site/
+
+pages:
+  stage: deploy
+  script:
+    - mkdir public
+    - cp target/site/surefire-report.html public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
