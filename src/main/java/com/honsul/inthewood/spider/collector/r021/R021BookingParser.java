@@ -29,7 +29,7 @@ public class R021BookingParser extends JsoupBookingParser {
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();
     
-    Document doc = Jsoup.connect(CONNECT_URL).get();
+    Document doc = Jsoup.connect(CONNECT_URL).post();
     documentList.add(doc);
     
     //next month
