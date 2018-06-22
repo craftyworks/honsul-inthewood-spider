@@ -23,7 +23,6 @@ maven_build:
 pages:
   stage: deploy
   script:
-    - mkdir public
     - mv target/site public
     - cp public/surefire-report.html public/index.html
   artifacts:
