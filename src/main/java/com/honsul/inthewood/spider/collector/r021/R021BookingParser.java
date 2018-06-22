@@ -10,6 +10,7 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
@@ -49,16 +50,16 @@ public class R021BookingParser extends JsoupBookingParser {
     yearMonth = yearMonth.replace("년", "-").replaceAll("월|\\s", "");    
     
     for(Element tr : doc.select("body > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td:nth-child(3) > table > tbody > tr:nth-child(10) > td > table > tbody > tr > td > table > tbody > tr")) {
-    	//System.out.println("td #: " + tr.select("td").size());
-    	
     	for(Element td : tr.select("td")) {
 	        if(td.text().contains("일(SUN)") || td.text().contains("예약종료")) {
 	          continue;
 	        }
-	        for(Element div : td.select("div[style*=font-weight]")) {
+	        Elements roomToday = td.select("div[style*=font-weight]");
+	        Elements roomFuture = td.select("div > a[href]");
+	        
+	        for(Element div : (roomFuture.size()>0?roomFuture:roomToday)) {
 	        	String day = td.text().split(" ")[0];
 	        	String roomNm = div.text();
-	        	//System.out.println("extract: " + LocalDate.parse(year+'-'+day, DateTimeFormatter.ofPattern("yyyy-M-d")));
 	        	
 	        	Booking booking = new Booking();
 		        booking.setResortId(SpiderContext.getResortId());
@@ -68,7 +69,7 @@ public class R021BookingParser extends JsoupBookingParser {
 	        }
     	}
     }
-    System.out.println("bookingList: " + bookingList);  
+    //System.out.println("bookingList: " + bookingList);  
     return bookingList;
   }
 }
