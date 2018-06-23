@@ -1,6 +1,6 @@
 # 프로젝트 : 혼술 in the wood 
 
-![build](https://gitlab.com/craftyworks/honsul-inthewood-spider/badges/master/build.svg)
+[![build](https://gitlab.com/craftyworks/honsul-inthewood-spider/badges/master/build.svg)](https://craftyworks.gitlab.io/honsul-inthewood-spider/)
 
 ## 환경설정
 
