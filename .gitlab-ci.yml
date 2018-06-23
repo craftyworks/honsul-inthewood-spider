@@ -16,6 +16,7 @@ maven_build:
     - mvn surefire-report:report
     - mvn site -DgenerateReports=false
     - mvn jacoco:report
+    - sed 's/.*\(Total[^%]*%\).*/\1/' target/site/jacoco/index.html
   allow_failure: true  
   artifacts:
     paths:
