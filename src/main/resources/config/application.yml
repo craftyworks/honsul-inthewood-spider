@@ -3,6 +3,8 @@ spring:
     active: local
   aop:
     proxy-target-class: true
+  mustache:
+    suffix: .html
 
 mybatis:
   config-location: classpath:query/mybatis-config.xml
@@ -43,7 +45,9 @@ slackIncomingWebhookUrl: https://hooks.slack.com/services/T0502LPJ2/BB69RM744/ah
 # Local Development Configuration 
 spring:
   profiles: local
-
+  devtools:
+    livereload:
+      enabled: true
 phantomjs:
   binary:
     path: E:/ProjectHome/tools/webdriver/phantomjs.exe
