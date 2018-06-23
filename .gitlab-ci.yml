@@ -1,0 +1,34 @@
+image: maven:3.5.3-jdk-8
+
+stages:
+  - build
+  - test
+  - deploy
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+    
+maven_build:
+  stage: test
+  script: 
+    - mvn surefire-report:report
+    - mvn site -DgenerateReports=false
+    - mvn jacoco:report
+    - sed 's/.*\(Total[^%]*%\).*/\1/' target/site/jacoco/index.html
+  allow_failure: true  
+  artifacts:
+    paths:
+      - target/site/
+
+pages:
+  stage: deploy
+  script:
+    - mv target/site public
+    - cp public/surefire-report.html public/index.html
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
