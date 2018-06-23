@@ -1,9 +1,9 @@
-package com.honsul.inthewood.bot.slack;
+package com.honsul.inthewood.bot.slack.core;
 
 import com.honsul.inthewood.bot.slack.model.SlackDeleteMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 
-public interface SlackBotAPI {
+public interface SlackClient {
   public void sendMessage(String url, SlackMessage slackMessage);
 
   public void deleteMessage(SlackDeleteMessage message);

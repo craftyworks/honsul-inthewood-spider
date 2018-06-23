@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.honsul.inthewood.bot.slack.SlackBot;
+import com.honsul.inthewood.bot.slack.SlackWebhook;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Subscriber;
 import com.honsul.inthewood.core.util.TextUtils;
@@ -31,7 +31,7 @@ public class PostmanService {
   PublisherDao dao;
 
   @Autowired
-  SlackBot slackBot;
+  SlackWebhook slackWebhook;
   
   /**
    * 휴양림 예약변경현황 알림 발송
@@ -55,7 +55,7 @@ public class PostmanService {
     for(Subscriber target : subscribers) {
       logger.info("sending {} : {}", target.getSubscriberId(), booking);
       
-      slackBot.sendMessage(target.getSubscriberId(), buildMessage(booking));
+      slackWebhook.sendMessage(target.getSubscriberId(), buildMessage(booking));
     }
   }
 

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.stereotype.Component;
 
-import com.honsul.inthewood.bot.slack.SlackBotAPI;
+import com.honsul.inthewood.bot.slack.core.SlackClient;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackAttachment;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
@@ -17,7 +17,7 @@ public class StartNotificationActionCommandHandler extends ActionCommandHandler 
   }
 
   @Override
-  public void execute(SlackBotAPI api, SlackActionCommand command) {
+  public void execute(SlackClient api, SlackActionCommand command) {
     SlackMessage message = command.getOriginalMessage();
     message.setText("휴양림 예약현황 알림 서비스가 시작되었습니다.");
     message.setAttachments(new SlackAttachment[] {

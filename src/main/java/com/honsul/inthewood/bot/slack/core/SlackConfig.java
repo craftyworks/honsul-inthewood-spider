@@ -1,4 +1,4 @@
-package com.honsul.inthewood.bot.slack;
+package com.honsul.inthewood.bot.slack.core;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +11,14 @@ import org.springframework.context.annotation.Configuration;
 
 import com.palantir.roboslack.webhook.api.model.WebHookToken;
 
+import lombok.Data;
+
 @Configuration
 @ConfigurationProperties(prefix = "slack")
-public class SlackChannels { 
+public class SlackConfig { 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  
+  private Bot bot;
   
   private Map<String, String> channels;
   
@@ -27,6 +31,14 @@ public class SlackChannels {
       tokens.put(entry.getKey(), WebHookToken.fromString(entry.getValue()));
     }    
   }
+
+  public void setBot(Bot bot) {
+    this.bot = bot;
+  }
+
+  public Bot getBot() {
+    return this.bot;
+  }
   
   public String getWebhookURL(String channel) {
     return channels.get(channel);
@@ -36,4 +48,14 @@ public class SlackChannels {
     return tokens.get(channel);
   }
   
+  @Data
+  public static class Bot {
+    private String clientId;
+    
+    private String clientSecret;
+    
+    private String verifyToken;
+  }
+
+
 }

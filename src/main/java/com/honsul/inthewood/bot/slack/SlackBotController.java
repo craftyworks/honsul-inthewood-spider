@@ -1,32 +1,34 @@
-package com.honsul.inthewood.bot.slack.web;
+package com.honsul.inthewood.bot.slack;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import com.honsul.inthewood.bot.slack.SlackBotAPI;
 import com.honsul.inthewood.bot.slack.action.ActionCommandHandler;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
-import com.honsul.inthewood.bot.slack.model.SlackDeleteMessage;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.slash.SlashCommandHandler;
 
-@RestController
-@RequestMapping("/bot/slack/hugo")
-public class HugoSlackBotController implements SlackBotAPI {
+@Controller
+@RequestMapping("/bot/slack")
+public class SlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
+  
   private final RestTemplate restTemplate = new RestTemplate();
   
   @Autowired
@@ -34,6 +36,21 @@ public class HugoSlackBotController implements SlackBotAPI {
   
   @Autowired
   private List<SlashCommandHandler> slashCommandHandlers;
+  
+  @Autowired
+  private SlackWebClient slackClient;
+
+  @GetMapping("/oauth")
+  public String oauth(@RequestParam(name="code", required=false) String code, @RequestParam(name="state", required=false) String state) {
+    
+    // Slack Oauth 인증
+    String token = slackClient.oauthAccess(code);
+    
+    // Slack 사용자 조회
+    Map<String, Object> user = slackClient.usersIdentity(token);
+    
+    return "redirect:https://slack.com";
+  }
   
   /**
    * Slack Action Handler
@@ -44,7 +61,7 @@ public class HugoSlackBotController implements SlackBotAPI {
     
     for(ActionCommandHandler handler : actionCommandHandlers) {
       if(handler.support(command)) {
-        handler.execute(this, command);
+        handler.execute(slackClient, command);
         break;
       }
     }    
@@ -88,19 +105,9 @@ public class HugoSlackBotController implements SlackBotAPI {
     return eventMessage;
   }    
   
-  @Override
-  public void sendMessage(String url, SlackMessage slackMessage) {
-
-    ResponseEntity<String> response = restTemplate.postForEntity(url, slackMessage, String.class);
-    
-    logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
+  @GetMapping("/install")
+  public String install(Model model) {
+    model.addAttribute("name", "SpringBlog from Millky");
+    return "bot/slack/install";
   }
-  
-  @Override
-  public void deleteMessage(SlackDeleteMessage message) {
-
-    ResponseEntity<String> response = restTemplate.postForEntity("https://slack.com/api/chat.delete", message, String.class);
-    
-    logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
-  }  
 }
