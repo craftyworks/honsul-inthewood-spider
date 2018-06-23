@@ -18,6 +18,8 @@ public class SlackEventMessage {
   
   private String type;
   
+  private String challenge;
+  
   @JsonProperty("event_id")
   private String eventId;
   
