@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.honsul.inthewood.bot.slack.SlackBotAPI;
+import com.honsul.inthewood.bot.slack.core.SlackClient;
 import com.honsul.inthewood.bot.slack.model.SlackAction;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackAttachment;
@@ -22,7 +22,7 @@ public class StopNotificationActionCommandHandler extends ActionCommandHandler {
   }
 
   @Override
-  public void execute(SlackBotAPI api, SlackActionCommand command) {
+  public void execute(SlackClient api, SlackActionCommand command) {
     SlackAction action = command.getActions()[0];
     logger.debug("##### : {}, {}", action.getValue(), action);
     if("cancel".equals(action.getValue())) {

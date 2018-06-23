@@ -1,4 +1,4 @@
-package com.honsul.inthewood.bot.slack.web;
+package com.honsul.inthewood.bot.slack.core.web;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
