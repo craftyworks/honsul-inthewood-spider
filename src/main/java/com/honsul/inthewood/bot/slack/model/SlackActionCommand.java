@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class SlackActionCommand {
+public class SlackActionCommand implements TokenBarer {
   private String type;
 
   private String token;
@@ -31,16 +31,52 @@ public class SlackActionCommand {
   @JsonProperty("is_app_unfurl")
   private String isAppUnfurl;  
   
-  private SlackTeam team;
+  private Team team;
 
-  private SlackChannel channel;
+  private Channel channel;
   
-  private SlackUser user;
+  private User user;
   
-  private SlackActionMessage message;
+  private Message message;
   
   private SlackAction[] actions;
   
   @JsonProperty("original_message")
   private SlackMessage originalMessage;
+  
+  @Data
+  public static class User {
+    private String id;
+    
+    private String name;
+  }
+  
+  @Data
+  public static class Team {
+    private String id;
+    
+    private String domain;
+  }
+  
+  @Data
+  public static class Channel {
+    private String id;
+    
+    private String name;
+  }
+  
+  @Data
+  public static class Message {
+    private String type;
+    
+    private String user;
+    
+    private String text;
+
+    @JsonProperty("client_msg_id")
+    private String clientMsgId;
+    
+    private String ts;
+    
+  }
 }

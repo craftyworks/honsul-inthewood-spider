@@ -19,10 +19,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.honsul.inthewood.bot.slack.action.ActionCommandHandler;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
+import com.honsul.inthewood.bot.slack.message.WelcomeMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
+import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
+import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 import com.honsul.inthewood.bot.slack.slash.SlashCommandHandler;
 
 @Controller
@@ -45,12 +48,16 @@ public class SlackBotController {
   public String oauth(@RequestParam(name="code", required=false) String code, @RequestParam(name="state", required=false) String state) {
     
     // Slack Oauth 인증
-    String token = slackClient.oauthAccess(code);
+    UserAuth auth = slackClient.oauthAccess(code);
     
     // Slack 사용자 조회
-    Map<String, Object> user = slackClient.usersIdentity(token);
+    Map<String, Object> userInfo = slackClient.authTest(auth.getAccessToken());
     
-    return "redirect:https://slack.com";
+    // Slack 사용자 등록
+    
+    // Welcome message 발송
+    SlackMessageResponse response = slackClient.chatPostMessage(WelcomeMessage.build(auth));
+    return "redirect:" + userInfo.get("url") + "messages/" + response.getChannel() + "/";
   }
   
   /**
@@ -113,4 +120,5 @@ public class SlackBotController {
     model.addAttribute("name", "SpringBlog from Millky");
     return "bot/slack/install";
   }
+  
 }

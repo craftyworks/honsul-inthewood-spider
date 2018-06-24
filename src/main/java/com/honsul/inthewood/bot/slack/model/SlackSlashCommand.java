@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlackSlashCommand {
+public class SlackSlashCommand implements TokenBarer {
   private String token;
   
   @JsonProperty("team_id")

@@ -14,7 +14,7 @@ public class SlackEventMessage {
   @JsonProperty("api_app_id")
   private String apiAppId;
   
-  private SlackEvent event;
+  private Event event;
   
   private String type;
   
@@ -28,4 +28,26 @@ public class SlackEventMessage {
   
   @JsonProperty("authed_users")
   private String[] authedUsers;
+  
+  @Data
+  public static class Event {
+    private String type;
+    
+    private String user;
+    
+    private String text;
+    
+    @JsonProperty("client_msg_id")
+    private String clientMsgId;
+    
+    private String ts;
+    
+    private String channel;
+    
+    @JsonProperty("event_ts")
+    private String eventTs;
+    
+    @JsonProperty("channel_type")
+    private String channelType;
+  }
 }

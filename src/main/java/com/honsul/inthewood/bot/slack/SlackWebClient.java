@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.openqa.selenium.remote.http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -16,11 +18,14 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.honsul.inthewood.bot.slack.core.SlackAPI;
 import com.honsul.inthewood.bot.slack.core.SlackClient;
 import com.honsul.inthewood.bot.slack.core.SlackConfig;
 import com.honsul.inthewood.bot.slack.model.SlackDeleteMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
-import com.honsul.inthewood.bot.slack.model.api.SlackAPI;
+import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
+import com.honsul.inthewood.bot.slack.model.TokenBarer;
+import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 
 @Component
 public class SlackWebClient implements SlackClient {
@@ -29,48 +34,140 @@ public class SlackWebClient implements SlackClient {
   @Autowired
   private SlackConfig slackConfig;
   
+  public void setSlackConfig(SlackConfig slackConfig) {
+    this.slackConfig = slackConfig;
+  }
+  
   private final RestTemplate restTemplate = new RestTemplate();
   
-  public String oauthAccess(String code) {
+  public UserAuth oauthAccess(String code) {
     
     Map<String, Object> param = new HashMap<>();
     param.put("code", code);
     param.put("client_id", slackConfig.getBot().getClientId());
     param.put("client_secret", slackConfig.getBot().getClientSecret());
     
-    Map<String, Object> result = getSlackAPI(SlackAPI.oauth_access, param, Map.class);
-    
-    return (String) result.get("access_token");
+    return executeSlackAPI(SlackAPI.oauth_access, param, UserAuth.class);
   }
+  
+  public Map<String, Object> usersInfo(String token, String userId) {
+    
+    Map<String, Object> param = new HashMap<>();
+    param.put("token", token);
+    param.put("user", userId);
+    
+    return executeSlackAPI(SlackAPI.users_info, param, Map.class);
+  }
+  
   
   public Map<String, Object> usersIdentity(String accessToken)  {
     Map<String, Object> param = new HashMap<>();
-    param.put("access_token", accessToken);
+    param.put("token", accessToken);
     
-    return getSlackAPI(SlackAPI.user_identity, param, Map.class);
+    return getSlackAPI(SlackAPI.users_identity, param, Map.class);
   }
   
-  private <T> T executeSlackAPI(SlackAPI api, Map<String, Object> param, Class<T> resultClass) {
+  public SlackMessageResponse chatMeMessage(SlackMessage message) {
+    return postSlackAPI(SlackAPI.chat_meMessage, message, SlackMessageResponse.class);
+  }
+  
+  public SlackMessageResponse chatPostMessage(SlackMessage message) {
+    return executeSlackAPI(SlackAPI.chat_postMessage, message, SlackMessageResponse.class);
+  }
+  
+  public SlackMessageResponse chatDelete(SlackMessage message) {
+    return executeSlackAPI(SlackAPI.chat_delete, message, SlackMessageResponse.class);
+  }
+  
+  public SlackMessageResponse chatUpdate(SlackMessage message) {
+    return executeSlackAPI(SlackAPI.chat_update, message, SlackMessageResponse.class);
+  }
+  
+  public Map<String, Object> appsPermissionsScopesList(String accessToken) {
+    Map<String, Object> param = new HashMap<>();
+    param.put("token", accessToken);
+    
+    return executeSlackAPI(SlackAPI.apps_permissions_scopes_list, param, Map.class);
+  }  
+  
+  public Map<String, Object> channelsList(String accessToken) {
+    Map<String, Object> param = new HashMap<>();
+    param.put("token", accessToken);
+    param.put("exclude_members", true);
+    param.put("exclude_archived", true);
+    
+    return executeSlackAPI(SlackAPI.channels_list, param, Map.class);
+  }  
+  
+  public Map<String, Object> imList(String accessToken) {
+    Map<String, Object> param = new HashMap<>();
+    param.put("token", accessToken);
+    
+    return executeSlackAPI(SlackAPI.im_list, param, Map.class);
+  }
+  
+  public Map<String, Object> authTest(String accessToken) {
+    Map<String, Object> param = new HashMap<>();
+    param.put("token", accessToken);
+    
+    return executeSlackAPI(SlackAPI.auth_test, param, Map.class);
+  }  
+  
+  private <T> T executeSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {
     if(HttpMethod.GET.equals(api.getMethod())) {
       return getSlackAPI(api, param, resultClass);
+    } else {
+      return postSlackAPI(api, param, resultClass);
     }
+  }
+
+  private <T> T postSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {
+    logger.debug("post api {}, param : {}", api.getCommand(), param);
+
+    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(api.getURL());
+
+    HttpHeaders headers = new HttpHeaders();
+    if(param instanceof TokenBarer) {
+      headers.set("Authorization", "Bearer " + ((TokenBarer)param).getToken());
+    } else if (param instanceof Map) {
+      headers.set("Authorization", "Bearer " + ((Map)param).get("token"));
+    }
+    headers.setContentType(api.getAccessType()); 
+    HttpEntity entity = new HttpEntity(param, headers);
+
+    ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, entity, String.class);
+    
+    logger.debug("post api {}, response : {}, {}", api.getCommand(), response.getStatusCode(), response.getBody());
+    
+    try {
+      return new ObjectMapper().readValue(response.getBody(), resultClass);
+    } catch (IOException e) {
+      new RuntimeException("Salck API Error", e);
+    }
+    
     return null;
   }
-  
-  private <T> T getSlackAPI(SlackAPI api, Map<String, Object> param, Class<T> resultClass) {
+
+  private <T> T getSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {
+    logger.debug("get api {}, param : {}", api.getCommand(), param);
+    
     if(MediaType.APPLICATION_FORM_URLENCODED.equals(api.getAccessType())) {
       UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(api.getURL());
       
-      for(Entry<String, Object> entry : param.entrySet()) {
-        builder.queryParam(entry.getKey(), entry.getValue());
+      if(param instanceof Map) {
+        for(Entry<String, Object> entry : ((Map<String, Object>) param).entrySet()) {
+          builder.queryParam(entry.getKey(), entry.getValue());
+        }        
       }
       
       ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
 
-      logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
+      logger.debug("get api {}, http response : {}, {}", api.getCommand(), response.getStatusCode(), response.getBody());
       
       try {
-        return new ObjectMapper().readValue(response.getBody(), resultClass);
+        T result = new ObjectMapper().readValue(response.getBody(), resultClass);
+        logger.debug("get api {}, result : {}", api.getMethod(), result);
+        return result;
       } catch (IOException e) {
         new RuntimeException("Salck API Error", e);
       }
@@ -94,5 +191,7 @@ public class SlackWebClient implements SlackClient {
     ResponseEntity<String> response = restTemplate.postForEntity("https://slack.com/api/chat.delete", message, String.class);
     
     logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
-  }  
+  }
+
+
 }
