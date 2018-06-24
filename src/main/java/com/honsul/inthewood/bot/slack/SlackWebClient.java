@@ -25,6 +25,8 @@ import com.honsul.inthewood.bot.slack.model.SlackDeleteMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.TokenBarer;
+import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
+import com.honsul.inthewood.bot.slack.model.api.ImListResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 
 @Component
@@ -99,18 +101,18 @@ public class SlackWebClient implements SlackClient {
     return executeSlackAPI(SlackAPI.channels_list, param, Map.class);
   }  
   
-  public Map<String, Object> imList(String accessToken) {
+  public ImListResponse imList(String accessToken) {
     Map<String, Object> param = new HashMap<>();
     param.put("token", accessToken);
     
-    return executeSlackAPI(SlackAPI.im_list, param, Map.class);
+    return executeSlackAPI(SlackAPI.im_list, param, ImListResponse.class);
   }
   
-  public Map<String, Object> authTest(String accessToken) {
+  public AuthTestResponse authTest(String accessToken) {
     Map<String, Object> param = new HashMap<>();
     param.put("token", accessToken);
     
-    return executeSlackAPI(SlackAPI.auth_test, param, Map.class);
+    return executeSlackAPI(SlackAPI.auth_test, param, AuthTestResponse.class);
   }  
   
   private <T> T executeSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {

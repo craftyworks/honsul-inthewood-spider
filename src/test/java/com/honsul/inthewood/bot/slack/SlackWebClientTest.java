@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
+import com.honsul.inthewood.bot.slack.model.api.ImListResponse;
 
 public class SlackWebClientTest {
 
@@ -24,6 +25,22 @@ public class SlackWebClientTest {
     slackWebClient = new SlackWebClient();
   }
   
+  @Test 
+  public void testChatMeMessage() {
+    //DB60RERLH
+    //UB6GTNEBC 
+    
+    //"bot_id": "BB6GTNEAW",
+    //"api_app_id": "AB69RBN8L"
+      
+    slackWebClient.chatPostMessage(SlackMessage.of(BOT_TOKEN, "DB60RERLH", "Direct Message 테스트1 by Bot Token"));
+    
+    slackWebClient.chatPostMessage(SlackMessage.of(BOT_TOKEN, "BB6GTNEAW", "Direct Message 테스트2 by Bot Token"));
+    
+    slackWebClient.chatPostMessage(SlackMessage.of(OAUTH_TOKEN, "DB60RERLH", "Direct Message 테스트3 by Bot Token"));
+    
+    slackWebClient.chatPostMessage(SlackMessage.of(OAUTH_TOKEN, "BB6GTNEAW", "Direct Message 테스트4 by Bot Token"));    
+  }
   /**
    * BOT Token 으로 DM 이나 Public Channel 로 post message 가능.
    * OAuth TOken 으로 Private Channel post message 가능.
@@ -117,8 +134,18 @@ public class SlackWebClientTest {
   
   @Test
   public void testImList() {
-    Map<String, Object> response = slackWebClient.imList(BOT_TOKEN);
-    assertThat(response.get("ok"), is(true));
+    // BOT 기준
+    ImListResponse response = slackWebClient.imList(BOT_TOKEN);
+    assertThat(response.isOk(), is(true));
+    
+    long count = response.getIms().stream().filter(el -> "U0502LPJC".equals(el.getUser())).count();
+    assertThat(count, greaterThan(0L));
+    
+    // USER 기준
+    response = slackWebClient.imList(OAUTH_TOKEN);
+    assertThat(response.isOk(), is(true));
+    count = response.getIms().stream().filter(el -> "UB6GTNEBC".equals(el.getUser())).count();
+    assertThat(count, greaterThan(0L));
   }
   
   @Test

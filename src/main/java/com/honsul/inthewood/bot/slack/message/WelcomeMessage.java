@@ -6,16 +6,16 @@ import com.honsul.inthewood.bot.slack.model.SlackAction;
 import com.honsul.inthewood.bot.slack.model.SlackAttachment;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage.SlackMessageBuilder;
-import com.honsul.inthewood.bot.slack.model.api.UserAuth;
+import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 
 public class WelcomeMessage {
 
-  public static SlackMessage build(UserAuth auth) {
+  public static SlackMessage build(SlackUser user) {
     SlackMessageBuilder builder = SlackMessage.builder();
     
     builder
-      .token(auth.getAccessToken())
-      .channel(auth.getUserId())
+      .token(user.getBotAccessToken())
+      .channel(user.getBotImChannel())
       .text("휴양림 예약현황 알림을 시작하시겠습니까?")
       .attachments(new SlackAttachment[] {
           SlackAttachment.builder()

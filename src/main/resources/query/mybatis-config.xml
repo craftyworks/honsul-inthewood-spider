@@ -22,6 +22,7 @@
     <typeAlias alias="Booking" type="com.honsul.inthewood.core.model.Booking"/>
     <typeAlias alias="Room" type="com.honsul.inthewood.core.model.Room"/>    
     <typeAlias alias="Subscriber" type="com.honsul.inthewood.core.model.Subscriber"/>
+    <typeAlias alias="SlackUser" type="com.honsul.inthewood.bot.slack.model.domain.SlackUser"/>
   </typeAliases>
   
   <typeHandlers>
@@ -34,8 +35,7 @@
     <mapper resource="query/holiday/HolidayDaoQuery.xml"/>
     <mapper resource="query/spider/SpiderDaoQuery.xml"/>
     <mapper resource="query/spider/PublisherDaoQuery.xml"/>
+    <mapper resource="query/bot/SlackDaoQuery.xml"/>
   </mappers>  
-   
-
 
 </configuration>
