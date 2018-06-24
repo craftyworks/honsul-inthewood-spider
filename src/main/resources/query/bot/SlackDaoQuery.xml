@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honsul.inthewood.bot.slack.dao.SlackDao">
+                      
+    <update id="updateSlackUser" parameterType="SlackUser">
+      INSERT INTO SLACK_USER(
+        USER_ID, USER_NAME, TEAM_ID, TEAM_NAME, ACCESS_TOKEN, 
+        BOT_USER_ID, BOT_ACCESS_TOKEN, BOT_IM_CHANNEL, INSERT_DT, UPDATE_DT)
+      VALUES (
+        #{userId}, #{userName}, #{teamId}, #{teamName}, #{accessToken}, 
+        #{botUserId}, #{botAccessToken}, #{botImChannel}, now(), now())
+          ON DUPLICATE KEY
+      UPDATE USER_NAME = #{userName}
+           , TEAM_ID = #{teamId}
+           , TEAM_NAME = #{teamName}
+           , ACCESS_TOKEN = #{accessToken}
+           , BOT_USER_ID = #{botUserId}
+           , BOT_ACCESS_TOKEN = #{botAccessToken}
+           , BOT_IM_CHANNEL = #{botImChannel}
+           , UPDATE_DT = now()    
+    </update>    
+
+</mapper>
+

@@ -1,7 +1,6 @@
 package com.honsul.inthewood.bot.slack;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +25,7 @@ import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
+import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 import com.honsul.inthewood.bot.slack.slash.SlashCommandHandler;
 
 @Controller
@@ -42,6 +42,9 @@ public class SlackBotController {
   private List<SlashCommandHandler> slashCommandHandlers;
   
   @Autowired
+  private SlackBotService service;
+  
+  @Autowired
   private SlackWebClient slackClient;
 
   @GetMapping("/oauth")
@@ -50,14 +53,12 @@ public class SlackBotController {
     // Slack Oauth 인증
     UserAuth auth = slackClient.oauthAccess(code);
     
-    // Slack 사용자 조회
-    Map<String, Object> userInfo = slackClient.authTest(auth.getAccessToken());
-    
-    // Slack 사용자 등록
+    // Slack 사용자 등록 
+    SlackUser user = service.updateSlackUser(auth);
     
     // Welcome message 발송
-    SlackMessageResponse response = slackClient.chatPostMessage(WelcomeMessage.build(auth));
-    return "redirect:" + userInfo.get("url") + "messages/" + response.getChannel() + "/";
+    SlackMessageResponse response = slackClient.chatPostMessage(WelcomeMessage.build(user));
+    return "redirect:" + "https://" + user.getUserName() + ".slack.com/messages/" + response.getChannel() + "/";
   }
   
   /**
