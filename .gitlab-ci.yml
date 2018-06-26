@@ -17,6 +17,7 @@ maven_build:
     #- mvn site -DgenerateReports=false
     #- mvn jacoco:report
     #- sed 's/.*\(Total[^%]*%\).*/\1/' target/site/jacoco/index.html
+    - mvn compile
     - mvn exec:java
   allow_failure: true  
   artifacts:
