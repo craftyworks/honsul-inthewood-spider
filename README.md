@@ -4,6 +4,7 @@
 
 [![coverage report](https://gitlab.com/craftyworks/honsul-inthewood-spider/badges/master/coverage.svg)](https://craftyworks.gitlab.io/honsul-inthewood-spider/jacoco/)
 
+![test result](https://craftyworks.gitlab.io/honsul-inthewood-spider/test-result.svg)
 ## 환경설정
 
 ### 프로그램 설치
