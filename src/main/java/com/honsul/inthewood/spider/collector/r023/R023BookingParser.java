@@ -25,12 +25,13 @@ public class R023BookingParser extends JsoupBookingParser {
 
   private static final String CONNECT_URL = "http://forest.maketicket.co.kr/camp/reserve/calendar.jsp";
   private static final String REFERER = "http://forest.maketicket.co.kr/ticket/GD83";
-  
+  private static final String REFERER_DUMMY = "http://forest.maketicket.co.kr/member.do?command=member_login&gd_seq=GD83";
+	  
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();    
     
-    Document dummy = Jsoup.connect(REFERER).get();
+    Document dummy = Jsoup.connect(REFERER).referrer(REFERER_DUMMY).get();
     Element findKey = dummy.selectFirst("div.container > form");
     String idkey = findKey.selectFirst("input[name=idkey]").val();
     String gd_seq = findKey.selectFirst("input[name=gd_seq]").val();
