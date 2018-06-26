@@ -19,11 +19,12 @@ import com.honsul.inthewood.core.parser.*;
  */
 @BookingParser(resortId="R024")
 public class R024BookingParser extends JsoupBookingParser {
-	private static final String URL = "http://www.jangsuhuyang.kr/Waryong/reserve/list.asp";
-	private static final String POSSIBLE = "가능";
-	private static final String SELECTOR_TBODY = "table.table.table-treserve > tbody";
-	private static final String SELECTOR_TBODY_ROOM_INFO = "td.tal > span > a";
+	static final String URL = "http://www.jangsuhuyang.kr/Waryong/reserve/list.asp";
+	static final String SELECTOR_TBODY = "table.table.table-treserve > tbody";
+	static final String SELECTOR_TBODY_ROOM_INFO = "td.tal > span > a";
 	private static final String SELECTOR_TBODY_ROOM_STATUS = "td.tac";
+	
+	private static final String POSSIBLE = "가능";
 	
 	@Override
 	protected List<Document> documents() throws IOException {
@@ -56,7 +57,6 @@ public class R024BookingParser extends JsoupBookingParser {
 				Booking booking = new Booking();
 				booking.setResortId(SpiderContext.getResortId());
 				booking.setRoomNm(roomNm);
-				System.out.println(roomNm);
 				String[] date = status[2].split("-");
 				booking.setBookingDt(LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2])));
 				

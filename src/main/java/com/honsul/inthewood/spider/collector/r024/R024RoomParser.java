@@ -21,100 +21,81 @@ import com.honsul.inthewood.core.util.*;
 @RoomParser(resortId = "R024")
 public class R024RoomParser extends JsoupRoomParser {
 
-	private static final String URL = "http://www.jangsuhuyang.kr/Waryong/reserve/house_main.asp";
-	private static final String SELECTOR_ROOM_INFO = "div.table-responsive > table.table.table-bordered > tbody > tr";
-	private static Map<String, String[]> roomMapper = new HashMap<String, String[]>();
-	
-	static {
-		roomMapper.put("숲속의집 1호~4호", new String[] {"숲속의집 1호", "숲속의집 2호", "숲속의집 3호", "숲속의집 4호"});
-		roomMapper.put("숲속의집 5호~8호", new String[] {"숲속의집 5호", "숲속의집 6호", "숲속의집 7호", "숲속의집 8호"});
-		roomMapper.put("한옥체험관", new String[] {"한옥 1호", "한옥 2호"});
-		roomMapper.put("산막 9, 10호", new String[] {"산막 9호", "산막 10호"});
-		roomMapper.put("부엉이.소쩍새방 (통합 운영)", new String[] {"부엉이소쩍새"});
-		roomMapper.put("복합산막", new String[] {"복합산막 101호", "복합산막 102호", "복합산막 103호", "복합산막 104호", "복합산막 105호", "복합산막 106호"
-												, "복합산막 201호", "복합산막 202호", "복합산막 203호", "복합산막 204호", "복합산막 205호", "복합산막 206호"});
-		roomMapper.put("산림문화휴양관", new String[] {"휴양관 1호", "휴양관 2호"});
-		roomMapper.put("연수의집 2층, 3층", new String[] {"연수의집 2층", "연수의집 3층"});
-		roomMapper.put("단체식당", new String[] {"단체식당"});
-	}
+	private static final String URL = "http://www.jangsuhuyang.kr/Waryong/reserve/house_detail.asp";
 	
 	@Override
-	protected Document document() throws IOException {
-		return Jsoup.connect(URL).get();
+	protected List<Document> documents() throws IOException {
+		List<Document> documentList = new ArrayList<Document>();
+		List<String> pids = getRoomPIDList();
+		for (String pid : pids) {
+			documentList.add(Jsoup.connect(URL).data("pid", pid).get());
+		}
+		return documentList;
+	}
+
+	private List<String> getRoomPIDList() throws IOException {
+		List<String> pids = new ArrayList<String>();
+		
+		Document doc = Jsoup.connect(R024BookingParser.URL).get();
+		Elements tbodies = doc.select(R024BookingParser.SELECTOR_TBODY);
+		for (Element tbody : tbodies) {
+			Elements room = tbody.select(R024BookingParser.SELECTOR_TBODY_ROOM_INFO);
+			String href = room.attr("href");
+			String[] query = href.substring(href.indexOf("?")+1).split("=");
+			if(query.length == 2 && "pid".equals(query[0])) pids.add(query[1]);
+		}
+		
+		return pids;
 	}
 
 	@Override
 	public List<Room> extract(Document doc) {
 		List<Room> roomList = new ArrayList<Room>();
+		Elements trs = doc.select("fieldset").select("table").first().select("tr");
 		
-		Elements tbodies = doc.select(SELECTOR_ROOM_INFO);
-
-		for(Element tr : tbodies) {
-    	    if(tr.select("td").size() < 3) continue;
-    	    if(tr.select("td").size() > 3) {
-    	    	String roomKey = tr.select("td:nth-child(2)").select("span").text();
-    	    	String[] infos = tr.select("td:nth-child(2)").text().split("/");
-    	    	
-    	    	if(roomMapper.containsKey(roomKey)) {
-    	    		String space = infos.length > 1 ? infos[0].replace(roomKey, "").trim() : "";
-    	    		String people = infos.length > 1 ? infos[1].replace("인용", "").trim() : "";
-    	    		long peakPrice = TextUtils.findMoneyLong(tr.select("td:nth-child(4)").text());
-    	    		long price = "단체식당".equals(roomKey) ? peakPrice : TextUtils.findMoneyLong(tr.select("td:nth-child(5)").text());
-    	    		
-    	    		if(!"산림문화휴양관".equals(roomKey)) {
-    	    			for (String  roomNm: roomMapper.get(roomKey)) {
-    	    				Room room = new Room();
-    	    				room.setResortId(SpiderContext.getResortId());
-    	    				room.setRoomNm(roomNm);
-    	    				room.setSpace(space);
-    	    				room.setNumberOfPeople(people);
-    	    				room.setPrice(price);
-    	    				room.setPeakPrice(peakPrice);
-    	    				
-    	    				roomList.add(room);
-    	    			}
-    	    		}else {
-    	    			String roomNm = roomMapper.get(roomKey)[0];
-    	    			infos = tr.select("td:nth-child(3)").text().split(" ");
-    	    			space = infos[0].substring(1, infos[0].length()-1);
-    	    			people = infos[1].replace("인용", "").trim();
-    	    			
-	    				Room room = new Room();
-	    				room.setResortId(SpiderContext.getResortId());
-	    				room.setRoomNm(roomNm);
-	    				room.setSpace(space);
-	    				room.setNumberOfPeople(people);
-	    				room.setPrice(price);
-	    				room.setPeakPrice(peakPrice);
-	    				
-	    				roomList.add(room);
-    	    				
-    	    			tr = tr.nextElementSibling();
-	    				roomNm = roomMapper.get(roomKey)[1];
-	    				infos = tr.select("td:nth-child(1)").text().split(" ");
-    	    			space = infos[0].substring(1, infos[0].length()-1);
-    	    			people = infos[1].replace("인용", "").trim();
-    	    			peakPrice = TextUtils.findMoneyLong(tr.select("td:nth-child(2)").text());
-    	    			price = TextUtils.findMoneyLong(tr.select("td:nth-child(3)").text());
-    	    			
-    	    			room = new Room();
-    	    			room.setResortId(SpiderContext.getResortId());
-    	    			room.setRoomNm(roomNm);
-    	    			room.setSpace(space);
-    	    			room.setNumberOfPeople(people);
-    	    			room.setPrice(price);
-    	    			room.setPeakPrice(peakPrice);
-    	    			
-    	    			roomList.add(room);
-    	    		}
-    	    	}
-    	    }
+		Room room = null;
+		String key, val;
+		for (Element tr : trs) {
+			if(tr.className().equals("info")) {
+				val = tr.select("th").text();
+				if(TextUtils.contains(val, "부엉이소쩍새")) val = "부엉이소쩍새";
+				if(TextUtils.contains(val, "산림문화휴양관")) val = val.replaceFirst("산림문화", "");
+				
+				room = new Room();
+				room.setResortId(SpiderContext.getResortId());
+				room.setRoomNm(val);
+				room.setRoomType(getRoomType(val));
+			}else {
+				key = tr.select("td:nth-child(1)").text();
+				val = tr.select("td:nth-child(2)").text();
+				if(room == null) continue;
+				
+				switch (key) {
+				case "면 적":
+					room.setSpace(val.split(" ")[0].trim());
+					break;
+				case "사 용 료":
+					String[] price = val.split("/");
+					long peak = TextUtils.findMoneyLong(price[0]);
+					long normal= TextUtils.findMoneyLong(price[1]);
+					room.setPeakPrice(peak);
+					room.setPrice(normal < 100 ? peak : normal);
+					break;
+				case "기준인원":
+					room.setNumberOfPeople(val.split(" ")[0].trim());
+					break;
+				default:
+					break;
+				}
+			}
 		}
+		
+		if(room != null) roomList.add(room);
 		return roomList;
-  }
+	}
 
 	@Override
 	public RoomType getRoomType(String roomTypeNm) {
-		return TextUtils.contains(roomTypeNm, "휴양관") ? RoomType.CONDO : RoomType.HUT;
+		return TextUtils.contains(roomTypeNm, "휴양관", "복합", "단체") ? RoomType.CONDO : RoomType.HUT;
 	}
 }
