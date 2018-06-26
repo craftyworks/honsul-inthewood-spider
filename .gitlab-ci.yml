@@ -17,7 +17,7 @@ maven_build:
     #- mvn site -DgenerateReports=false
     #- mvn jacoco:report
     #- sed 's/.*\(Total[^%]*%\).*/\1/' target/site/jacoco/index.html
-    - mvn exec:java -Dexec.mainClass="com.honsul.inthewood.core.util.TestCaseResultShieldGenerator"
+    - mvn exec:java
   allow_failure: true  
   artifacts:
     paths:
