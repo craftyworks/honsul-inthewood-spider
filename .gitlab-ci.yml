@@ -13,11 +13,10 @@ cache:
 maven_build:
   stage: test
   script: 
-    #- mvn surefire-report:report
-    #- mvn site -DgenerateReports=false
-    #- mvn jacoco:report
-    #- sed 's/.*\(Total[^%]*%\).*/\1/' target/site/jacoco/index.html
-    - mvn compile
+    - mvn surefire-report:report
+    - mvn site -DgenerateReports=false
+    - mvn jacoco:report
+    - sed 's/.*\(Total[^%]*%\).*/\1/' target/site/jacoco/index.html
     - mvn exec:java
   allow_failure: true  
   artifacts:
