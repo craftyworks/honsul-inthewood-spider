@@ -46,18 +46,12 @@ public class R025BookingParser extends JsoupBookingParser {
   @Override
   public List<Booking> extract(Document doc) {
     List<Booking> bookingList = new ArrayList<>(); 
-
-    String yearMonth = doc.select("#contents > div.reservation > h3").text();
-    yearMonth = yearMonth.replace("년", "-").replaceAll("월|\\s", "");    
     
     for(Element td : doc.select("#contents > div.reservation > table > tbody > tr > td")) {
     	if(td.text().length() == 0 || td.text().contains("예약종료")) {
 	          continue;
 	    }
-    	for(Element form : td.select("form")) {
-        	if(td.text().length() == 0 || td.text().contains("예약종료")) {
-	          continue;
-	        }
+    	for(Element form : td.select("form")) {        	
         	String[] attr = form.select("input[name='rsv_info']").attr("value").split("#@");
             String bookingDt = attr[2];
             String roomNm = form.text().replace("*",""); // remove '*'
