@@ -1,5 +1,4 @@
-package com.honsul.inthewood.spider.collector.r025;
-
+package com.honsul.inthewood.spider.collector.r027;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -17,13 +16,12 @@ import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.parser.JsoupBookingParser;
 
 /**
- * 망경대산자연휴양림 예약현황 파서.
+ * 송이밸리산자연휴양림 예약현황 파서.
  */
-@BookingParser(resortId="R025")
-public class R025BookingParser extends JsoupBookingParser {
+@BookingParser(resortId="R027")
+public class R027BookingParser extends JsoupBookingParser {
 
-  private static final String CONNECT_URL = "https://www.mgds.kr:454/reservation.asp?location=002";
-
+  private static final String CONNECT_URL = "https://www.songivalley.co.kr:454/reservation.asp?location=002";
 
   @Override
   protected List<Document> documents() throws IOException {
@@ -32,12 +30,10 @@ public class R025BookingParser extends JsoupBookingParser {
     Document doc = Jsoup.connect(CONNECT_URL).get();
     documentList.add(doc);
     
-    //next month
-    Element elm = doc.selectFirst("#contents > div.reservation > form[name=form_next]");
+    Element elm = doc.selectFirst("#reservation > form[name=form_next]");
     if(elm != null) {
       String year = elm.selectFirst("input[name=wh_year]").val();
       String month = elm.selectFirst("input[name=wh_month]").val();
-    
       documentList.add(Jsoup.connect(CONNECT_URL).data("wh_year", year).data("wh_month", month).post());
     }
     return documentList;
@@ -47,15 +43,14 @@ public class R025BookingParser extends JsoupBookingParser {
   public List<Booking> extract(Document doc) {
     List<Booking> bookingList = new ArrayList<>(); 
     
-    for(Element td : doc.select("#contents > div.reservation > table > tbody > tr > td")) {
-    	if(td.text().length() == 0 || td.text().contains("예약종료")) {
-	          continue;
-	    }
-    	for(Element form : td.select("form")) {        	
-        	String[] attr = form.select("input[name='rsv_info']").attr("value").split("#@");
+    for(Element td : doc.select("#reservation > table > tbody > tr > td")) {
+    	if(td.text().length() == 0 || td.text().contains("예약종료")) {continue;}    
+    	
+    	for(Element form : td.select("form")) {
+    		String[] attr = form.select("input[name='rsv_info']").attr("value").split("#@");
             String bookingDt = attr[2];
-            String roomNm = form.text().replace("*",""); // remove '*'
-        	
+            String roomNm = form.text(); 
+                    	
         	Booking booking = new Booking();
 	        booking.setResortId(SpiderContext.getResortId());
 	        booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
