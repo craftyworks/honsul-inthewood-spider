@@ -5,10 +5,10 @@ import java.util.Objects;
 
 import lombok.Data;
 
-@Data
 /**
  * 예약 가능한 휴양림 숙소정보.
  */
+@Data
 public class Booking {
   private String resortId;
   private String resortNm;
