@@ -22,8 +22,8 @@ import com.honsul.inthewood.core.util.TextUtils;
 @RoomParser(resortId="R028")
 public class R028RoomParser extends JsoupRoomParser {
   
-	private static final String HUT_URL = "https://www.songivalley.co.kr:454/facilities.asp?location=";
-	private static final String[] LOCATIONS = {"003", "003_02", "003_03", "006"};
+	private static final String HUT_URL = "https://forest700.or.kr:10462/";
+	private static final String[] LOCATIONS = {"sub21.php", "sub22.php", "sub23.php"};
 		  
 	@Override
 	protected List<Document> documents() throws IOException {
@@ -38,25 +38,19 @@ public class R028RoomParser extends JsoupRoomParser {
 	public List<Room> extract(Document doc) {
 		List<Room> roomList = new ArrayList<>();
 		
-		String numberOfPeople = "";
-	    String space = "";
-	    long price = 0, peakPrice = 0;
-	    String roomTypeNm = doc.select("#content > div.header > h2").text();
-	    
-		for(Element row : doc.select("#facilities > table > tbody > tr")) {
-			Elements tds = row.select("td");
-			String roomNm = tds.get(0).text();
-			if(tds.size() > 2) {
-				space = tds.get(1).text();
-				numberOfPeople = tds.get(2).text().replace("명", "");
-				peakPrice = TextUtils.findMoneyLong(tds.get(3).text());
-				price = TextUtils.findMoneyLong(tds.get(4).text());
-			}
-			  
+		for(Element li : doc.select("#right_con > div:nth-child(3) > div.sub_navi_17 > ul > li")) {
+			String roomNm = li.text().replaceAll("\\s+|\\호|나무", "");
+
+			Elements tr = doc.select("div.sub_navi_con > ul > li:nth-child(4) > table > tbody > tr:nth-child(3)");
+			long price = TextUtils.findMoneyLong(tr.get(0).select("td:nth-child(3)").text());
+			long peakPrice = TextUtils.findMoneyLong(tr.get(0).select("td:nth-child(5)").text());
+			String numberOfPeople = doc.select("div.sub_navi_con > ul > li:nth-child(5) > p").text().split("\\(")[0].replaceAll("[^\\d]", "");
+			String space = "";
+		    			  
 		    Room room = new Room();
 		    room.setResortId(SpiderContext.getResortId());
 		    room.setRoomNm(roomNm);
-		    room.setRoomType(getRoomType(roomTypeNm));
+		    room.setRoomType(RoomType.CONDO);
 		    room.setSpace(space);
 		    room.setNumberOfPeople(numberOfPeople);
 		    room.setPeakPrice(peakPrice);
