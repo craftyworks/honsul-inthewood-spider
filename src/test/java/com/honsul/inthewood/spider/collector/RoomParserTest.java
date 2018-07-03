@@ -42,8 +42,7 @@ public abstract class RoomParserTest {
       assertTrue(!CollectionUtils.isEmpty(roomList));
       
       Room room = roomList.get(0);
-      assertEquals(RoomParserTest.RESORT_ID, room.getResortId());
-      
+      assertThat(RoomParserTest.RESORT_ID, anyOf(is("National"), is(room.getResortId())));
       
       for(Room r : roomList) {
         // 객실 이용료 체크
@@ -55,7 +54,7 @@ public abstract class RoomParserTest {
         assertThat("숙박요금은 0원보다 커야 함", r.getPrice(), greaterThan(0L));
         
         // 객실명 공백 체크
-        assertThat("객실명에 공백이 포함되어 있음.", r.getRoomNm().length(), is(r.getRoomNm().trim().length()));
+        assertThat("객실명에 공백이 포함되어 있음. [" + r.getRoomNm() + "]", r.getRoomNm().length(), is(r.getRoomNm().trim().length()));
         
         // 인워수 체크
         if(r.getNumberOfPeople().length() != r.getNumberOfPeople().replaceAll("[^0-9~\\-]*", "").length()) {

@@ -3,6 +3,8 @@ package com.honsul.inthewood.core.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.honsul.inthewood.core.SpiderContext;
+
 import lombok.Data;
 
 /**
@@ -14,6 +16,14 @@ public class Booking {
   private String resortNm;
   private LocalDate bookingDt;
   private String roomNm;
+  
+  public static Booking of(LocalDate bookingDt, String roomNm) {
+    Booking booking = new Booking();
+    booking.setResortId(SpiderContext.getResortId());
+    booking.setBookingDt(bookingDt);
+    booking.setRoomNm(roomNm);
+    return booking;
+  }
   
   @Override
   public boolean equals(Object obj) {

@@ -65,7 +65,7 @@ public abstract class BookingParserTest {
   public void testParse() {
       List<Booking> bookingList = PARSER.parse();
       assertTrue(!CollectionUtils.isEmpty(bookingList));
-      assertEquals(BookingParserTest.RESORT_ID, bookingList.get(0).getResortId());
+      assertThat(BookingParserTest.RESORT_ID, anyOf(is("National"), is(bookingList.get(0).getResortId())));
 
       for(Booking b : bookingList) {
         //중복 체크
@@ -76,6 +76,9 @@ public abstract class BookingParserTest {
             }
           });
         }
+        // 객실명 공백 체크
+        assertThat("객실명에 공백이 포함되어 있음. [" + b.getRoomNm() + "]", b.getRoomNm().length(), is(b.getRoomNm().trim().length()));
+        
         assertThat("중복된 예약현황 발견", Collections.frequency(bookingList, b), is(1));
       }
       

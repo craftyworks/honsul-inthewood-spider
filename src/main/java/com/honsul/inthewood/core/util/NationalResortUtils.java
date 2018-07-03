@@ -62,6 +62,15 @@ public class NationalResortUtils {
       .get();
   }
   
+  public static Document bookinDocument(String departmentId, Map<String, String> cookies) throws IOException {
+    return Jsoup.connect(BOOKING_URL)
+      .header("Referer", MAIN_URL)
+      .cookies(cookies)
+      .data("paramDprtmId", departmentId)
+      .data("fcltMdcls", "03001,03002,03003")
+      .get();
+  }
+  
   public static long price(RoomType roomType, String numberOfPeople) {
     Integer key = Objects.hash(roomType, numberOfPeople);
     logger.debug("price({}, {}) => {}", roomType, numberOfPeople, PRICE_MAP.get(key));
@@ -87,6 +96,8 @@ public class NationalResortUtils {
     PRICE_MAP.put(Objects.hash(RoomType.HUT, "12"), new long[] {104000,184000});
     PRICE_MAP.put(Objects.hash(RoomType.HUT, "13"), new long[] {104000,184000});
     PRICE_MAP.put(Objects.hash(RoomType.HUT, "14"), new long[] {104000,184000});
+    PRICE_MAP.put(Objects.hash(RoomType.HUT, "15"), new long[] {104000,184000});
+    PRICE_MAP.put(Objects.hash(RoomType.HUT, "16"), new long[] {104000,184000});
     PRICE_MAP.put(Objects.hash(RoomType.CONDO, "3"), new long[] {32000,53000});
     PRICE_MAP.put(Objects.hash(RoomType.CONDO, "4"), new long[] {39000,68000});
     PRICE_MAP.put(Objects.hash(RoomType.CONDO, "5"), new long[] {50000,91000});
@@ -99,5 +110,7 @@ public class NationalResortUtils {
     PRICE_MAP.put(Objects.hash(RoomType.CONDO, "12"), new long[] {107000,186000});
     PRICE_MAP.put(Objects.hash(RoomType.CONDO, "13"), new long[] {107000,186000});
     PRICE_MAP.put(Objects.hash(RoomType.CONDO, "14"), new long[] {107000,186000});
+    PRICE_MAP.put(Objects.hash(RoomType.CONDO, "15"), new long[] {107000,186000});
+    PRICE_MAP.put(Objects.hash(RoomType.CONDO, "16"), new long[] {107000,186000});
   }
 }
