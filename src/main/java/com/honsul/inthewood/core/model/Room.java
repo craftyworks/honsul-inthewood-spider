@@ -3,9 +3,15 @@ package com.honsul.inthewood.core.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Room {
   private String resortId;
   private String resortNm;

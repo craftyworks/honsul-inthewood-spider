@@ -19,6 +19,8 @@ maven_build:
     - sed 's/.*\(Total[^%]*%\).*/\1/' target/site/jacoco/index.html
     - mvn exec:java
   allow_failure: true  
+  only:
+    - master
   artifacts:
     paths:
       - target/site/
