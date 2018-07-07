@@ -115,6 +115,11 @@ public class SlackWebClient implements SlackClient {
     return executeSlackAPI(SlackAPI.auth_test, param, AuthTestResponse.class);
   }  
   
+  
+  public void dialogOpen() {
+    
+  }
+  
   private <T> T executeSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {
     if(HttpMethod.GET.equals(api.getMethod())) {
       return getSlackAPI(api, param, resultClass);

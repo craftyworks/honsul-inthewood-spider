@@ -16,6 +16,7 @@ public enum SlackAPI {
   im_list(HttpMethod.GET, MediaType.APPLICATION_FORM_URLENCODED),
   chat_delete(HttpMethod.POST, MediaType.APPLICATION_JSON_UTF8),
   chat_update(HttpMethod.POST, MediaType.APPLICATION_JSON_UTF8),
+  dialog_open(HttpMethod.POST, MediaType.APPLICATION_JSON_UTF8),
   ;
   
   private final HttpMethod httpMethod;

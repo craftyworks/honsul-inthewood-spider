@@ -27,6 +27,9 @@ public class SlackWebhook {
     this.slackClient = slackClient;
   }
   
+  /**
+   * 예약현황 알림메시지 발송
+   */
   public SlackMessageResponse sendBookingNotificationMessage(SlackUser slackUser, Map<String, String> booking) {
     SlackMessage message = BookingNotificationMessage.build(booking);
     message.setToken(slackUser.getBotAccessToken());
@@ -42,6 +45,9 @@ public class SlackWebhook {
     return response;
   }
 
+  /**
+   * 발송된 예약현황 알림메시지 삭제
+   */
   public SlackMessageResponse deleteBookingNotificationMessage(SlackMessage messageLog) {
     return slackClient.chatDelete(messageLog);
   }
