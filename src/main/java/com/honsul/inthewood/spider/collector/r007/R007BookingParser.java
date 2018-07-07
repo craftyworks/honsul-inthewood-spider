@@ -13,7 +13,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import com.honsul.inthewood.core.SpiderContext;
 import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.parser.JsoupBookingParser;
@@ -58,11 +57,14 @@ public class R007BookingParser extends JsoupBookingParser {
         String bookingDt = matcher.group(1) + matcher.group(2) + matcher.group(3);
         String roomNm = row.selectFirst("font").text();
 
-        Booking booking = new Booking();
-        booking.setResortId(SpiderContext.getResortId());
-        booking.setBookingDt(LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyyMMdd")));
-        booking.setRoomNm(roomNm);
-        bookingList.add(booking);
+        if(StringUtils.contains(roomNm, "소형산막")) {
+          //소형산막은 제외
+          continue;
+        }
+        bookingList.add(Booking.of(
+            LocalDate.parse(bookingDt, DateTimeFormatter.ofPattern("yyyyMMdd")),
+            roomNm
+        ));
       }
     }
     
