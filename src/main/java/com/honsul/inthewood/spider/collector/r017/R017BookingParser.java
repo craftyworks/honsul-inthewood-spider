@@ -27,8 +27,6 @@ public class R017BookingParser extends JsoupBookingParser {
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();
     
-    LocalDate now = LocalDate.now();
-    
     Document doc = Jsoup.connect(CONNECT_URL).get();
     for(Element option : doc.select("select#ChoiceMonth > option")) {
       documentList.add(Jsoup.connect(CONNECT_URL).data("ChoiceMonth", option.val()).get());
