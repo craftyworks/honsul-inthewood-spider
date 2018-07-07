@@ -11,17 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.honsul.inthewood.bot.slack.SlackWebhook;
+import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 import com.honsul.inthewood.core.model.Resort;
-import com.honsul.inthewood.core.model.Subscriber;
-import com.honsul.inthewood.core.util.TextUtils;
 import com.honsul.inthewood.spider.dao.PublisherDao;
-import com.palantir.roboslack.api.MessageRequest;
-import com.palantir.roboslack.api.attachments.Attachment;
-import com.palantir.roboslack.api.attachments.components.Color;
-import com.palantir.roboslack.api.attachments.components.Field;
-import com.palantir.roboslack.api.attachments.components.Footer;
-import com.palantir.roboslack.api.attachments.components.Title;
-import com.palantir.roboslack.api.markdown.SlackMarkdown;
 
 @Service
 public class PostmanService {
@@ -38,10 +30,11 @@ public class PostmanService {
    */
   @Async
   public void publishBookingChanges(Resort resort) {
-    for(Map booking : dao.selectNewEntryBookings(resort)) {
-      List<Subscriber> subscribers = dao.selectBookingSubscriber(booking);
-      if(!CollectionUtils.isEmpty(subscribers)) {
-        publishNotification(subscribers, booking);
+    for(Map<String, String> booking : dao.selectNewEntryBookings(resort)) {
+      
+      List<SlackUser> slackSubscribers = dao.selectBookingSlackSubscriber(booking);
+      if(!CollectionUtils.isEmpty(slackSubscribers)) {
+        publishNotification(slackSubscribers, booking);
       }
     }
   }
@@ -50,39 +43,13 @@ public class PostmanService {
     publishBookingChanges(resort);
   }
 
-  public void publishNotification(List<Subscriber> subscribers, Map booking) {
+  public void publishNotification(List<SlackUser> subscribers, Map<String, String> booking) {
     logger.info("booking notifications");
-    for(Subscriber target : subscribers) {
-      logger.info("sending {} : {}", target.getSubscriberId(), booking);
+    for(SlackUser target : subscribers) {
+      logger.info("sending {} : {}", target, booking);
       
-      slackWebhook.sendMessage(target.getSubscriberId(), buildMessage(booking));
+      slackWebhook.sendBookingNotificationMessage(target, booking);
     }
-  }
-
-  private MessageRequest buildMessage(Map<String, String> booking) {
-    MessageRequest.Builder builder = MessageRequest.builder()
-        .username("SnapBot")
-        .text("Room Available!");
-      
-    String fallback = booking.get("resortNm") + " " + booking.get("bookingDt") + " " + booking.get("roomNm") + " (" + booking.get("roomTypeNm") + ")";
-    Title title = Title.builder().text(booking.get("resortNm")).link(TextUtils.toURL(booking.get("homepage"))).build();
-    String text = SlackMarkdown.BOLD.decorate(booking.get("roomNm")) + " (" + booking.get("roomTypeNm") + ")"; 
-        
-      builder.addAttachments(Attachment.builder()
-          .fallback(fallback)
-          .title(title)
-          .text(text)
-          .color(Color.good())
-          .addFields(Field.builder().title("").value(booking.get("bookingDt")).isShort(false).build())
-          .addFields(Field.of("Room", booking.get("occupancy") + " 명"), Field.of("Price", booking.get("price") + " / " + booking.get("peakPrice") + "원"))
-          .footer(
-              Footer.builder()
-                .text(booking.get("address"))
-                .icon(TextUtils.toURL("https://platform.slack-edge.com/img/default_application_icon.png"))
-                .build()
-           )
-          .build());
-    return builder.build();
   }
   
 }

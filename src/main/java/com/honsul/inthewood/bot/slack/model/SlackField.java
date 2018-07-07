@@ -20,10 +20,10 @@ public class SlackField {
     @JsonProperty("short_enough")
     private boolean shortEnough;
     @JsonProperty("short")
-    private boolean isShort = true;
+    private boolean isShort;
     
     public static SlackField of(String title, String value) {
-      return SlackField.builder().title(title).value(value).build();
+      return SlackField.builder().title(title).value(value).isShort(true).build();
     }
     
     public static SlackField of(String title, String value, boolean isShort) {

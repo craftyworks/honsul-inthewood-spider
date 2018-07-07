@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.core.model.Subscriber;
 
@@ -13,8 +14,10 @@ import com.honsul.inthewood.core.model.Subscriber;
 @Repository
 public interface PublisherDao {
 
-  List<Map> selectNewEntryBookings(Resort resort);
+  List<Map<String, String>> selectNewEntryBookings(Resort resort);
 
-  List<Subscriber> selectBookingSubscriber(Map booking);
+  List<Subscriber> selectBookingSubscriber(Map<String, String> booking);
+
+  List<SlackUser> selectBookingSlackSubscriber(Map<String, String> booking);
 
 }

@@ -1,9 +1,8 @@
 package com.honsul.inthewood.bot.slack;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-import com.honsul.inthewood.bot.slack.action.ActionCommandHandler;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
 import com.honsul.inthewood.bot.slack.message.WelcomeMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
@@ -26,20 +24,13 @@ import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
-import com.honsul.inthewood.bot.slack.slash.SlashCommandHandler;
 
 @Controller
 @RequestMapping("/bot/slack")
-public class SlackBotController {
+public class SlackBotController implements InitializingBean{
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
   private final RestTemplate restTemplate = new RestTemplate();
-  
-  @Autowired
-  private List<ActionCommandHandler> actionCommandHandlers;
-  
-  @Autowired
-  private List<SlashCommandHandler> slashCommandHandlers;
   
   @Autowired
   private SlackBotService service;
@@ -47,6 +38,11 @@ public class SlackBotController {
   @Autowired
   private SlackWebClient slackClient;
 
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    
+  }
+  
   @GetMapping("/oauth")
   public String oauth(@RequestParam(name="code", required=false) String code, @RequestParam(name="state", required=false) String state) {
     
@@ -67,13 +63,14 @@ public class SlackBotController {
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public void actionCommand(@RequestBody SlackActionCommand command) {
     logger.info("received action command : {}", command);
-    
+    /*
     for(ActionCommandHandler handler : actionCommandHandlers) {
       if(handler.support(command)) {
         handler.execute(slackClient, command);
         break;
       }
-    }    
+    } 
+    */   
   }
   
   /**
@@ -93,12 +90,14 @@ public class SlackBotController {
     logger.info("received slash command : {}", slashCommand);
     
     SlackMessage rtnMessage = null;
+    /*
     for(SlashCommandHandler handler : slashCommandHandlers) {
       if(handler.support(slashCommand)) {
         rtnMessage = handler.execute(slashCommand);
         break;
       }
     }
+    */
     
     if(rtnMessage == null) {
       rtnMessage = UnknownSlashCommandResponseMessage.build(slashCommand);
