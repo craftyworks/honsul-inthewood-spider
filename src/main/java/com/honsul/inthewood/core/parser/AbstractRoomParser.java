@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.honsul.inthewood.core.Parser;
+import com.honsul.inthewood.core.annotation.RoomParser;
 import com.honsul.inthewood.core.model.Room;
 import com.honsul.inthewood.core.model.RoomType;
 
@@ -68,4 +69,9 @@ public abstract class AbstractRoomParser  implements Parser<Room> {
   
   protected abstract RoomType getRoomType(String roomNm);
     
+  @Override
+  public boolean accept(String resortId) {
+    RoomParser annotation = this.getClass().getAnnotation(RoomParser.class);
+    return resortId.equals(annotation.resortId());
+  }  
 }

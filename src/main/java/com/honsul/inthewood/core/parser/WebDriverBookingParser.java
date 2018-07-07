@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.honsul.inthewood.core.Parser;
+import com.honsul.inthewood.core.annotation.BookingParser;
 import com.honsul.inthewood.core.model.Booking;
 import com.honsul.inthewood.core.util.WebDriverUtils;
 
@@ -39,4 +40,9 @@ public abstract class WebDriverBookingParser implements Parser<Booking> {
     return bookingList;
   }
 
+  @Override
+  public boolean accept(String resortId) {
+    BookingParser annotation = this.getClass().getAnnotation(BookingParser.class);
+    return resortId.equals(annotation.resortId());
+  }
 }

@@ -77,8 +77,7 @@ public class SpiderCollector {
   private Parser<Booking> lookupBookingParser(String resortId) {
     Map<String, Object> beans = applicationContext.getBeansWithAnnotation(BookingParser.class);
     for(Object bean : beans.values()) {
-      BookingParser annotation = bean.getClass().getAnnotation(BookingParser.class);
-      if(resortId.equals(annotation.resortId())) {
+      if(((Parser) bean).accept(resortId)) {
         return (Parser<Booking>) bean;
       }
     }
@@ -88,8 +87,7 @@ public class SpiderCollector {
   private Parser<Room> lookupRoomParser(String resortId) {
     Map<String, Object> beans = applicationContext.getBeansWithAnnotation(RoomParser.class);
     for(Object bean : beans.values()) {
-      RoomParser annotation = bean.getClass().getAnnotation(RoomParser.class);
-      if(resortId.equals(annotation.resortId())) {
+      if(((Parser) bean).accept(resortId)) {
         return (Parser<Room>) bean;
       }
     }

@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NationalResortInfo {  
+  private NationalResortInfo() {
+    throw new AssertionError("never happen");
+  }
+  
   public static final Map<String, String> MAPPINGS = new HashMap<>();
   static {
     MAPPINGS.put("N001", "0113");

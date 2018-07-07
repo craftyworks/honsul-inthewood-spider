@@ -120,5 +120,11 @@ public class R001BookingParser implements Parser<Booking>{
     
     return bookingList;
   }
+
+  @Override
+  public boolean accept(String resortId) {
+    BookingParser annotation = this.getClass().getAnnotation(BookingParser.class);
+    return resortId.equals(annotation.resortId());
+  }
   
 }

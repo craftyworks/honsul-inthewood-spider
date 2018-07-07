@@ -51,6 +51,10 @@ public abstract class BookingParserTest {
   public void testResortId() {
     BookingParser annotation = PARSER.getClass().getAnnotation(BookingParser.class);
     assertEquals(BookingParserTest.RESORT_ID, annotation.resortId());
+    
+    assertThat(PARSER.accept(RESORT_ID), is(true));
+    
+    assertThat(PARSER.accept(new StringBuilder(RESORT_ID).reverse().toString()), is(false));
   }
 
   @Test
@@ -63,38 +67,42 @@ public abstract class BookingParserTest {
   
   @Test
   public void testParse() {
-      List<Booking> bookingList = PARSER.parse();
-      assertTrue(!CollectionUtils.isEmpty(bookingList));
-      assertThat(BookingParserTest.RESORT_ID, anyOf(is("National"), is(bookingList.get(0).getResortId())));
+    testParse(PARSER, ROOM_PARSER);
+  }
+  
+  public static void testParse(Parser<Booking> bookingParser, Parser<Room> roomParser) {
+    List<Booking> bookingList = bookingParser.parse();
+    assertTrue(!CollectionUtils.isEmpty(bookingList));
+    assertThat(SpiderContext.getResortId(), anyOf(is("National"), is(bookingList.get(0).getResortId())));
 
-      for(Booking b : bookingList) {
-        //중복 체크
-        if(Collections.frequency(bookingList, b) > 1) {
-          bookingList.stream().forEach(x -> {
-            if(Collections.frequency(bookingList, x) > 1) {
-              logger.debug("booking : {}, count : {}", x, Collections.frequency(bookingList, x));
-            }
-          });
-        }
-        // 객실명 공백 체크
-        assertThat("객실명에 공백이 포함되어 있음. [" + b.getRoomNm() + "]", b.getRoomNm().length(), is(b.getRoomNm().trim().length()));
-        
-        assertThat("중복된 예약현황 발견", Collections.frequency(bookingList, b), is(1));
+    for(Booking b : bookingList) {
+      //중복 체크
+      if(Collections.frequency(bookingList, b) > 1) {
+        bookingList.stream().forEach(x -> {
+          if(Collections.frequency(bookingList, x) > 1) {
+            logger.debug("booking : {}, count : {}", x, Collections.frequency(bookingList, x));
+          }
+        });
       }
+      // 객실명 공백 체크
+      assertThat("객실명에 공백이 포함되어 있음. [" + b.getRoomNm() + "]", b.getRoomNm().length(), is(b.getRoomNm().trim().length()));
       
-      // 예약현황의 숙소정보가 수집되는지 확인
-      if(ROOM_PARSER != null) {
-        List<Room> roomList = ROOM_PARSER.parse();
-        final Set<String> roomNameSet = roomList.stream().map(r -> r.getRoomNm()).collect(Collectors.toSet());
-        
-        List<Booking> orphans = bookingList.stream().filter(x -> !roomNameSet.contains(x.getRoomNm())).collect(Collectors.toList());
-        
-        if(logger.isDebugEnabled() && !CollectionUtils.isEmpty(orphans)) {
-          List<String> orphanNames = orphans.stream().map(b -> b.getRoomNm()).distinct().collect(Collectors.toList());
-          logger.debug("unknown room names : {}", orphanNames);
-          logger.debug("room list : {}", roomNameSet);
-        }
-        assertThat("알려지지 않은 숙소정보 발견", CollectionUtils.isEmpty(orphans), is(true));
+      assertThat("중복된 예약현황 발견", Collections.frequency(bookingList, b), is(1));
+    }
+    
+    // 예약현황의 숙소정보가 수집되는지 확인
+    if(roomParser != null) {
+      List<Room> roomList = roomParser.parse();
+      final Set<String> roomNameSet = roomList.stream().map(r -> r.getRoomNm()).collect(Collectors.toSet());
+      
+      List<Booking> orphans = bookingList.stream().filter(x -> !roomNameSet.contains(x.getRoomNm())).collect(Collectors.toList());
+      
+      if(logger.isDebugEnabled() && !CollectionUtils.isEmpty(orphans)) {
+        List<String> orphanNames = orphans.stream().map(b -> b.getRoomNm()).distinct().collect(Collectors.toList());
+        logger.debug("unknown room names : {}", orphanNames);
+        logger.debug("room list : {}", roomNameSet);
       }
+      assertThat("알려지지 않은 숙소정보 발견", CollectionUtils.isEmpty(orphans), is(true));
+    }
   }
 }

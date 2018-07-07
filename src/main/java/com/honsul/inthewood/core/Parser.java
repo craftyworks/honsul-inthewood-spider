@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface Parser<T> {
   public List<T> parse();
+
+  public boolean accept(String resortId);
 }

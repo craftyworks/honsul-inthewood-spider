@@ -73,7 +73,7 @@ public class NationalResortUtils {
   
   public static long price(RoomType roomType, String numberOfPeople) {
     Integer key = Objects.hash(roomType, numberOfPeople);
-    logger.debug("price({}, {}) => {}", roomType, numberOfPeople, PRICE_MAP.get(key));
+    //logger.debug("price({}, {}) => {}", roomType, numberOfPeople, PRICE_MAP.get(key));
     return PRICE_MAP.get(key)[0];
   }
   

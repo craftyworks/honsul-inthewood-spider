@@ -65,7 +65,10 @@ public class HolidayParser implements Parser<String>{
     
     return holidays;
   }
-
-
+  
+  @Override
+  public boolean accept(String resortId) {
+    return true;
+  }
   
 }
