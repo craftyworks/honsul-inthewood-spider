@@ -71,6 +71,8 @@ public class SlackActionCommand implements TokenBarer {
     
     private String user;
     
+    private String username;
+    
     private String text;
 
     @JsonProperty("client_msg_id")
