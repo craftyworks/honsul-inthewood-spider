@@ -24,6 +24,8 @@ public class R020RoomParser extends JsoupRoomParser {
   
   private static final String HUT_URL = "http://www.ccforest.or.kr/sub/sub1_2.html";
 
+  private static final Pattern PATTERN_ROOMTYPE = Pattern.compile("숲속의집*|산림휴양관*");
+  
   @Override
   protected Document document() throws IOException {
     return Jsoup.connect(HUT_URL).get();
@@ -33,10 +35,8 @@ public class R020RoomParser extends JsoupRoomParser {
   public List<Room> extract(Document doc) {
     List<Room> roomList = new ArrayList<>();
     
-    Pattern patternRoomType = Pattern.compile("숲속의집*|산림휴양관*");
-    
     for(Element div : doc.select("#imgbox7 > div")) {
-    	if(patternRoomType.matcher(div.selectFirst("div:nth-child(2)").text()).find()){
+    	if(PATTERN_ROOMTYPE.matcher(div.selectFirst("div:nth-child(2)").text()).find()){
     		if(div.selectFirst("div:nth-child(2)").text().contains("세미나")) {
         		continue;
         	}

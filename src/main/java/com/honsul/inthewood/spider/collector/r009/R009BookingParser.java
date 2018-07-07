@@ -29,6 +29,8 @@ public class R009BookingParser extends JsoupBookingParser {
       "http://hadongforest.co.kr/?r=MAIN&m=hyr&kind=108", 
       "http://hadongforest.co.kr/?r=MAIN&m=hyr&kind=110"
   };
+  
+  private static final Pattern PATTERN_BOOKING = Pattern.compile("javascript:reserve\\('[0-9]+', '[0-9]+', '([0-9]+)',");
     
   @Override
   protected List<Document> documents() throws IOException {
@@ -61,8 +63,7 @@ public class R009BookingParser extends JsoupBookingParser {
 
       String attr = row.attr("href");
       //javascript:reserve('56', '1', '1', '2018-05-20')
-      Pattern p = Pattern.compile("javascript:reserve\\('[0-9]+', '[0-9]+', '([0-9]+)',");
-      Matcher matcher = p.matcher(attr);
+      Matcher matcher = PATTERN_BOOKING.matcher(attr);
       if(matcher.find()) {
         String bookingDt = year + month + StringUtils.leftPad(matcher.group(1), 2, '0');
         Booking booking = new Booking();

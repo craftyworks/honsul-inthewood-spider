@@ -35,6 +35,8 @@ public class R001BookingParser implements Parser<Booking>{
   
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   
+  private final static Pattern PATTERN = Pattern.compile("^resWriteCheck\\((.*)\\);$");
+  
   private R001BookingParser thisMonth(WebDriver driver) {
     logger.debug("opening : {}", ENTRY_POINT_URL);
     driver.get(ENTRY_POINT_URL);
@@ -74,8 +76,7 @@ public class R001BookingParser implements Parser<Booking>{
     List<WebElement> bookingIcons = driver.findElements(By.cssSelector("#tableBody>tr>td>img.cp"));
     for(WebElement elm : bookingIcons) {
       String onClick = elm.getAttribute("onclick");
-      Pattern p = Pattern.compile("^resWriteCheck\\((.*)\\);$");
-      Matcher m = p.matcher(onClick);
+      Matcher m = PATTERN.matcher(onClick);
       if(m.find()) {
         //"A", "3101", "길잡이별(114)", "4", "2018-05-17", "2018-05-18", 1, "1", "70000", "50000"
         String[] arguments = m.group(1).split(",\\s*");

@@ -25,6 +25,8 @@ public class R007BookingParser extends JsoupBookingParser {
 
   private static final String CONNECT_URL = "http://garisan.nowr-b.net/member/index.html";
   
+  private static final Pattern PATTERN_PARAM = Pattern.compile("s_year=([0-9]+)&s_month=([0-9]+)&s_day=([0-9]+)&room_num=([0-9]+)&");
+  
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();
@@ -51,8 +53,7 @@ public class R007BookingParser extends JsoupBookingParser {
       }
       String queryString = StringUtils.substringAfter(row.attr("href"), "?");
 
-      Pattern p = Pattern.compile("s_year=([0-9]+)&s_month=([0-9]+)&s_day=([0-9]+)&room_num=([0-9]+)&");
-      Matcher matcher = p.matcher(queryString);
+      Matcher matcher = PATTERN_PARAM.matcher(queryString);
       if(matcher.find()) {
         String bookingDt = matcher.group(1) + matcher.group(2) + matcher.group(3);
         String roomNm = row.selectFirst("font").text();

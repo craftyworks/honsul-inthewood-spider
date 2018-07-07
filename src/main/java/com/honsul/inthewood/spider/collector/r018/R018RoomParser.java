@@ -29,6 +29,10 @@ public class R018RoomParser extends JsoupRoomParser {
       "http://forest.ganghwa.go.kr/facility/resort4.jsp"
     , "http://forest.ganghwa.go.kr/facility/house.jsp"
   };
+  private static final Pattern PATTERN_ROOM = Pattern.compile("수용인원 : ([0-9]+)인[\\s,]*실당 총면적 : ([0-9\\.]+㎡)");
+  private static final Pattern PATTERN_PRICE_HUT = Pattern.compile("성수기 : ([0-9,]+) 비성수기\\(공휴일\\) : ([0-9,]+) 비성수기\\(평일\\) : ([0-9,]+)");
+  private static final Pattern PATTERN_PRICE_CONDO = Pattern.compile("일반 : ([0-9,]+) 휴일 : ([0-9,]+) 성수기 : ([0-9,]+)");
+  
   
   @Override
   protected List<Document> documents() throws IOException {
@@ -56,22 +60,19 @@ public class R018RoomParser extends JsoupRoomParser {
       String space = "";
       String priceText = tds.get(idx++).text();
       long price = 0, peakPrice = 0;
-      Pattern p = Pattern.compile("수용인원 : ([0-9]+)인[\\s,]*실당 총면적 : ([0-9\\.]+㎡)");
-      Matcher m = p.matcher(people);
+      Matcher m = PATTERN_ROOM.matcher(people);
       if(m.find()) {
         people = m.group(1);
         space = m.group(2);
       }
       
       if(RoomType.HUT.equals(roomType)) {
-        Pattern pricePattern = Pattern.compile("성수기 : ([0-9,]+) 비성수기\\(공휴일\\) : ([0-9,]+) 비성수기\\(평일\\) : ([0-9,]+)");
-        Matcher priceMatcher = pricePattern.matcher(priceText);
+        Matcher priceMatcher = PATTERN_PRICE_HUT.matcher(priceText);
         priceMatcher.find();
         peakPrice = TextUtils.findMoneyLong(priceMatcher.group(1));
         price = TextUtils.findMoneyLong(priceMatcher.group(3));
       } else {
-        Pattern pricePattern = Pattern.compile("일반 : ([0-9,]+) 휴일 : ([0-9,]+) 성수기 : ([0-9,]+)");
-        Matcher priceMatcher = pricePattern.matcher(priceText);
+        Matcher priceMatcher = PATTERN_PRICE_CONDO.matcher(priceText);
         priceMatcher.find();
         price = TextUtils.findMoneyLong(priceMatcher.group(1));
         peakPrice = TextUtils.findMoneyLong(priceMatcher.group(3));        

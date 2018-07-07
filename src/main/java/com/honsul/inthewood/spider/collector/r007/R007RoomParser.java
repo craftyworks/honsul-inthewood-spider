@@ -32,6 +32,8 @@ public class R007RoomParser extends JsoupRoomParser {
   
   private static final String CONNECT_URL = "http://garisan.nowr-b.net/member/?co_id=garisan&ref=&buyer=&m_out=&c_area=";
 
+  private static final Pattern PATTERN_PARAM = Pattern.compile("&room_num=([0-9]*)&");
+  
   @Override
   protected List<Document> documents() throws IOException {
     Map<String, Document> docs = new HashMap<>();
@@ -39,8 +41,7 @@ public class R007RoomParser extends JsoupRoomParser {
     Document doc = Jsoup.connect(CONNECT_URL).get();
     for(Element elm : doc.select("a[href^=http://garisan.nowr-b.net/m_member/room_check.html]")) {
       String pageUrl = elm.attr("href");
-      Pattern p = Pattern.compile("&room_num=([0-9]*)&");
-      Matcher m = p.matcher(pageUrl);
+      Matcher m = PATTERN_PARAM.matcher(pageUrl);
       if(m.find()) {
         String key = m.group(1);
         if(!docs.containsKey(key)) {

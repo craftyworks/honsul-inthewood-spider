@@ -35,6 +35,10 @@ public class R004RoomParser extends JsoupRoomParser {
       "008_01", "008_02", "008_03", "008_04"
   };
 
+  private static final Pattern PATTERN_ROOM = Pattern.compile("([0-9]+)호[~\\+]{1}([0-9]+)호");
+  
+  private static final Pattern PATTERN_PRICE = Pattern.compile("성수기([0-9,]+) / 비수기([0-9,]+)");
+  
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> docs = new ArrayList<>();
@@ -59,8 +63,7 @@ public class R004RoomParser extends JsoupRoomParser {
     if("휴양관".equals(roomTypeNm)) {
       Elements tds = doc.select("div#contents > div.house_info > table.facil > tbody > tr > td");
       String title = tds.get(0).text();
-      Pattern p = Pattern.compile("([0-9]+)호[~\\+]{1}([0-9]+)호");
-      Matcher m = p.matcher(title);
+      Matcher m = PATTERN_ROOM.matcher(title);
       if(m.find()) {
         int start = Integer.parseInt(m.group(1));
         int end =  Integer.parseInt(m.group(2));
@@ -81,8 +84,7 @@ public class R004RoomParser extends JsoupRoomParser {
       Elements dds = doc.select("div#contents > div.house_info > dl > dd");
       space = dds.get(1).text();
       String priceTag = dds.get(2).text();
-      Pattern p = Pattern.compile("성수기([0-9,]+) / 비수기([0-9,]+)");
-      Matcher m = p.matcher(priceTag);
+      Matcher m = PATTERN_PRICE.matcher(priceTag);
       if(m.find()) {
         peakPrice = TextUtils.parseLong(m.group(1));
         price = TextUtils.parseLong(m.group(2));

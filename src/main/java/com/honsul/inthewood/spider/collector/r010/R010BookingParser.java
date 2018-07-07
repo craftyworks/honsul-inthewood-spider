@@ -27,6 +27,8 @@ public class R010BookingParser extends JsoupBookingParser {
 
   private static final String CONNECT_URL = "https://janggok.gunwi.go.kr:6449/new/reservation/reserve_status.html?todayed=";
 
+  private static final Pattern PATTERN_BOOKING = Pattern.compile("sdate=([0-9]+)\\s*&stateroom=([0-9A-Z_\\-]+)");
+  
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();
@@ -57,8 +59,7 @@ public class R010BookingParser extends JsoupBookingParser {
       String space = TextUtils.stringInBrackets(title);
       
       for(Element link : row.select("a[href^=./reserve.html]")) {
-        Pattern p = Pattern.compile("sdate=([0-9]+)\\s*&stateroom=([0-9A-Z_\\-]+)");
-        Matcher matcher = p.matcher(link.attr("href"));
+        Matcher matcher = PATTERN_BOOKING.matcher(link.attr("href"));
         if(matcher.find()) {
           LocalDate bookingDt = DateUtils.fromEpochSecond(Long.parseLong(matcher.group(1)));
           

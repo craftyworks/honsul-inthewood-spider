@@ -24,6 +24,7 @@ public class R019RoomParser extends JsoupRoomParser {
   
   private static final String HUT_URL = "https://www.swijapark.com/contents/sjp_sub03b.php";
   
+  private static final Pattern PATTERN_ROOMTYPE = Pattern.compile("솔마루*|행복마루*|산림휴양관*|하늘마루*");
   
   @Override
   protected Document document() throws IOException {
@@ -36,9 +37,7 @@ public class R019RoomParser extends JsoupRoomParser {
     List<Room> roomList = new ArrayList<>();
 
     for(Element tr : doc.select("body > table:nth-child(14) > tbody > tr:nth-child(10) > td > table > tbody > tr > td > table:nth-child(8) > tbody > tr")) {
-    	Pattern pattern = Pattern.compile("솔마루*|행복마루*|산림휴양관*|하늘마루*");
-    	
-    	if(pattern.matcher(tr.selectFirst("td").text()).find()){
+    	if(PATTERN_ROOMTYPE.matcher(tr.selectFirst("td").text()).find()){
     		String name = tr.select("td.text14").text().replaceAll("\\s|호", "");
     		RoomType roomType = getRoomType(name);
     		String space = tr.select("td:nth-child(2)").text();

@@ -28,7 +28,7 @@ public class R012RoomParser extends JsoupRoomParser {
   
   private static final String HUT_URL = "http://farm.gg.go.kr/sigt/43?tab=1";
   private static final String CONDO_URL = "http://farm.gg.go.kr/sigt/43?tab=3";
-
+  private static final Pattern PATTERN_PRICE = Pattern.compile("([0-9,]+)원");
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> docs = new ArrayList<>();
@@ -66,8 +66,7 @@ public class R012RoomParser extends JsoupRoomParser {
       String numberOfPeople = tds.get(1).text().replace("명", "");
       String priceTag = tds.last().text();
       
-      Pattern p = Pattern.compile("([0-9,]+)원");
-      Matcher m = p.matcher(priceTag);
+      Matcher m = PATTERN_PRICE.matcher(priceTag);
       long price = 0, peakPrice = 0;
       if(m.find()) {
         peakPrice = TextUtils.parseLong(m.group(1));
