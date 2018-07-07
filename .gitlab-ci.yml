@@ -13,6 +13,7 @@ cache:
 maven_build:
   stage: test
   script: 
+    - mvn clean
     - mvn surefire-report:report
     - mvn site -DgenerateReports=false
     - mvn jacoco:report
