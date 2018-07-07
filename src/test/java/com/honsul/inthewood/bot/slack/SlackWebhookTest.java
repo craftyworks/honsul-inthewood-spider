@@ -1,47 +1,33 @@
-package com.honsul.inthewood.spider;
+package com.honsul.inthewood.bot.slack;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.honsul.inthewood.HonsulInTheWoodApplication;
+import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
-import com.honsul.inthewood.core.model.Resort;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= {HonsulInTheWoodApplication.class})
-public class PostmanServiceTest {
+public class SlackWebhookTest {
+
+  private static final Logger logger = LoggerFactory.getLogger(SlackWebhookTest.class);
 
   @Autowired
-  PostmanService postman;
+  private SlackWebhook slackWebHook;
   
   @Test
-  public void testPublishBookingChanges() {
-    Resort resort = new Resort();
-    resort.setResortId("R021");
-    
-    postman.publishBookingChangesSync(resort);
-  }
-  
-  @Test
-  public void testPublishNotification() {
-    List<SlackUser> subscribers = new ArrayList<>();
-    SlackUser user = SlackUser.builder()
-      .accessToken("xoxp-5002703614-5002703624-381604515607-062c87d26854062a500ee746f987f2e7")
-      .botAccessToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn")
-      .botImChannel("DB60RERLH")
-      .build();
-    subscribers.add(user);
-    
+  public void testSendBookingNotificationMessage() throws Exception {
     Map<String, String> booking = new HashMap<>();
     
     booking.put("resortId", "R001");
@@ -55,7 +41,15 @@ public class PostmanServiceTest {
     booking.put("price", "100,000");
     booking.put("peakPrice", "120,000");
     booking.put("occupancy",  "4");
-    postman.publishNotification(subscribers, booking);
+    
+    SlackUser user = SlackUser.builder()
+        .accessToken("xoxp-5002703614-5002703624-381604515607-062c87d26854062a500ee746f987f2e7")
+        .botAccessToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn")
+        .botImChannel("DB60RERLH")
+        .build();
+    
+    SlackMessageResponse response = slackWebHook.sendBookingNotificationMessage(user, booking);
+    logger.debug("response : {}, {}, {}", response.getChannel(), response.getTs(), response.getMessage());
   }
 
 }

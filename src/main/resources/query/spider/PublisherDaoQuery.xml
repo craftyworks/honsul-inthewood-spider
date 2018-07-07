@@ -10,6 +10,7 @@
            , h.REGION
            , h.ADDRESS
            , h.PHONE
+           , DATE_FORMAT(a.BOOKING_DT, '%Y-%m-%d') as BOOKING_DT
            , CONCAT(DATE_FORMAT(a.BOOKING_DT, '%Y-%m-%d'), ' ', 
                CASE DATE_FORMAT(a.BOOKING_DT, '%w') 
                     WHEN 0 THEN '일요일' 
@@ -19,7 +20,7 @@
                     WHEN 4 THEN '목요일' 
                     WHEN 5 THEN '금요일' 
                     WHEN 6 THEN '토요일' 
-                END) as BOOKING_DT
+                END) as BOOKING_DT_TXT
            , a.ROOM_NM
            , r.ROOM_TYPE
            , r.ROOM_TYPE_NM
@@ -56,6 +57,30 @@
       SELECT a.SUBSCRIBER_ID
            , a.SUBSCRIBER_TYPE
         FROM SUBSCRIBER a
+       WHERE a.BOOKING_DT = DATE_FORMAT(#{bookingDt}, '%Y%m%d')
+         AND a.RESORT_ID IN (#{resortId}, '*')
+         AND a.ROOM_TYPE IN (#{roomType}, '*')
+         AND a.USE_YN = 'Y'
+    </select>    
+    
+    <select id="selectBookingSlackSubscriber" resultType="SlackUser" parameterType="map">
+      SELECT b.*
+        FROM SUBSCRIBER a
+        JOIN SlACK_USER b
+          ON b.USER_ID = a.SUBSCRIBER_ID
+       WHERE a.BOOKING_DT = 'holiday'
+         AND EXISTS (SELECT 1
+                   FROM CALENDAR
+                  WHERE HOLIDAY_YN = 'Y'
+                    AND DT = #{bookingDt})
+         AND a.RESORT_ID IN (#{resortId}, '*')
+         AND a.ROOM_TYPE IN (#{roomType}, '*')
+         AND a.USE_YN = 'Y'
+       UNION
+      SELECT b.*
+        FROM SUBSCRIBER a
+        JOIN SlACK_USER b
+          ON b.USER_ID = a.SUBSCRIBER_ID
        WHERE a.BOOKING_DT = DATE_FORMAT(#{bookingDt}, '%Y%m%d')
          AND a.RESORT_ID IN (#{resortId}, '*')
          AND a.ROOM_TYPE IN (#{roomType}, '*')
