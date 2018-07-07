@@ -34,10 +34,15 @@ public class SlackWebhook {
     
     SlackMessageResponse response = slackClient.chatPostMessage(message);
     if(response.isOk()) {
+      booking.put("userId", slackUser.getUserId());
       booking.put("channel", response.getChannel());
       booking.put("ts", response.getTs());
       dao.insertBookingNotificationMessage(booking);
     }
     return response;
+  }
+
+  public SlackMessageResponse deleteBookingNotificationMessage(SlackMessage messageLog) {
+    return slackClient.chatDelete(messageLog);
   }
 }

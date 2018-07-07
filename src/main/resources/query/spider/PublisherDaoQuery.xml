@@ -86,6 +86,29 @@
          AND a.ROOM_TYPE IN (#{roomType}, '*')
          AND a.USE_YN = 'Y'
     </select>    
-      
+    
+    <select id="selectClosedBookingNotification" resultType="SlackMessage" parameterType="Resort">
+      SELECT b.BOT_ACCESS_TOKEN as TOKEN
+           , a.CHANNEL
+           , a.TS
+        FROM SLACK_NOTI_MSG_LOG a
+        JOIN SLACK_USER b
+          ON b.USER_ID = a.USER_ID
+       WHERE a.RESORT_ID = #{resortId}
+         AND a.ALIVE_YN = 'Y'
+         AND a.INSERT_DT &lt; DATE_ADD(NOW(), INTERVAL -1 HOUR)
+         AND NOT EXISTS (SELECT 1
+                           FROM BOOKING
+                          WHERE RESORT_ID = a.RESORT_ID
+                            AND BOOKING_DT = a.BOOKING_DT
+                            AND ROOM_NM = a.ROOM_NM)
+    </select>    
+    
+    <update id="updateMessageStatusDead" parameterType="SlackMessage">
+      UPDATE SLACK_NOTI_MSG_LOG
+         SET ALIVE_YN = 'N'
+       WHERE CHANNEL = #{channel}
+         AND TS = #{ts}
+    </update>         
 </mapper>
 

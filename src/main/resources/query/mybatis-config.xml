@@ -23,6 +23,7 @@
     <typeAlias alias="Room" type="com.honsul.inthewood.core.model.Room"/>    
     <typeAlias alias="Subscriber" type="com.honsul.inthewood.core.model.Subscriber"/>
     <typeAlias alias="SlackUser" type="com.honsul.inthewood.bot.slack.model.domain.SlackUser"/>
+    <typeAlias alias="SlackMessage" type="com.honsul.inthewood.bot.slack.model.SlackMessage"/>
   </typeAliases>
   
   <typeHandlers>

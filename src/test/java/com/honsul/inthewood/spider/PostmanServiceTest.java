@@ -36,6 +36,7 @@ public class PostmanServiceTest {
   public void testPublishNotification() {
     List<SlackUser> subscribers = new ArrayList<>();
     SlackUser user = SlackUser.builder()
+      .userId("U0502LPJC")
       .accessToken("xoxp-5002703614-5002703624-381604515607-062c87d26854062a500ee746f987f2e7")
       .botAccessToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn")
       .botImChannel("DB60RERLH")
@@ -56,6 +57,14 @@ public class PostmanServiceTest {
     booking.put("peakPrice", "120,000");
     booking.put("occupancy",  "4");
     postman.publishNotification(subscribers, booking);
+  }
+
+  @Test
+  public void testPublishBookingClosed() throws Exception {
+    Resort resort = new Resort();
+    resort.setResortId("R001");
+    
+    postman.publishBookingClosed(resort);
   }
 
 }
