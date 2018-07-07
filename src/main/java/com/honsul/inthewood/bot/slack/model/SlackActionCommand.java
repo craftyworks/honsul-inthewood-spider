@@ -1,10 +1,12 @@
 package com.honsul.inthewood.bot.slack.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SlackActionCommand implements TokenBarer {
   private String type;
 
@@ -66,6 +68,7 @@ public class SlackActionCommand implements TokenBarer {
   }
   
   @Data
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Message {
     private String type;
     
