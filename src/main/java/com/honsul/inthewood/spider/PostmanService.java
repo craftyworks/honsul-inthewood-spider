@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.honsul.inthewood.bot.slack.SlackWebhook;
+import com.honsul.inthewood.bot.slack.model.SlackMessage;
+import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.spider.dao.PublisherDao;
@@ -43,6 +45,19 @@ public class PostmanService {
     publishBookingChanges(resort);
   }
 
+  /**
+   * 예약불가능 해진 방에 대해서 발송된 알림 메시지를 삭제한다.
+   */
+  public void publishBookingClosed(Resort resort) {
+    for(SlackMessage messageLog : dao.selectClosedBookingNotification(resort)) {
+      SlackMessageResponse response = slackWebhook.deleteBookingNotificationMessage(messageLog);
+      
+      if(response.isOk()) {
+        dao.updateMessageStatusDead(messageLog);
+      }
+    }
+  }
+  
   public void publishNotification(List<SlackUser> subscribers, Map<String, String> booking) {
     logger.info("booking notifications");
     for(SlackUser target : subscribers) {
@@ -51,5 +66,7 @@ public class PostmanService {
       slackWebhook.sendBookingNotificationMessage(target, booking);
     }
   }
+
+
   
 }

@@ -59,6 +59,15 @@ public class SpiderScheduller {
   }
   
   /**
+   * 닫혀버린 예약현황에 대해 발송된 알림 메시지를 삭제한다.
+   */
+  @Scheduled(cron="0 5 * * * *")
+  private void deleteClosedBookingNotification() {
+    for(Resort resort : collector.selectAllResort()) {
+      postman.publishBookingClosed(resort);
+    }
+  }
+  /**
    * 10분 간격으로 phantomjs process kill
    * <p> 사용 안함. crontab 에서 처리
    */
