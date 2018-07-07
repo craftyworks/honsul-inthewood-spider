@@ -29,10 +29,10 @@ public class R017BookingParser extends JsoupBookingParser {
     
     LocalDate now = LocalDate.now();
     
-    documentList.add(Jsoup.connect(CONNECT_URL).data("ChoiceMonth", "" + now.getMonthValue()).get());
-    documentList.add(Jsoup.connect(CONNECT_URL).data("ChoiceMonth", "" + now.plusMonths(1).getMonthValue()).get());
-    documentList.add(Jsoup.connect(CONNECT_URL).data("ChoiceMonth", "" + now.plusMonths(2).getMonthValue()).get());
-    
+    Document doc = Jsoup.connect(CONNECT_URL).get();
+    for(Element option : doc.select("select#ChoiceMonth > option")) {
+      documentList.add(Jsoup.connect(CONNECT_URL).data("ChoiceMonth", option.val()).get());
+    }    
     return documentList;
   }
   
