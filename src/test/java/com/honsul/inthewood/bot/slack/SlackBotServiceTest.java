@@ -24,4 +24,9 @@ public class SlackBotServiceTest {
     assertThat(token.contains("xoxb"), is(true));
   }
 
+  @Test
+  public void testGetSlackUserAccessToken() throws Exception {
+    String token = service.getSlackUserAccessToken("U0502LPJC");
+    assertThat(token.contains("xoxp"), is(true));
+  }
 }

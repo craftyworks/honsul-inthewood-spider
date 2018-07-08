@@ -13,4 +13,6 @@ public interface SlackDao {
 
   String getSlackBotAcccessTokenByUserId(String userId);
 
+  String getSlackUserAcccessTokenByUserId(String userId);
+
 }

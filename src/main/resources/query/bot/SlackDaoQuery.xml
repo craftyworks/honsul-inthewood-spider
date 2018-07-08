@@ -26,5 +26,11 @@
        WHERE USER_ID = #{vo}
     </select>
 
+    <select id="getSlackUserAcccessTokenByUserId" resultType="string" parameterType="string">
+      SELECT ACCESS_TOKEN
+        FROM SLACK_USER
+       WHERE USER_ID = #{vo}
+    </select>
+
 </mapper>
 
