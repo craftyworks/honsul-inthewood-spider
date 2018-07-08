@@ -40,16 +40,25 @@ public class SlackDialogSelectElement extends SlackDialogElement {
   }
   
   public SlackDialogSelectElement addOption(Option o) {
+    if(this.options == null) {
+      this.options = new ArrayList<>();
+    }
     this.options.add(o);
     return this;
   }
   
   public SlackDialogSelectElement addOptionGroup(OptionGroup og) {
+    if(this.optionGroups == null) {
+      this.optionGroups = new ArrayList<>();
+    }    
     this.optionGroups.add(og);
     return this;
   }
   
   public SlackDialogSelectElement addSelectedOption(Option o) {
+    if(this.selectedOptions == null) {
+      this.selectedOptions = new ArrayList<>();
+    }        
     this.selectedOptions.add(o);
     return this;
   }
@@ -92,8 +101,8 @@ public class SlackDialogSelectElement extends SlackDialogElement {
     
     this.dataSource = dataSource;
     this.minQueryLength = minQueryLength;
-    this.options = options != null ? options : new ArrayList<>();
-    this.optionGroups = optionGroups != null ? optionGroups : new ArrayList<>();
-    this.selectedOptions = selectedOptions != null ? selectedOptions : new ArrayList<>();
+    this.options = options;
+    this.optionGroups = optionGroups;
+    this.selectedOptions = selectedOptions;
   }
 }
