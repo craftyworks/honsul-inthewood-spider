@@ -11,7 +11,7 @@ import com.honsul.inthewood.bot.slack.model.SlackMessage.SlackMessageBuilder;
 public class BookingNotificationMessage {
   
   public static SlackMessage build(Map<String, String> booking) {
-    String fallback = booking.get("resortNm") + " / " + booking.get("bookingDt") + " / " + booking.get("roomNm") + " (" + booking.get("roomTypeNm") + ")";
+    String fallback = booking.get("resortNm").replace("자연휴양림", "") + " / " + booking.get("bookingDt") + " / " + booking.get("roomNm");
     String text = "*" + booking.get("roomNm") + "* (" + booking.get("roomTypeNm") + ")"; 
     
     SlackMessageBuilder builder = SlackMessage.builder();
