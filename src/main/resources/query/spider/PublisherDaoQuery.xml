@@ -109,6 +109,16 @@
          SET ALIVE_YN = 'N'
        WHERE CHANNEL = #{channel}
          AND TS = #{ts}
-    </update>         
+    </update>
+    
+    <insert id="insertBookingNotificationMessage" parameterType="map">
+      INSERT INTO SLACK_NOTI_MSG_LOG(
+        RESORT_ID, BOOKING_DT, ROOM_NM, USER_ID, 
+        CHANNEL, TS, ALIVE_YN, INSERT_DT, UPDATE_DT)
+      VALUES (
+        #{resortId}, #{bookingDt}, #{roomNm}, 
+        #{userId}, #{channel}, #{ts}, 'Y', now(), now()
+      )
+    </insert>   
 </mapper>
 

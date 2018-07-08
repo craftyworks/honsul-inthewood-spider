@@ -25,4 +25,6 @@ public interface PublisherDao {
 
   void updateMessageStatusDead(SlackMessage messageLog);
 
+  void insertBookingNotificationMessage(Map booking);
+
 }
