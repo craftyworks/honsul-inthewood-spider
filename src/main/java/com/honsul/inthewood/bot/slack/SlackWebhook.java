@@ -35,14 +35,7 @@ public class SlackWebhook {
     message.setToken(slackUser.getBotAccessToken());
     message.setChannel(slackUser.getBotImChannel());
     
-    SlackMessageResponse response = slackClient.chatPostMessage(message);
-    if(response.isOk()) {
-      booking.put("userId", slackUser.getUserId());
-      booking.put("channel", response.getChannel());
-      booking.put("ts", response.getTs());
-      dao.insertBookingNotificationMessage(booking);
-    }
-    return response;
+    return slackClient.chatPostMessage(message);
   }
 
   /**

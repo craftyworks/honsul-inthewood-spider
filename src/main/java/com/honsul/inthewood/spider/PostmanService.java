@@ -59,14 +59,18 @@ public class PostmanService {
   }
   
   public void publishNotification(List<SlackUser> subscribers, Map<String, String> booking) {
-    logger.info("booking notifications");
     for(SlackUser target : subscribers) {
-      logger.info("sending {} : {}", target, booking);
+      //logger.info("sending {} : {}", target, booking);
       
-      slackWebhook.sendBookingNotificationMessage(target, booking);
+      SlackMessageResponse response = slackWebhook.sendBookingNotificationMessage(target, booking);
+      
+      if(response.isOk()) {
+        booking.put("userId", target.getUserId());
+        booking.put("channel", response.getChannel());
+        booking.put("ts", response.getTs());
+        dao.insertBookingNotificationMessage(booking);
+      }
     }
   }
-
-
   
 }
