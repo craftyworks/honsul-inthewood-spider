@@ -2,7 +2,6 @@ package com.honsul.inthewood.bot.slack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -13,13 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
 
-import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
+import com.google.common.eventbus.EventBus;
 import com.honsul.inthewood.bot.slack.message.WelcomeMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
-import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
@@ -27,10 +24,8 @@ import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 
 @Controller
 @RequestMapping("/bot/slack")
-public class SlackBotController implements InitializingBean{
+public class SlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  
-  private final RestTemplate restTemplate = new RestTemplate();
   
   @Autowired
   private SlackBotService service;
@@ -38,9 +33,13 @@ public class SlackBotController implements InitializingBean{
   @Autowired
   private SlackWebClient slackClient;
 
-  @Override
-  public void afterPropertiesSet() throws Exception {
-    
+  @Autowired
+  private EventBus eventBus;
+  
+  @GetMapping("/install")
+  public String install(Model model) {
+    model.addAttribute("name", "SpringBlog from Millky");
+    return "bot/slack/install";
   }
   
   @GetMapping("/oauth")
@@ -63,14 +62,8 @@ public class SlackBotController implements InitializingBean{
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public void actionCommand(@RequestBody SlackActionCommand command) {
     logger.info("received action command : {}", command);
-    /*
-    for(ActionCommandHandler handler : actionCommandHandlers) {
-      if(handler.support(command)) {
-        handler.execute(slackClient, command);
-        break;
-      }
-    } 
-    */   
+    
+    eventBus.post(command);
   }
   
   /**
@@ -79,6 +72,8 @@ public class SlackBotController implements InitializingBean{
   @PostMapping(value = "actionMenu", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public void menuAction(@RequestBody SlackActionCommand command) {
     logger.info("received incoming menu : {}", command);
+    
+    eventBus.post(command);
   }  
   
   /** 
@@ -86,23 +81,10 @@ public class SlackBotController implements InitializingBean{
    */
   @ResponseBody
   @PostMapping(value = "slash", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public SlackMessage onReceiveSlashCommand(@RequestBody SlackSlashCommand slashCommand) {
+  public void onReceiveSlashCommand(@RequestBody SlackSlashCommand slashCommand) {
     logger.info("received slash command : {}", slashCommand);
     
-    SlackMessage rtnMessage = null;
-    /*
-    for(SlashCommandHandler handler : slashCommandHandlers) {
-      if(handler.support(slashCommand)) {
-        rtnMessage = handler.execute(slashCommand);
-        break;
-      }
-    }
-    */
-    
-    if(rtnMessage == null) {
-      rtnMessage = UnknownSlashCommandResponseMessage.build(slashCommand);
-    }
-    return rtnMessage;
+    eventBus.post(slashCommand);
   }
 
   /**
@@ -112,13 +94,10 @@ public class SlackBotController implements InitializingBean{
   @ResponseBody
   public SlackEventMessage onEvent(@RequestBody SlackEventMessage eventMessage) {
     logger.info("received event : {}", eventMessage);
+    
+    eventBus.post(eventMessage);
+    
     return eventMessage;
   }    
-  
-  @GetMapping("/install")
-  public String install(Model model) {
-    model.addAttribute("name", "SpringBlog from Millky");
-    return "bot/slack/install";
-  }
   
 }
