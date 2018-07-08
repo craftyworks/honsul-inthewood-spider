@@ -45,5 +45,9 @@ public class SlackBotService {
     return user;
   }
 
+  public String getSlackBotAccessToken(String userId) {
+    return dao.getSlackBotAcccessTokenByUserId(userId);
+  }
+
 
 }

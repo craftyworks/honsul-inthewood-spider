@@ -7,10 +7,14 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
+import com.honsul.inthewood.bot.slack.SlackBotService;
 import com.honsul.inthewood.bot.slack.SlackWebClient;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
+import com.honsul.inthewood.bot.slack.message.UserSettingDialog;
+import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
+import com.honsul.inthewood.bot.slack.model.api.DialogOpenRequest;
 
 @Component
 public class SlackSlashCommandListener implements EventBusListener{
@@ -19,6 +23,9 @@ public class SlackSlashCommandListener implements EventBusListener{
 
   @Autowired
   private SlackWebClient slackClient;
+  
+  @Autowired
+  private SlackBotService service;
   
   /**
    * Slack Slash Command Subscriber Method.
@@ -47,6 +54,7 @@ public class SlackSlashCommandListener implements EventBusListener{
   }
   
   private void unknown(SlackSlashCommand slashCommand) {
+    logger.info("unknown slash command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
     SlackMessage slackMessage = UnknownSlashCommandResponseMessage.build(slashCommand);
     slackClient.sendMessage(slashCommand.getResponseUrl(), slackMessage);
   }
@@ -60,7 +68,15 @@ public class SlackSlashCommandListener implements EventBusListener{
   }
 
   private void setting(SlackSlashCommand slashCommand) {
+    String token = service.getSlackBotAccessToken(slashCommand.getUserId());
+    String triggerId = slashCommand.getTriggerId();
+    SlackDialog dialog = UserSettingDialog.build(slashCommand.getUserId());
     
+    slackClient.dialogOpen(DialogOpenRequest.builder()
+        .token(token)
+        .triggerId(triggerId)
+        .dialog(dialog).build()
+    );
   }
   
   private void start(SlackSlashCommand slashCommand) {

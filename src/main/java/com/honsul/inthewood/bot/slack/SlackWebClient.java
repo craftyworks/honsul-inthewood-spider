@@ -26,6 +26,8 @@ import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.TokenBarer;
 import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
+import com.honsul.inthewood.bot.slack.model.api.DialogOpenRequest;
+import com.honsul.inthewood.bot.slack.model.api.DialogOpenResponse;
 import com.honsul.inthewood.bot.slack.model.api.ImListResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 
@@ -116,8 +118,8 @@ public class SlackWebClient implements SlackClient {
   }  
   
   
-  public void dialogOpen() {
-    
+  public DialogOpenResponse dialogOpen(DialogOpenRequest request) {
+    return executeSlackAPI(SlackAPI.dialog_open, request, DialogOpenResponse.class);
   }
   
   private <T> T executeSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {
