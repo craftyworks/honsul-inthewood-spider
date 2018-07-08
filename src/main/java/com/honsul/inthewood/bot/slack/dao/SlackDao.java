@@ -11,4 +11,6 @@ public interface SlackDao {
 
   void updateSlackUser(SlackUser user);
 
+  String getSlackBotAcccessTokenByUserId(String userId);
+
 }
