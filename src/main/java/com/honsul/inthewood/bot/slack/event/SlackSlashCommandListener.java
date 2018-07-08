@@ -15,6 +15,7 @@ import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.DialogOpenRequest;
+import com.honsul.inthewood.bot.slack.model.api.DialogOpenResponse;
 
 @Component
 public class SlackSlashCommandListener implements EventBusListener{
@@ -68,15 +69,19 @@ public class SlackSlashCommandListener implements EventBusListener{
   }
 
   private void setting(SlackSlashCommand slashCommand) {
+    logger.info("setting slash command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
+    
     String token = service.getSlackBotAccessToken(slashCommand.getUserId());
     String triggerId = slashCommand.getTriggerId();
     SlackDialog dialog = UserSettingDialog.build(slashCommand.getUserId());
     
-    slackClient.dialogOpen(DialogOpenRequest.builder()
+    logger.info("Dialog open request {}, {}, {}", token, triggerId, dialog);
+    DialogOpenResponse response = slackClient.dialogOpen(DialogOpenRequest.builder()
         .token(token)
         .triggerId(triggerId)
         .dialog(dialog).build()
     );
+    logger.info("Dialog Open response : {}", response);
   }
   
   private void start(SlackSlashCommand slashCommand) {
