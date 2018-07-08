@@ -71,7 +71,7 @@ public class SlackSlashCommandListener implements EventBusListener{
   private void setting(SlackSlashCommand slashCommand) {
     logger.info("setting slash command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
     
-    String token = service.getSlackUserAccessToken(slashCommand.getUserId());
+    String token = service.getSlackBotAccessToken(slashCommand.getUserId());
     String triggerId = slashCommand.getTriggerId();
     SlackDialog dialog = UserSettingDialog.build(slashCommand.getUserId());
     
