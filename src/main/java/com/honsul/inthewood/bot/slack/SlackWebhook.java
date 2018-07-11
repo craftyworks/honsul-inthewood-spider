@@ -11,7 +11,7 @@ import com.honsul.inthewood.bot.slack.dao.SlackDao;
 import com.honsul.inthewood.bot.slack.message.BookingNotificationMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
-import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
+import com.honsul.inthewood.bot.slack.model.domain.SlackSubscriber;
 
 @Component
 public class SlackWebhook {
@@ -30,10 +30,10 @@ public class SlackWebhook {
   /**
    * 예약현황 알림메시지 발송
    */
-  public SlackMessageResponse sendBookingNotificationMessage(SlackUser slackUser, Map<String, String> booking) {
+  public SlackMessageResponse sendBookingNotificationMessage(SlackSubscriber slackSubscriber, Map<String, String> booking) {
     SlackMessage message = BookingNotificationMessage.build(booking);
-    message.setToken(slackUser.getBotAccessToken());
-    message.setChannel(slackUser.getBotImChannel());
+    message.setToken(slackSubscriber.getToken());
+    message.setChannel(slackSubscriber.getChannel());
     
     return slackClient.chatPostMessage(message);
   }

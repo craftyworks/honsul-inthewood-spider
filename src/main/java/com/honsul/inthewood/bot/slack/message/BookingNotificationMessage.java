@@ -16,9 +16,8 @@ public class BookingNotificationMessage {
     
     SlackMessageBuilder builder = SlackMessage.builder();
     
-    builder.username("휴양림예약현항알림봇")
-      //text("Room Available!")
-      .text(fallback)
+    builder.username("휴양림 정찰봇")
+      .text(":loudspeaker: Room Available!")
       .attachments(
           new SlackAttachment[] {
               SlackAttachment.builder()

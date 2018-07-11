@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.honsul.inthewood.HonsulInTheWoodApplication;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
-import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
+import com.honsul.inthewood.bot.slack.model.domain.SlackSubscriber;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= {HonsulInTheWoodApplication.class})
@@ -42,13 +42,12 @@ public class SlackWebhookTest {
     booking.put("peakPrice", "120,000");
     booking.put("occupancy",  "4");
     
-    SlackUser user = SlackUser.builder()
-        .accessToken("xoxp-5002703614-5002703624-381604515607-062c87d26854062a500ee746f987f2e7")
-        .botAccessToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn")
-        .botImChannel("DB60RERLH")
-        .build();
+    SlackSubscriber subscriber = new SlackSubscriber();
+    subscriber.setUserId("U0502LPJC");
+    subscriber.setToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn");
+    subscriber.setChannel("DB60RERLH");
     
-    SlackMessageResponse response = slackWebHook.sendBookingNotificationMessage(user, booking);
+    SlackMessageResponse response = slackWebHook.sendBookingNotificationMessage(subscriber, booking);
     logger.debug("response : {}, {}, {}", response.getChannel(), response.getTs(), response.getMessage());
   }
 

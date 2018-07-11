@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.honsul.inthewood.HonsulInTheWoodApplication;
-import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
+import com.honsul.inthewood.bot.slack.model.domain.SlackSubscriber;
 import com.honsul.inthewood.core.model.Resort;
 
 @RunWith(SpringRunner.class)
@@ -34,14 +34,19 @@ public class PostmanServiceTest {
   
   @Test
   public void testPublishNotification() {
-    List<SlackUser> subscribers = new ArrayList<>();
-    SlackUser user = SlackUser.builder()
-      .userId("U0502LPJC")
-      .accessToken("xoxp-5002703614-5002703624-381604515607-062c87d26854062a500ee746f987f2e7")
-      .botAccessToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn")
-      .botImChannel("DB60RERLH")
-      .build();
+    List<SlackSubscriber> subscribers = new ArrayList<>();
+    SlackSubscriber user = new SlackSubscriber();
+    user.setUserId("U0502LPJC");
+    user.setToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn");
+    user.setChannel("DB60RERLH");
     subscribers.add(user);
+    
+    user = new SlackSubscriber();
+    user.setUserId("U0502LPJC");
+    user.setToken("xoxb-5002703614-380571762386-bnDCJQiB31mC2quzycuFGLdn");
+    user.setChannel("GB1NY12UX");
+    subscribers.add(user);
+    
     
     Map<String, String> booking = new HashMap<>();
     

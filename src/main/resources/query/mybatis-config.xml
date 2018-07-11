@@ -21,8 +21,8 @@
     <typeAlias alias="Resort" type="com.honsul.inthewood.core.model.Resort"/>
     <typeAlias alias="Booking" type="com.honsul.inthewood.core.model.Booking"/>
     <typeAlias alias="Room" type="com.honsul.inthewood.core.model.Room"/>    
-    <typeAlias alias="Subscriber" type="com.honsul.inthewood.core.model.Subscriber"/>
     <typeAlias alias="SlackUser" type="com.honsul.inthewood.bot.slack.model.domain.SlackUser"/>
+    <typeAlias alias="SlackSubscriber" type="com.honsul.inthewood.bot.slack.model.domain.SlackSubscriber"/>
     <typeAlias alias="SlackMessage" type="com.honsul.inthewood.bot.slack.model.SlackMessage"/>
   </typeAliases>
   

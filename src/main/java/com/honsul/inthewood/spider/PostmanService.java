@@ -13,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import com.honsul.inthewood.bot.slack.SlackWebhook;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
-import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
+import com.honsul.inthewood.bot.slack.model.domain.SlackSubscriber;
 import com.honsul.inthewood.core.model.Resort;
 import com.honsul.inthewood.spider.dao.PublisherDao;
 
@@ -34,7 +34,7 @@ public class PostmanService {
   public void publishBookingChanges(Resort resort) {
     for(Map<String, String> booking : dao.selectNewEntryBookings(resort)) {
       
-      List<SlackUser> slackSubscribers = dao.selectBookingSlackSubscriber(booking);
+      List<SlackSubscriber> slackSubscribers = dao.selectBookingSlackSubscriber(booking);
       if(!CollectionUtils.isEmpty(slackSubscribers)) {
         publishNotification(slackSubscribers, booking);
       }
@@ -58,8 +58,8 @@ public class PostmanService {
     }
   }
   
-  public void publishNotification(List<SlackUser> subscribers, Map<String, String> booking) {
-    for(SlackUser target : subscribers) {
+  public void publishNotification(List<SlackSubscriber> subscribers, Map<String, String> booking) {
+    for(SlackSubscriber target : subscribers) {
       //logger.info("sending {} : {}", target, booking);
       
       SlackMessageResponse response = slackWebhook.sendBookingNotificationMessage(target, booking);
