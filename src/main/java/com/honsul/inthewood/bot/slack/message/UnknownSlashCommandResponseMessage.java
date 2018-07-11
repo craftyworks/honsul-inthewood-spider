@@ -15,7 +15,7 @@ public class UnknownSlashCommandResponseMessage {
     String text = "*" + slashCommand.getCommand() + "* 는 유효한 명령이 아닙니다.";
     
     SlackMessageBuilder builder = SlackMessage.builder();
-    builder.username("SnapBot")
+    builder.username("휴양림예약현황알림봇")
       .text(text)
       .responseType("in_channel")
       .attachments(

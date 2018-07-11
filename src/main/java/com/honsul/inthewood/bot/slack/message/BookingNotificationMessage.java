@@ -16,7 +16,7 @@ public class BookingNotificationMessage {
     
     SlackMessageBuilder builder = SlackMessage.builder();
     
-    builder.username("SnapBot")
+    builder.username("휴양림예약현항알림봇")
       //text("Room Available!")
       .text(fallback)
       .attachments(
