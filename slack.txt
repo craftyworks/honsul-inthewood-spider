@@ -1,0 +1,39 @@
+/scout list
+/scout add
+/scout add 휴양림, 주말
+/scout add 전체, 주말
+/scout add 좌구산 0903
+/scout list
+/scout delete/remove 3
+  /scout stop/pause
+/scout resume/begin/start
+
+/scout help
+  <select>
+    - add 정찰할 휴양림 추가하기
+    - list 정찰중인 휴양림 목록 보기
+  </select>
+  
+/scout list
+  <card>
+    좌구산 휴양림, 
+    주말,연휴
+    <buttons>
+      수정, 삭제, 멈춤(재개)
+    </buttons>
+  </card>
+  
+  <card>
+    문성
+    2018-09-20
+     <buttons>
+      수정, 삭제, 멈춤(재개)
+    </buttons>
+  </card>
+
+/scout add
+  다이알로그
+    휴양림선택
+    일자선택
+    
+

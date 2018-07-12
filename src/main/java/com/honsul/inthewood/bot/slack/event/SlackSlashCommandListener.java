@@ -1,5 +1,7 @@
 package com.honsul.inthewood.bot.slack.event;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.honsul.inthewood.bot.slack.SlackBotService;
 import com.honsul.inthewood.bot.slack.SlackWebClient;
+import com.honsul.inthewood.bot.slack.message.SlackSubscriptionListMessage;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
 import com.honsul.inthewood.bot.slack.message.UserSettingDialog;
 import com.honsul.inthewood.bot.slack.model.SlackDialog;
@@ -16,6 +19,7 @@ import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.DialogOpenRequest;
 import com.honsul.inthewood.bot.slack.model.api.DialogOpenResponse;
+import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 
 @Component
 public class SlackSlashCommandListener implements EventBusListener{
@@ -36,20 +40,17 @@ public class SlackSlashCommandListener implements EventBusListener{
   public void receive(SlackSlashCommand slashCommand) {
     logger.debug("receiver slash command : {}", slashCommand);
     switch(slashCommand.getText().trim()) {
-    case "설정": case "setting": case "config":
-      setting(slashCommand);
+    case "list":
+      list(slashCommand);
       break;
-    case "시작": case "start": case "begin":
-      start(slashCommand);
-      break;
-    case "종료": case "정지": case "멈춤": case "stop": case "end":
-      stop(slashCommand);
+    case "add":
+      add(slashCommand);
       break;
     case "도움말": case "help": case "?":
       help(slashCommand);
       break;
     default:
-      unknown(slashCommand);
+      help(slashCommand);
       break;
     }
   }
@@ -59,17 +60,15 @@ public class SlackSlashCommandListener implements EventBusListener{
     SlackMessage slackMessage = UnknownSlashCommandResponseMessage.build(slashCommand);
     slackClient.sendMessage(slashCommand.getResponseUrl(), slackMessage);
   }
-
+  
   private void help(SlackSlashCommand slashCommand) {
-    
+    logger.info("help slash command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
+    SlackMessage slackMessage = UnknownSlashCommandResponseMessage.build(slashCommand);
+    slackClient.sendMessage(slashCommand.getResponseUrl(), slackMessage);
   }
-
-  private void stop(SlackSlashCommand slashCommand) {
-    
-  }
-
-  private void setting(SlackSlashCommand slashCommand) {
-    logger.info("setting slash command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
+  
+  private void add(SlackSlashCommand slashCommand) {
+    logger.info("slash add command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
     
     String token = service.getSlackBotAccessToken(slashCommand.getUserId());
     String triggerId = slashCommand.getTriggerId();
@@ -83,8 +82,13 @@ public class SlackSlashCommandListener implements EventBusListener{
     );
     logger.info("Dialog Open response : {}", response);
   }
-  
-  private void start(SlackSlashCommand slashCommand) {
+
+  private void list(SlackSlashCommand slashCommand) {
+    logger.info("slash list command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
     
+    List<SlackSubscription> subscriptions = service.selectSlackSubscription(slashCommand.getUserId());
+    SlackMessage slackMessage = SlackSubscriptionListMessage.build(subscriptions);
+    slackClient.sendMessage(slashCommand.getResponseUrl(), slackMessage);
   }
+  
 }

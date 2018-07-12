@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SlackSubscriber {
+  @JsonProperty("subscription_id")
+  private String subscriptionId;
   @JsonProperty("user_id")
   private String userId;
   private String channel;

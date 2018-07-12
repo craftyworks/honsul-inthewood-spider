@@ -42,7 +42,8 @@
     </select>
     
     <select id="selectBookingSlackSubscriber" resultType="SlackSubscriber" parameterType="map">
-      SELECT a.USER_ID
+      SELECT a.SUBSCRIPTION_ID
+           , a.USER_ID
            , a.CHANNEL
            , b.BOT_ACCESS_TOKEN as token
         FROM SLACK_SUBSCRIBER a
@@ -57,7 +58,8 @@
          AND a.ROOM_TYPE IN (#{roomType}, '*')
          AND a.USE_YN = 'Y'
        UNION
-      SELECT a.USER_ID
+      SELECT a.SUBSCRIPTION_ID
+           , a.USER_ID
            , a.CHANNEL
            , b.BOT_ACCESS_TOKEN as token
         FROM SLACK_SUBSCRIBER a
