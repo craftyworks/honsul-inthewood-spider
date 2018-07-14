@@ -5,16 +5,22 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.honsul.inthewood.HonsulInTheWoodApplication;
+import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= {HonsulInTheWoodApplication.class})
 public class SlackBotServiceTest {
+
+  private static final Logger logger = LoggerFactory.getLogger(SlackBotServiceTest.class);
 
   @Autowired
   SlackBotService service;
@@ -38,6 +44,13 @@ public class SlackBotServiceTest {
     when(slashCommand.getChannelId()).thenReturn("GB1NY12UX");
     
     assertThat(service.selectSlackSubscription(slashCommand)).isNotEmpty();
+  }
+
+  @Test
+  public void testLoadOption() throws Exception {
+    SlackActionCommand command = new SlackActionCommand();
+    ObjectMapper mapper = new ObjectMapper();
+    logger.debug("json:{}", mapper.writeValueAsString(service.loadOption(command)));
   }
   
   

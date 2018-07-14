@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.common.eventbus.EventBus;
 import com.honsul.inthewood.bot.slack.message.WelcomeMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
@@ -71,7 +72,7 @@ public class SlackBotController {
    */
   @ResponseBody
   @PostMapping(value = "loadOption", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Object loadOption(@RequestBody SlackActionCommand command) {
+  public SlackDialogSelectElement loadOption(@RequestBody SlackActionCommand command) {
     logger.info("received load option : {}", command);
     
     return service.loadOption(command);
