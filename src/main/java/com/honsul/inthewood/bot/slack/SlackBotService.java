@@ -1,9 +1,11 @@
 package com.honsul.inthewood.bot.slack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import com.honsul.inthewood.bot.slack.dao.SlackDao;
 import com.honsul.inthewood.bot.slack.message.SlackAddSubscriptionDialog;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackDialog;
-import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
+import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.OptionGroup;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
@@ -73,73 +75,73 @@ public class SlackBotService {
     return dao.selectSlackSubscription(slashCommand);
   }
 
-  public SlackDialogSelectElement loadOption(SlackActionCommand command) {
+  public SlackDialogOptionHolder loadDialogOptions(SlackActionCommand command) {
     switch(command.getCallbackId()) {
       case "add_subscription":
         if("resort_nm".equals(command.getName())) {
           if(StringUtils.isEmpty(command.getValue())) {
-            return defaultResortNmSelectElement(command);
+            return defaultResortDialogOptions(command);
           } else {
-            return loadResortNmSelectElement(command);
+            return loadResortDialogOptions(command);
           }
         } else if("booking_dt".equals(command.getName()) ) {
           if(StringUtils.isEmpty(command.getValue())) {
-            return defaultBookingDtSelectElement(command);
+            return defaultBookingDtDialogOptions(command);
           } else {
-            return loadBookingDtSelectElement(command);
+            return loadBookingDtDialogOptions(command);
           }
         }
       default:
-        return new SlackDialogSelectElement();
+        return SlackDialogOptionHolder.ofOptionGroups(Lists.emptyList());
     }
   }
 
-  private SlackDialogSelectElement loadBookingDtSelectElement(SlackActionCommand command) {
+  private SlackDialogOptionHolder loadBookingDtDialogOptions(SlackActionCommand command) {
     String param = command.getValue();
     param = param.replaceAll("[^0-9]", "");
     Map<String, String> dateInfo = dao.getSubscribeBookingDt(command.getValue());
     
-    SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
+    List<Option> options = new ArrayList<>();
     if(dateInfo != null) {
-      element.addOption(Option.of(dateInfo.get("bookingDtTxt"), dateInfo.get("bookingDt")));
+      options.add(Option.of(dateInfo.get("bookingDtTxt"), dateInfo.get("bookingDt")));
     }
-    return element;
+    return SlackDialogOptionHolder.ofOptions(options);
   }
   
-  private SlackDialogSelectElement defaultBookingDtSelectElement(SlackActionCommand command) {
+  private SlackDialogOptionHolder defaultBookingDtDialogOptions(SlackActionCommand command) {
     List<Map<String, String>> weeks = dao.selectComingWeekendBookingDt();
     
-    SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
-    element.addOption(Option.of("주말과 연휴", "holiday"));
+    List<Option> options = new ArrayList<>();
+    options.add(Option.of("주말과 연휴", "holiday"));
     
     for(Map<String, String> row  : weeks) {
-      element.addOption(Option.of(row.get("bookingDtTxt"), row.get("bookingDt")));
+      options.add(Option.of(row.get("bookingDtTxt"), row.get("bookingDt")));
     }
-    return element;
+    return SlackDialogOptionHolder.ofOptions(options);
   }
 
-  private SlackDialogSelectElement defaultResortNmSelectElement(SlackActionCommand command) {
+  private SlackDialogOptionHolder defaultResortDialogOptions(SlackActionCommand command) {
     int resortCount = dao.getBookingResortCount();
 
-    SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
-    element.addOption(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
+    List<Option> options = new ArrayList<>();
+    options.add(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
     
-    return element;
+    return SlackDialogOptionHolder.ofOptions(options);
   }
   
-  private SlackDialogSelectElement loadResortNmSelectElement(SlackActionCommand command) {
-    SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
-
+  private SlackDialogOptionHolder loadResortDialogOptions(SlackActionCommand command) {
     List<Map<String, String>> result = dao.selectResortOptionList(command.getValue());
+    
+    List<OptionGroup> optionGroups = new ArrayList<>();
     OptionGroup g = null;
     for(Map<String, String> row : result) {
       if("Y".equals(row.get("groupYn"))) {
         g = OptionGroup.of(row.get("region"));
-        element.addOptionGroup(g);
+        optionGroups.add(g);
       }
       g.addOption(Option.of(row.get("resortNm"), row.get("resortId")));
     }
-    return element;
+    return SlackDialogOptionHolder.ofOptionGroups(optionGroups);
   }
 
   public SlackDialog getSlackAddSubscriptionDialog() {

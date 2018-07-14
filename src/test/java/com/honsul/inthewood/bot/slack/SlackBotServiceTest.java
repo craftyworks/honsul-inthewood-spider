@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.honsul.inthewood.HonsulInTheWoodApplication;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
-import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
+import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 
 @RunWith(SpringRunner.class)
@@ -25,7 +25,7 @@ public class SlackBotServiceTest {
 
   private static final Logger logger = LoggerFactory.getLogger(SlackBotServiceTest.class);
 
-  private JacksonTester<SlackDialogSelectElement> json;
+  private JacksonTester<SlackDialogOptionHolder> json;
 
   @Before
   public void setup() {
@@ -58,17 +58,24 @@ public class SlackBotServiceTest {
   }
 
   @Test
-  public void testLoadOption() throws Exception {
-    SlackActionCommand command = new SlackActionCommand();
-    command.setCallbackId("add_subscription");
-    command.setName("resort_nm");
-    //command.setValue("휴양림");
-    SlackDialogSelectElement element = service.loadOption(command);
-    logger.debug("json:{}", json.write(element));
-    
-    assertThat(element.getOptionGroups()).isNotEmpty();
-    //assertThat(json.write(element)).hasJ
-  }
+    public void testLoadDialogOptions() throws Exception {
+      SlackActionCommand command = new SlackActionCommand();
+      command.setCallbackId("add_subscription");
+      command.setName("resort_nm");
+      SlackDialogOptionHolder options = service.loadDialogOptions(command);
+      logger.debug("json:{}", json.write(options));
+      
+      assertThat(options.getOptions()).isNotEmpty();
+  
+      command.setName("booking_dt");
+      options = service.loadDialogOptions(command);
+      logger.debug("json:{}", json.write(options));
+      assertThat(options.getOptions()).isNotEmpty();
+      
+      command.setValue("2");
+      options = service.loadDialogOptions(command);
+      logger.debug("json:{}", json.write(options));
+    }
   
   
 }
