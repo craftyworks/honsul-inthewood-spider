@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.honsul.inthewood.bot.slack.dao.SlackDao;
+import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
@@ -56,11 +57,8 @@ public class SlackBotService {
     return dao.getSlackUserAcccessTokenByUserId(userId);
   }
 
-  public List<SlackSubscription> selectSlackSubscription(String userId) {
-    // TODO Auto-generated method stub
-    return null;
+  public List<SlackSubscription> selectSlackSubscription(SlackSlashCommand slashCommand) {
+    return dao.selectSlackSubscription(slashCommand);
   }
-
-  
 
 }

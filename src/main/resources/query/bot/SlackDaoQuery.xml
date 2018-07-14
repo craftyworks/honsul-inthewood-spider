@@ -32,5 +32,31 @@
        WHERE USER_ID = #{vo}
     </select>
 
+    <select id="selectSlackSubscription" resultType="SlackSubscription" parameterType="SlackSlashCommand">
+      SELECT a.USER_ID
+           , b.USER_NAME
+          , a.SUBSCRIPTION_ID
+          , a.RESORT_ID
+          , CASE WHEN a.RESORT_ID = '*' 
+                 THEN CONCAT('전국 ', (SELECT COUNT(distinct RESORT_ID) FROM BOOKING), '개 휴양림') 
+              ELSE c.RESORT_NM 
+            END as RESORT_NM
+          , c.HOMEPAGE
+          , c.ADDRESS
+          , CASE WHEN a.BOOKING_DT = 'holiday'
+                 THEN '연휴'
+                 ELSE a.BOOKING_DT
+              END as BOOKING_DT
+          , a.*
+        FROM SLACK_SUBSCRIBER a
+        JOIN SLACK_USER b
+          ON b.USER_ID = a.USER_ID
+        LEFT JOIN RESORT c
+          ON c.RESORT_ID = a.RESORT_ID
+       WHERE a.USER_ID = #{userId}
+         AND a.CHANNEL = #{channelId}
+       ORDER BY a.SUBSCRIPTION_ID
+    </select>
+
 </mapper>
 
