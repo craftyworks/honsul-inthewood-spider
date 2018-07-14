@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.honsul.inthewood.bot.slack.model.SlackAction;
+import com.honsul.inthewood.bot.slack.model.SlackAction.Confirm;
 import com.honsul.inthewood.bot.slack.model.SlackAttachment;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 
 public class SlackSubscriptionListMessage {
   
-  public static SlackMessage build(List<SlackSubscription> subscriptions) {
+  private static SlackAction[] actions(SlackSubscription subscription) {
     SlackAction[] actions = {
         SlackAction.builder()
           .name("edit")
@@ -24,18 +25,29 @@ public class SlackSubscriptionListMessage {
           .text("삭제")
           .value("remove")
           .type("button")
-          .build()                  
+          .style("danger")
+          .confirm(Confirm.builder()
+              .title("삭제 하시겠습니까?")
+              .text(subscription.getResortNm() + " 에 대한 정찰을 더이상 수행하지 않겠어요.")
+              .okText("네")
+              .dismissText("아니오")
+              .build())
+          .build()        
     };
-    
+    return actions;
+  }
+  
+  public static SlackMessage build(List<SlackSubscription> subscriptions) {
+
     SlackAttachment[] attchments = subscriptions
         .stream()
         .map(s -> SlackAttachment.builder()
-            .title(s.getResortNm())
+            .title("대상 : " + s.getResortNm())
             .titleLink(s.getHomepage())
-            .text(s.getBookingDt())
+            .text("일정 : " + s.getBookingDt())
             .markdownIn(Arrays.asList(new String[] {"text", "pretext", "fields"}))
-            .color("good")
-            .actions(actions)
+            .color("#3AA3E3")
+            .actions(actions(s))
             .footer(s.getAddress())
             .footerIcon("https://platform.slack-edge.com/img/default_application_icon.png")
             .build()
@@ -44,7 +56,7 @@ public class SlackSubscriptionListMessage {
     
     return SlackMessage.builder()
         .username("휴양림 정찰봇")
-        .text(":loudspeaker: 정찰중인 휴양림 목록")
+        .text(":notebook: 현재 *정찰*중인 휴양림 목록은 다음과 같습니다.")
         .attachments(attchments)
         .build();
     
