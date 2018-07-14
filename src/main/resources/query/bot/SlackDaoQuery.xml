@@ -44,7 +44,7 @@
           , c.HOMEPAGE
           , c.ADDRESS
           , CASE WHEN a.BOOKING_DT = 'holiday'
-                 THEN '연휴'
+                 THEN '주말과 연휴'
                  ELSE a.BOOKING_DT
               END as BOOKING_DT
           , a.*
