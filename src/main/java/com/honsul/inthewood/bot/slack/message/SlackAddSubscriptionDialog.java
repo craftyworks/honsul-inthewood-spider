@@ -2,8 +2,8 @@ package com.honsul.inthewood.bot.slack.message;
 
 import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
+import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.DataSourceType;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
-import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.OptionGroup;
 
 public class SlackAddSubscriptionDialog {
   public static SlackDialog build(String userId) {
@@ -18,7 +18,9 @@ public class SlackAddSubscriptionDialog {
         .label("휴양림")
         .name("sector")
         .placeholder("휴양림 이름을 입력하거나 선택하세요.")
+        .dataSource(DataSourceType.external)
         .build();
+    /*
     resort.addOptionGroup(OptionGroup.of("전국").addOption(Option.of("78개 전체 휴양림", "*")))
         .addOptionGroup(OptionGroup.of("강원")
             .addOption(Option.of("가리왕산자연휴양림", "001"))
@@ -28,6 +30,7 @@ public class SlackAddSubscriptionDialog {
             .addOption(Option.of("산음자연휴양림", "001"))
             .addOption(Option.of("아세안자연휴양림", "001"))
             .addOption(Option.of("운악산자연휴양림", "003")));
+    */
     
     SlackDialogSelectElement bookingDt = SlackDialogSelectElement.builder()
         .label("일정")

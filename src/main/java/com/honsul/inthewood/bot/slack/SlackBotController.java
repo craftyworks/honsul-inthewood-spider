@@ -67,19 +67,19 @@ public class SlackBotController {
   }
   
   /**
-   * Slack Menu Action Handler
+   * Slack Dynamic Option loading Command
    */
-  @PostMapping(value = "actionMenu", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public void menuAction(@RequestBody SlackActionCommand command) {
-    logger.info("received incoming menu : {}", command);
+  @ResponseBody
+  @PostMapping(value = "loadOption", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public Object loadOption(@RequestBody SlackActionCommand command) {
+    logger.info("received load option : {}", command);
     
-    eventBus.post(command);
+    return service.loadOption(command);
   }  
   
   /** 
    * Slack Slash Command Handler 
    */
-  @ResponseBody
   @PostMapping(value = "slash", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public void onReceiveSlashCommand(@RequestBody SlackSlashCommand slashCommand) {
     logger.info("received slash command : {}", slashCommand);

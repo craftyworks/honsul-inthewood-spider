@@ -1,5 +1,6 @@
 package com.honsul.inthewood.bot.slack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.honsul.inthewood.bot.slack.dao.SlackDao;
+import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
@@ -59,6 +62,14 @@ public class SlackBotService {
 
   public List<SlackSubscription> selectSlackSubscription(SlackSlashCommand slashCommand) {
     return dao.selectSlackSubscription(slashCommand);
+  }
+
+  public Object loadOption(SlackActionCommand command) {
+    List<Option> options = new ArrayList<>();
+    for(int i = 0; i < 10; i++) {
+      options.add(Option.of("Option " + i, "value" + i));
+    }
+    return options;
   }
 
 }

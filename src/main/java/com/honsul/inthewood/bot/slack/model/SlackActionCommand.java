@@ -1,5 +1,7 @@
 package com.honsul.inthewood.bot.slack.model;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +35,10 @@ public class SlackActionCommand implements TokenBarer {
   @JsonProperty("is_app_unfurl")
   private String isAppUnfurl;  
   
+  private String name;
+  
+  private String value;
+  
   private Team team;
 
   private Channel channel;
@@ -45,6 +51,8 @@ public class SlackActionCommand implements TokenBarer {
   
   @JsonProperty("original_message")
   private SlackMessage originalMessage;
+  
+  private Map<String, String> submission;
   
   @Data
   public static class User {
