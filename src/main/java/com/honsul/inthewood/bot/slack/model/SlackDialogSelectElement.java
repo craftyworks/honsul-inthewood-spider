@@ -36,7 +36,6 @@ public class SlackDialogSelectElement extends SlackDialogElement {
   
   public static enum DataSourceType {
     users, channels, conversations, external;
-    
   }
   
   public SlackDialogSelectElement addOption(Option o) {
