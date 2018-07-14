@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +91,7 @@ public class SlackBotService {
           }
         }
       default:
-        return SlackDialogOptionHolder.ofOptionGroups(Lists.emptyList());
+        return SlackDialogOptionHolder.ofOptionGroups(new ArrayList<>());
     }
   }
 
