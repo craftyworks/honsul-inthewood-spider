@@ -47,11 +47,13 @@ public class SlackSubscriptionListMessage {
     }
     return new SlackField[] { SlackField.of("휴양림", title), SlackField.of("일정", subscription.getBookingDt()) };
   }  
+  
   public static SlackMessage build(List<SlackSubscription> subscriptions) {
 
     SlackAttachment[] attchments = subscriptions
         .stream()
         .map(s -> SlackAttachment.builder()
+            .callbackId("list_action")
             .title("")
             .text("")
             .fields(fields(s))
