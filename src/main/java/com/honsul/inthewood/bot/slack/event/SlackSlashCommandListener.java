@@ -86,7 +86,7 @@ public class SlackSlashCommandListener implements EventBusListener{
   private void list(SlackSlashCommand slashCommand) {
     logger.info("slash list command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
     
-    List<SlackSubscription> subscriptions = service.selectSlackSubscription(slashCommand.getUserId());
+    List<SlackSubscription> subscriptions = service.selectSlackSubscription(slashCommand);
     SlackMessage slackMessage = SlackSubscriptionListMessage.build(subscriptions);
     slackClient.sendMessage(slashCommand.getResponseUrl(), slackMessage);
   }
