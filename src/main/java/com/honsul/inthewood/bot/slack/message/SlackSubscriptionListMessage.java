@@ -28,9 +28,9 @@ public class SlackSubscriptionListMessage {
           .style("danger")
           .confirm(Confirm.builder()
               .title("삭제 하시겠습니까?")
-              .text(subscription.getResortNm() + " 에 대한 정찰을 더이상 수행하지 않겠어요.")
-              .okText("네")
-              .dismissText("아니오")
+              .text("삭제 하시면 더이상 " + subscription.getResortNm() + " 에 대한 정찰을 수행하지 않겠어요.")
+              .okText("Remove")
+              .dismissText("Cancel")
               .build())
           .build()        
     };
