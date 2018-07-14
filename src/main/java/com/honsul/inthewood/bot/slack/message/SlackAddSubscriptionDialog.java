@@ -16,9 +16,10 @@ public class SlackAddSubscriptionDialog {
     
     SlackDialogSelectElement resort = SlackDialogSelectElement.builder()
         .label("휴양림")
-        .name("sector")
+        .name("resort_nm")
         .placeholder("휴양림 이름을 입력하거나 선택하세요.")
         .dataSource(DataSourceType.external)
+        .minQueryLength(3)
         .build();
     /*
     resort.addOptionGroup(OptionGroup.of("전국").addOption(Option.of("78개 전체 휴양림", "*")))
@@ -34,7 +35,7 @@ public class SlackAddSubscriptionDialog {
     
     SlackDialogSelectElement bookingDt = SlackDialogSelectElement.builder()
         .label("일정")
-        .name("bookingDt")
+        .name("booking_dt")
         .placeholder("날짜를 입력하거나 선택하세요.")
         .build();
     bookingDt.addOption(Option.of("주말을 포함한 연휴", "holiday"))

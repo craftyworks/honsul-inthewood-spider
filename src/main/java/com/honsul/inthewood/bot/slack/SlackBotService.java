@@ -1,6 +1,7 @@
 package com.honsul.inthewood.bot.slack;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,9 +66,36 @@ public class SlackBotService {
   }
 
   public SlackDialogSelectElement loadOption(SlackActionCommand command) {
+    switch(command.getCallbackId()) {
+      case "add_subscription":
+        if("resort_nm".equals(command.getName())) {
+          return loadResortNmSelectElement(command);
+        } else if("booking_dt".equals(command.getName()) ) {
+          return loadBookingDtSelectElement(command);
+        }
+      default:
+        return new SlackDialogSelectElement();
+    }
+  }
+
+  private SlackDialogSelectElement loadBookingDtSelectElement(SlackActionCommand command) {
+    String param = command.getValue();
+    param = param.replaceAll("[^0-9]", "");
+    Map<String, String> dateInfo = dao.getSubscribeBookingDt(command.getValue());
+    
     SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
-    for(int i = 0; i < 10; i++) {
-      element.addOption(Option.of("Option " + i, "value" + i));
+    if(dateInfo != null) {
+      element.addOption(Option.of(dateInfo.get("bookingDtTxt"), dateInfo.get("bookingDt")));
+    }
+    return element;
+  }
+
+  private SlackDialogSelectElement loadResortNmSelectElement(SlackActionCommand command) {
+    List<Map<String, String>> result = dao.selectResortOptionList(command.getValue());
+    
+    SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
+    for(Map<String, String> row : result) {
+      element.addOption(Option.of(row.get("resortNm"), row.get("resortId")));
     }
     return element;
   }

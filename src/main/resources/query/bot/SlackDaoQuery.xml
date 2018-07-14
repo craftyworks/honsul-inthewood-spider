@@ -57,6 +57,32 @@
          AND a.CHANNEL = #{channelId}
        ORDER BY a.SUBSCRIPTION_ID
     </select>
+    
+    <select id="selectResortOptionList" resultType="cmap" parameterType="string">
+      SELECT ROW_NUMBER() OVER (PARTITION BY a.REGION ORDER BY a.RESORT_NM) as RCNT
+         , a.REGION
+           , a.RESORT_ID
+           , a.RESORT_NM
+        FROM RESORT a
+       WHERE a.RESORT_NM LIKE CONCAT('%', #{vo}, '%')
+       ORDER BY a.REGION, a.RESORT_NM
+    </select>    
+    
+    <select id="getSubscribeBookingDt" resultType="cmap" parameterType="string">
+      SELECT DATE_FORMAT(a.DT, '%Y-%m-%d') as BOOKING_DT
+           , CONCAT(DATE_FORMAT(a.DT, '%Y년 %m월 %d일'), ' ', 
+               CASE DATE_FORMAT(a.DT, '%w') 
+                    WHEN 0 THEN '일요일' 
+                    WHEN 1 THEN '월요일' 
+                    WHEN 2 THEN '화요일' 
+                    WHEN 3 THEN '수요일' 
+                    WHEN 4 THEN '목요일' 
+                    WHEN 5 THEN '금요일' 
+                    WHEN 6 THEN '토요일' 
+                END) as BOOKING_DT_TXT
+        FROM CALENDAR a
+       WHERE DT = STR_TO_DATE(RPAD(LEFT(#{vo}, 8), 8, '0'), '%Y%m%d')
+    </select>        
 
 </mapper>
 

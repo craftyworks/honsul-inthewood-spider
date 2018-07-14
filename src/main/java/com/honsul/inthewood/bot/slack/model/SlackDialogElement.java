@@ -2,8 +2,10 @@ package com.honsul.inthewood.bot.slack.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public abstract class SlackDialogElement {
     private String label;
