@@ -62,10 +62,11 @@ public class SlackBotServiceTest {
     SlackActionCommand command = new SlackActionCommand();
     command.setCallbackId("add_subscription");
     command.setName("resort_nm");
-        
+    //command.setValue("휴양림");
     SlackDialogSelectElement element = service.loadOption(command);
     logger.debug("json:{}", json.write(element));
     
+    assertThat(element.getOptionGroups()).isNotEmpty();
     //assertThat(json.write(element)).hasJ
   }
   

@@ -1,12 +1,14 @@
 package com.honsul.inthewood.bot.slack.message;
 
+import java.util.List;
+
 import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.DataSourceType;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
 
 public class SlackAddSubscriptionDialog {
-  public static SlackDialog build(int resortCount) {
+  public static SlackDialog build(List<Option> resortOptions, List<Option> bookingDtOptions) {
     SlackDialog dialog = SlackDialog.builder()
         .callbackId("add_subscription")
         .title("휴양림 정찰 추가")
@@ -20,8 +22,8 @@ public class SlackAddSubscriptionDialog {
         .placeholder("휴양림 이름을 입력하거나 선택하세요.")
         .dataSource(DataSourceType.external)
         .minQueryLength(2)
+        .options(resortOptions)
         .build();
-    resort.addSelectedOption(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
     
     SlackDialogSelectElement bookingDt = SlackDialogSelectElement.builder()
         .label("일정")
@@ -29,8 +31,8 @@ public class SlackAddSubscriptionDialog {
         .placeholder("날짜를 입력하거나 선택하세요.")
         .dataSource(DataSourceType.external)
         .minQueryLength(2)
+        .options(bookingDtOptions)
         .build();
-    bookingDt.addSelectedOption(Option.of("주말과 연휴", "holiday"));
     
     dialog.addElement(resort);
     dialog.addElement(bookingDt);

@@ -1,5 +1,6 @@
 package com.honsul.inthewood.bot.slack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -115,8 +116,18 @@ public class SlackBotService {
 
   public SlackDialog getSlackAddSubscriptionDialog() {
     int resortCount = dao.getBookingResortCount();
+    List<Option> resortOptions = new ArrayList<>();
+    resortOptions.add(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
+
     
-    SlackDialog dialog = SlackAddSubscriptionDialog.build(resortCount);
+    List<Option> bookingDtOptions = new ArrayList<>();
+    bookingDtOptions.add(Option.of("주말과 연휴", "holiday"));
+    
+    List<Map<String, String>> weeks = dao.selectComingWeekendBookingDt();
+    for(Map<String, String> row  : weeks) {
+      bookingDtOptions.add(Option.of(row.get("bookingDtTxt"), row.get("bookingDt")));
+    }
+    SlackDialog dialog = SlackAddSubscriptionDialog.build(resortOptions, bookingDtOptions);
     
     return dialog;
   }

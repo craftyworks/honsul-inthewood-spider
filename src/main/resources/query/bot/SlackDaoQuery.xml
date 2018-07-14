@@ -69,27 +69,28 @@
            , a.RESORT_NM
         FROM RESORT a
        WHERE EXISTS (SELECT 1 FROM BOOKING WHERE RESORT_ID = a.RESORT_ID)
-      <if test="vo!= null and !vo.equals('')">
-         AND a.RESORT_NM LIKE CONCAT('%', #{vo}, '%')
-      </if>
+         AND a.RESORT_NM LIKE CONCAT('%', ifnull(#{vo}, ''), '%')
        ORDER BY a.REGION, a.RESORT_NM
     </select>    
     
     <select id="getSubscribeBookingDt" resultType="cmap" parameterType="string">
       SELECT DATE_FORMAT(a.DT, '%Y-%m-%d') as BOOKING_DT
-           , CONCAT(DATE_FORMAT(a.DT, '%Y년 %m월 %d일'), ' ', 
-               CASE DATE_FORMAT(a.DT, '%w') 
-                    WHEN 0 THEN '일요일' 
-                    WHEN 1 THEN '월요일' 
-                    WHEN 2 THEN '화요일' 
-                    WHEN 3 THEN '수요일' 
-                    WHEN 4 THEN '목요일' 
-                    WHEN 5 THEN '금요일' 
-                    WHEN 6 THEN '토요일' 
-                END) as BOOKING_DT_TXT
+           , CONCAT(DATE_FORMAT(a.DT, '%Y년 %m월 %d일'), ' ', a.DAY_KR_NM) as BOOKING_DT_TXT
         FROM CALENDAR a
-       WHERE DT = STR_TO_DATE(RPAD(LEFT(#{vo}, 8), 8, '0'), '%Y%m%d')
-    </select>        
+       WHERE DT = STR_TO_DATE(RPAD(LEFT(ifnull(#{vo}, ''), 8), 8, '0'), '%Y%m%d')
+    </select>
 
+    <select id="selectComingWeekendBookingDt" resultType="cmap" parameterType="string">
+      SELECT DATE_FORMAT(a.DT, '%Y-%m-%d') as BOOKING_DT
+           , CONCAT(DATE_FORMAT(a.DT, '%Y년 %m월 %d일'), ' ', a.DAY_KR_NM) as BOOKING_DT_TXT
+        FROM CALENDAR a
+       WHERE a.DT &gt; now()
+         AND a.HOLIDAY_YN = 'Y'
+         AND (SELECT COUNT(*)
+                FROM CALENDAR 
+               WHERE DT BETWEEN now() and a.DT
+              AND HOLIDAY_YN = 'Y') &lt;= 3
+    </select>  
+    
 </mapper>
 

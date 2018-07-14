@@ -28,4 +28,6 @@ public interface SlackDao {
 
   int getBookingResortCount();
 
+  List<Map<String, String>> selectComingWeekendBookingDt();
+
 }
