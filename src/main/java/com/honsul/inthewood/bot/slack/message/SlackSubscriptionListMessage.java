@@ -3,9 +3,12 @@ package com.honsul.inthewood.bot.slack.message;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.honsul.inthewood.bot.slack.model.SlackAction;
 import com.honsul.inthewood.bot.slack.model.SlackAction.Confirm;
 import com.honsul.inthewood.bot.slack.model.SlackAttachment;
+import com.honsul.inthewood.bot.slack.model.SlackField;
 import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 
@@ -37,14 +40,21 @@ public class SlackSubscriptionListMessage {
     return actions;
   }
   
+  private static SlackField[] fields(SlackSubscription subscription) {
+    String title = subscription.getResortNm();
+    if(!StringUtils.isEmpty(subscription.getHomepage())) {
+      title = "<" + subscription.getHomepage() + "|" + title + ">";
+    }
+    return new SlackField[] { SlackField.of("휴양림", title), SlackField.of("일정", subscription.getBookingDt()) };
+  }  
   public static SlackMessage build(List<SlackSubscription> subscriptions) {
 
     SlackAttachment[] attchments = subscriptions
         .stream()
         .map(s -> SlackAttachment.builder()
-            .title("대상 : " + s.getResortNm())
-            .titleLink(s.getHomepage())
-            .text("일정 : " + s.getBookingDt())
+            .title("")
+            .text("")
+            .fields(fields(s))
             .markdownIn(Arrays.asList(new String[] {"text", "pretext", "fields"}))
             .color("#3AA3E3")
             .actions(actions(s))
@@ -56,10 +66,10 @@ public class SlackSubscriptionListMessage {
     
     return SlackMessage.builder()
         .username("휴양림 정찰봇")
-        .text(":notebook: 현재 *정찰*중인 휴양림 목록은 다음과 같습니다.")
+        .text("정찰중인 휴양림 목록은 다음과 같습니다.")
         .attachments(attchments)
         .build();
     
-  }  
-  
+  }
+
 }
