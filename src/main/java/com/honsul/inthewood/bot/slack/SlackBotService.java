@@ -1,9 +1,9 @@
 package com.honsul.inthewood.bot.slack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,9 +77,17 @@ public class SlackBotService {
     switch(command.getCallbackId()) {
       case "add_subscription":
         if("resort_nm".equals(command.getName())) {
-          return loadResortNmSelectElement(command);
+          if(StringUtils.isEmpty(command.getValue())) {
+            return defaultResortNmSelectElement(command);
+          } else {
+            return loadResortNmSelectElement(command);
+          }
         } else if("booking_dt".equals(command.getName()) ) {
-          return loadBookingDtSelectElement(command);
+          if(StringUtils.isEmpty(command.getValue())) {
+            return defaultBookingDtSelectElement(command);
+          } else {
+            return loadBookingDtSelectElement(command);
+          }
         }
       default:
         return new SlackDialogSelectElement();
@@ -97,12 +105,32 @@ public class SlackBotService {
     }
     return element;
   }
-
-  private SlackDialogSelectElement loadResortNmSelectElement(SlackActionCommand command) {
-    List<Map<String, String>> result = dao.selectResortOptionList(command.getValue());
+  
+  private SlackDialogSelectElement defaultBookingDtSelectElement(SlackActionCommand command) {
+    List<Map<String, String>> weeks = dao.selectComingWeekendBookingDt();
     
     SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
+    element.addOption(Option.of("주말과 연휴", "holiday"));
+    
+    for(Map<String, String> row  : weeks) {
+      element.addOption(Option.of(row.get("bookingDtTxt"), row.get("bookingDt")));
+    }
+    return element;
+  }
 
+  private SlackDialogSelectElement defaultResortNmSelectElement(SlackActionCommand command) {
+    int resortCount = dao.getBookingResortCount();
+
+    SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
+    element.addOption(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
+    
+    return element;
+  }
+  
+  private SlackDialogSelectElement loadResortNmSelectElement(SlackActionCommand command) {
+    SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
+
+    List<Map<String, String>> result = dao.selectResortOptionList(command.getValue());
     OptionGroup g = null;
     for(Map<String, String> row : result) {
       if("Y".equals(row.get("groupYn"))) {
@@ -115,21 +143,7 @@ public class SlackBotService {
   }
 
   public SlackDialog getSlackAddSubscriptionDialog() {
-    int resortCount = dao.getBookingResortCount();
-    List<Option> resortOptions = new ArrayList<>();
-    resortOptions.add(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
-
-    
-    List<Option> bookingDtOptions = new ArrayList<>();
-    bookingDtOptions.add(Option.of("주말과 연휴", "holiday"));
-    
-    List<Map<String, String>> weeks = dao.selectComingWeekendBookingDt();
-    for(Map<String, String> row  : weeks) {
-      bookingDtOptions.add(Option.of(row.get("bookingDtTxt"), row.get("bookingDt")));
-    }
-    SlackDialog dialog = SlackAddSubscriptionDialog.build(resortOptions, bookingDtOptions);
-    
-    return dialog;
+    return SlackAddSubscriptionDialog.build();
   }
 
 }
