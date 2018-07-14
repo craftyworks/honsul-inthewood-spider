@@ -11,7 +11,6 @@ import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.honsul.inthewood.bot.slack.SlackBotService;
 import com.honsul.inthewood.bot.slack.SlackWebClient;
-import com.honsul.inthewood.bot.slack.message.SlackAddSubscriptionDialog;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionListMessage;
 import com.honsul.inthewood.bot.slack.message.UnknownSlashCommandResponseMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
@@ -69,7 +68,7 @@ public class SlackActionCommandListener implements EventBusListener{
     
     String token = service.getSlackBotAccessToken(slashCommand.getUserId());
     String triggerId = slashCommand.getTriggerId();
-    SlackDialog dialog = SlackAddSubscriptionDialog.build(slashCommand.getUserId());
+    SlackDialog dialog = service.getSlackAddSubscriptionDialog();
     
     logger.info("Dialog open request {}, {}, {}", token, triggerId, dialog);
     DialogOpenResponse response = slackClient.dialogOpen(DialogOpenRequest.builder()

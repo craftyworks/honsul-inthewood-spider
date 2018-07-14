@@ -26,4 +26,6 @@ public interface SlackDao {
 
   Map<String, String> getSubscribeBookingDt(String value);
 
+  int getBookingResortCount();
+
 }

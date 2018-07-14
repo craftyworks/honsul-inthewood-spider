@@ -3,14 +3,19 @@ package com.honsul.inthewood.bot.slack;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.honsul.inthewood.bot.slack.dao.SlackDao;
+import com.honsul.inthewood.bot.slack.message.SlackAddSubscriptionDialog;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
+import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.OptionGroup;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
@@ -19,6 +24,8 @@ import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 
 @Service
 public class SlackBotService {
+  
+  private static final Logger logger = LoggerFactory.getLogger(SlackBotService.class);
 
   @Autowired
   private SlackDao dao;
@@ -94,10 +101,24 @@ public class SlackBotService {
     List<Map<String, String>> result = dao.selectResortOptionList(command.getValue());
     
     SlackDialogSelectElement element = SlackDialogSelectElement.builder().build();
+
+    OptionGroup g = null;
     for(Map<String, String> row : result) {
-      element.addOption(Option.of(row.get("resortNm"), row.get("resortId")));
+      if("Y".equals(row.get("groupYn"))) {
+        g = OptionGroup.of(row.get("region"));
+        element.addOptionGroup(g);
+      }
+      g.addOption(Option.of(row.get("resortNm"), row.get("resortId")));
     }
     return element;
+  }
+
+  public SlackDialog getSlackAddSubscriptionDialog() {
+    int resortCount = dao.getBookingResortCount();
+    
+    SlackDialog dialog = SlackAddSubscriptionDialog.build(resortCount);
+    
+    return dialog;
   }
 
 }

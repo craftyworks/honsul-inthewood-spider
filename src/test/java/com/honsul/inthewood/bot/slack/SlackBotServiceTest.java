@@ -3,17 +3,20 @@ package com.honsul.inthewood.bot.slack;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.honsul.inthewood.HonsulInTheWoodApplication;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 
 @RunWith(SpringRunner.class)
@@ -22,6 +25,14 @@ public class SlackBotServiceTest {
 
   private static final Logger logger = LoggerFactory.getLogger(SlackBotServiceTest.class);
 
+  private JacksonTester<SlackDialogSelectElement> json;
+
+  @Before
+  public void setup() {
+      ObjectMapper objectMapper = new ObjectMapper(); 
+      JacksonTester.initFields(this, objectMapper);
+  }
+  
   @Autowired
   SlackBotService service;
   
@@ -49,8 +60,13 @@ public class SlackBotServiceTest {
   @Test
   public void testLoadOption() throws Exception {
     SlackActionCommand command = new SlackActionCommand();
-    ObjectMapper mapper = new ObjectMapper();
-    logger.debug("json:{}", mapper.writeValueAsString(service.loadOption(command)));
+    command.setCallbackId("add_subscription");
+    command.setName("resort_nm");
+        
+    SlackDialogSelectElement element = service.loadOption(command);
+    logger.debug("json:{}", json.write(element));
+    
+    //assertThat(json.write(element)).hasJ
   }
   
   

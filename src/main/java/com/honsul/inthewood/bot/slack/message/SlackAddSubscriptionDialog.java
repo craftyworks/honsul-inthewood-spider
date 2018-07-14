@@ -6,7 +6,7 @@ import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.DataSourceT
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
 
 public class SlackAddSubscriptionDialog {
-  public static SlackDialog build(String userId) {
+  public static SlackDialog build(int resortCount) {
     SlackDialog dialog = SlackDialog.builder()
         .callbackId("add_subscription")
         .title("휴양림 정찰 추가")
@@ -19,27 +19,18 @@ public class SlackAddSubscriptionDialog {
         .name("resort_nm")
         .placeholder("휴양림 이름을 입력하거나 선택하세요.")
         .dataSource(DataSourceType.external)
-        .minQueryLength(3)
+        .minQueryLength(2)
         .build();
-    /*
-    resort.addOptionGroup(OptionGroup.of("전국").addOption(Option.of("78개 전체 휴양림", "*")))
-        .addOptionGroup(OptionGroup.of("강원")
-            .addOption(Option.of("가리왕산자연휴양림", "001"))
-            .addOption(Option.of("검봉산자연휴양림", "001"))
-            .addOption(Option.of("대관령자연휴양림", "003")))
-        .addOptionGroup(OptionGroup.of("경기")
-            .addOption(Option.of("산음자연휴양림", "001"))
-            .addOption(Option.of("아세안자연휴양림", "001"))
-            .addOption(Option.of("운악산자연휴양림", "003")));
-    */
+    resort.addSelectedOption(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
     
     SlackDialogSelectElement bookingDt = SlackDialogSelectElement.builder()
         .label("일정")
         .name("booking_dt")
         .placeholder("날짜를 입력하거나 선택하세요.")
+        .dataSource(DataSourceType.external)
+        .minQueryLength(2)
         .build();
-    bookingDt.addOption(Option.of("주말을 포함한 연휴", "holiday"))
-        .addOption(Option.of("2018년 7월 14일 토요일", "2018-07-14"));
+    bookingDt.addSelectedOption(Option.of("주말과 연휴", "holiday"));
     
     dialog.addElement(resort);
     dialog.addElement(bookingDt);

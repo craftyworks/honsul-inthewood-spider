@@ -58,13 +58,20 @@
        ORDER BY a.SUBSCRIPTION_ID
     </select>
     
+    <select id="getBookingResortCount" resultType="int" parameterType="string">
+      SELECT COUNT(distinct RESORT_ID) FROM BOOKING
+    </select>    
+    
     <select id="selectResortOptionList" resultType="cmap" parameterType="string">
-      SELECT ROW_NUMBER() OVER (PARTITION BY a.REGION ORDER BY a.RESORT_NM) as RCNT
+      SELECT CASE WHEN ROW_NUMBER() OVER (PARTITION BY a.REGION ORDER BY a.RESORT_NM) = 1 THEN 'Y' ELSE 'N' END as GROUP_YN
          , a.REGION
            , a.RESORT_ID
            , a.RESORT_NM
         FROM RESORT a
-       WHERE a.RESORT_NM LIKE CONCAT('%', #{vo}, '%')
+       WHERE EXISTS (SELECT 1 FROM BOOKING WHERE RESORT_ID = a.RESORT_ID)
+      <if test="vo!= null and !vo.equals('')">
+         AND a.RESORT_NM LIKE CONCAT('%', #{vo}, '%')
+      </if>
        ORDER BY a.REGION, a.RESORT_NM
     </select>    
     
