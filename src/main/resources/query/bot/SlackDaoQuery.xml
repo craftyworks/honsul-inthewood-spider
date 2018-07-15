@@ -93,7 +93,7 @@
               AND HOLIDAY_YN = 'Y') &lt;= 3
     </select>  
     
-    <insret id="insertNewSubscription" parameterType="SlackSubscription">
+    <insert id="insertNewSubscription" parameterType="SlackSubscription">
       INSERT INTO SLACK_SUBSCRIBER(
          USER_ID, CHANNEL, BOOKING_DT, RESORT_ID, ROOM_TYPE, USE_YN)
       VALUES (
@@ -111,10 +111,10 @@
        WHERE SUBSCRIPTION_ID = #{subscriptionId}    
     </update>
 
-    <update id="deleteSubscription" parameterType="SlackSubscription">
+    <delete id="deleteSubscription" parameterType="SlackSubscription">
       DELETE SLACK_SUBSCRIBER
        WHERE SUBSCRIPTION_ID = #{subscriptionId}    
-    </update>   
+    </delete>   
        
 </mapper>
 
