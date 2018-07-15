@@ -75,14 +75,14 @@
     </select>    
     
     <select id="getSubscribeBookingDt" resultType="cmap" parameterType="string">
-      SELECT DATE_FORMAT(a.DT, '%Y-%m-%d') as BOOKING_DT
+      SELECT DATE_FORMAT(a.DT, '%Y%m%d') as BOOKING_DT
            , CONCAT(DATE_FORMAT(a.DT, '%Y년 %m월 %d일'), ' ', a.DAY_KR_NM) as BOOKING_DT_TXT
         FROM CALENDAR a
        WHERE DT = STR_TO_DATE(RPAD(LEFT(ifnull(#{vo}, ''), 8), 8, '0'), '%Y%m%d')
     </select>
 
     <select id="selectComingWeekendBookingDt" resultType="cmap" parameterType="string">
-      SELECT DATE_FORMAT(a.DT, '%Y-%m-%d') as BOOKING_DT
+      SELECT DATE_FORMAT(a.DT, '%Y%m%d') as BOOKING_DT
            , CONCAT(DATE_FORMAT(a.DT, '%Y년 %m월 %d일'), ' ', a.DAY_KR_NM) as BOOKING_DT_TXT
         FROM CALENDAR a
        WHERE a.DT &gt; now()
