@@ -90,6 +90,7 @@ public class SlackBotController {
   /** 
    * Slack Slash Command Handler 
    */
+  @ResponseBody
   @PostMapping(value = "slash", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public void onReceiveSlashCommand(@RequestBody SlackSlashCommand slashCommand) {
     logger.info("received slash command : {}", slashCommand);
