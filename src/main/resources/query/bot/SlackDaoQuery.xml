@@ -59,6 +59,42 @@
        ORDER BY a.SUBSCRIPTION_ID
     </select>
     
+    <select id="getSlackSubscription" resultType="SlackSubscription" parameterType="SlackSubscription">
+      SELECT a.SUBSCRIPTION_ID
+           , a.USER_ID
+           , b.USER_NAME
+           , a.CHANNEL
+           , CASE WHEN a.BOOKING_DT = 'holiday'
+                 THEN '주말과 연휴'
+                 ELSE a.BOOKING_DT
+              END as BOOKING_DT
+           , a.RESORT_ID
+           , CASE WHEN a.RESORT_ID = '*' 
+                 THEN CONCAT('전국 ', (SELECT COUNT(distinct RESORT_ID) FROM BOOKING), '개 휴양림') 
+              ELSE c.RESORT_NM 
+            END as RESORT_NM
+           , c.HOMEPAGE
+           , c.ADDRESS
+           , a.ROOM_TYPE
+        FROM SLACK_SUBSCRIBER a
+        JOIN SLACK_USER b
+          ON b.USER_ID = a.USER_ID
+        LEFT JOIN RESORT c
+          ON c.RESORT_ID = a.RESORT_ID
+      <choose>
+        <when test="subscriptionId and subscriptionId != ''">
+       WHERE a.SUBSCRIPTION_ID = #{subscriptionId}
+        </when>
+        <otherwise>
+       WHERE a.USER_ID = #{userId}
+         AND a.CHANNEL = #{channel}
+         AND a.BOOKING_DT = #{bookingDt}
+         AND a.RESORT_ID = #{resortId}
+         AND a.ROOM_TYPE = #{roomType}
+        </otherwise>
+      </choose>          
+    </select>
+        
     <select id="getBookingResortCount" resultType="int" parameterType="string">
       SELECT COUNT(distinct RESORT_ID) FROM BOOKING
     </select>    

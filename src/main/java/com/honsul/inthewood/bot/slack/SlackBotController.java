@@ -65,15 +65,20 @@ public class SlackBotController {
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public SlackDialogSubmissionResponse actionCommand(@RequestBody SlackActionCommand command) {
     logger.info("received action command : {}", command);
+    SlackDialogSubmissionResponse resp = null;
+    
     switch(command.getType()) {
     case "dialog_submission":
-      return service.addSubscription(command);
+      resp = service.addSubscription(command);
+      eventBus.post(command);
+      break;
     case "message_action":
     default:
+      resp = SlackDialogSubmissionResponse.ok();
       eventBus.post(command);
       break;
     }
-    return SlackDialogSubmissionResponse.ok();
+    return resp;
   }
   
   /**

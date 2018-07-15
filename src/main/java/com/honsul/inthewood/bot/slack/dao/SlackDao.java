@@ -34,4 +34,6 @@ public interface SlackDao {
 
   void updateSubscription(SlackSubscription subscription);
 
+  SlackSubscription getSlackSubscription(SlackSubscription subscription);
+
 }

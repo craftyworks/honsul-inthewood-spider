@@ -143,6 +143,9 @@ public class SlackBotService {
     return SlackAddSubscriptionDialog.build();
   }
 
+  /**
+   * 휴양림 정찰 등록.
+   */
   public SlackDialogSubmissionResponse addSubscription(SlackActionCommand command) {
     switch(command.getCallbackId()) {
     case "add_subscription":
@@ -160,13 +163,7 @@ public class SlackBotService {
    * SlackSubscription 수정
    */
   private void updateSubscription(SlackActionCommand command) {
-    SlackSubscription subscription = SlackSubscription.builder()
-        .userId(command.getUser().getId())
-        .channel(command.getChannel().getId())
-        .bookingDt(command.getSubmission().get("booking_dt"))
-        .resortId(command.getSubmission().get("resort_nm"))
-        .roomType("*")
-        .build();
+    SlackSubscription subscription = createSlackSubscription(command);
     dao.updateSubscription(subscription);
   }
 
@@ -174,6 +171,16 @@ public class SlackBotService {
    * 신규 SlackSubscription 등록
    */
   private void insertNewSubscription(SlackActionCommand command) {
+    SlackSubscription subscription = createSlackSubscription(command);
+    dao.insertNewSubscription(subscription);
+  }
+
+  public SlackSubscription getSlackSubscription(SlackActionCommand actionCommand) {
+    SlackSubscription vo = createSlackSubscription(actionCommand);
+    return dao.getSlackSubscription(vo);
+  }
+
+  private SlackSubscription createSlackSubscription(SlackActionCommand command) {
     SlackSubscription subscription = SlackSubscription.builder()
         .userId(command.getUser().getId())
         .channel(command.getChannel().getId())
@@ -181,7 +188,6 @@ public class SlackBotService {
         .resortId(command.getSubmission().get("resort_nm"))
         .roomType("*")
         .build();
-    dao.insertNewSubscription(subscription);
+    return subscription;
   }
-
 }
