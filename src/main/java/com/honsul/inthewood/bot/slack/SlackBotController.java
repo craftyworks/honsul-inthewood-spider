@@ -17,6 +17,7 @@ import com.google.common.eventbus.EventBus;
 import com.honsul.inthewood.bot.slack.message.WelcomeMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
+import com.honsul.inthewood.bot.slack.model.SlackDialogSubmissionResponse;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
@@ -62,16 +63,17 @@ public class SlackBotController {
    */
   @ResponseBody
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public void actionCommand(@RequestBody SlackActionCommand command) {
+  public SlackDialogSubmissionResponse actionCommand(@RequestBody SlackActionCommand command) {
     logger.info("received action command : {}", command);
     switch(command.getType()) {
-    case "message_action":
-      break;
     case "dialog_submission":
-      break;
+      return service.addSubscription(command);
+    case "message_action":
     default:
+      eventBus.post(command);
       break;
     }
+    return SlackDialogSubmissionResponse.ok();
   }
   
   /**

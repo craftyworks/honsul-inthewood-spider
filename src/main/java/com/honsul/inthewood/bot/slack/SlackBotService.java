@@ -18,6 +18,7 @@ import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.OptionGroup;
+import com.honsul.inthewood.bot.slack.model.SlackDialogSubmissionResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
@@ -140,6 +141,47 @@ public class SlackBotService {
 
   public SlackDialog getSlackAddSubscriptionDialog() {
     return SlackAddSubscriptionDialog.build();
+  }
+
+  public SlackDialogSubmissionResponse addSubscription(SlackActionCommand command) {
+    switch(command.getCallbackId()) {
+    case "add_subscription":
+      insertNewSubscription(command);
+      break;
+    case "edit_subscription":
+      updateSubscription(command);
+    default:
+      break;
+    }
+    return SlackDialogSubmissionResponse.ok();
+  }
+
+  /**
+   * SlackSubscription 수정
+   */
+  private void updateSubscription(SlackActionCommand command) {
+    SlackSubscription subscription = SlackSubscription.builder()
+        .userId(command.getUser().getId())
+        .channel(command.getChannel().getId())
+        .bookingDt(command.getSubmission().get("booking_dt"))
+        .resortId(command.getSubmission().get("resort_nm"))
+        .roomType("*")
+        .build();
+    dao.updateSubscription(subscription);
+  }
+
+  /**
+   * 신규 SlackSubscription 등록
+   */
+  private void insertNewSubscription(SlackActionCommand command) {
+    SlackSubscription subscription = SlackSubscription.builder()
+        .userId(command.getUser().getId())
+        .channel(command.getChannel().getId())
+        .bookingDt(command.getSubmission().get("booking_dt"))
+        .resortId(command.getSubmission().get("resort_nm"))
+        .roomType("*")
+        .build();
+    dao.insertNewSubscription(subscription);
   }
 
 }

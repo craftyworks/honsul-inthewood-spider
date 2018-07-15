@@ -33,21 +33,22 @@
     </select>
 
     <select id="selectSlackSubscription" resultType="SlackSubscription" parameterType="SlackSlashCommand">
-      SELECT a.USER_ID
+      SELECT a.SUBSCRIPTION_ID
+           , a.USER_ID
            , b.USER_NAME
-          , a.SUBSCRIPTION_ID
-          , a.RESORT_ID
-          , CASE WHEN a.RESORT_ID = '*' 
-                 THEN CONCAT('전국 ', (SELECT COUNT(distinct RESORT_ID) FROM BOOKING), '개 휴양림') 
-              ELSE c.RESORT_NM 
-            END as RESORT_NM
-          , c.HOMEPAGE
-          , c.ADDRESS
-          , CASE WHEN a.BOOKING_DT = 'holiday'
+           , a.CHANNEL
+           , CASE WHEN a.BOOKING_DT = 'holiday'
                  THEN '주말과 연휴'
                  ELSE a.BOOKING_DT
               END as BOOKING_DT
-          , a.*
+           , a.RESORT_ID
+           , CASE WHEN a.RESORT_ID = '*' 
+                 THEN CONCAT('전국 ', (SELECT COUNT(distinct RESORT_ID) FROM BOOKING), '개 휴양림') 
+              ELSE c.RESORT_NM 
+            END as RESORT_NM
+           , c.HOMEPAGE
+           , c.ADDRESS
+           , a.ROOM_TYPE
         FROM SLACK_SUBSCRIBER a
         JOIN SLACK_USER b
           ON b.USER_ID = a.USER_ID
@@ -64,7 +65,7 @@
     
     <select id="selectResortOptionList" resultType="cmap" parameterType="string">
       SELECT CASE WHEN ROW_NUMBER() OVER (PARTITION BY a.REGION ORDER BY a.RESORT_NM) = 1 THEN 'Y' ELSE 'N' END as GROUP_YN
-         , a.REGION
+           , a.REGION
            , a.RESORT_ID
            , a.RESORT_NM
         FROM RESORT a
@@ -92,5 +93,28 @@
               AND HOLIDAY_YN = 'Y') &lt;= 3
     </select>  
     
+    <insret id="insertNewSubscription" parameterType="SlackSubscription">
+      INSERT INTO SLACK_SUBSCRIBER(
+         USER_ID, CHANNEL, BOOKING_DT, RESORT_ID, ROOM_TYPE, USE_YN)
+      VALUES (
+        #{userId}, #{channel}, #{bookingDt}, #{resortId}, #{roomType}, 'Y'
+      )
+    </insert>   
+    
+    <update id="updateSubscription" parameterType="SlackSubscription">
+      UPDATE SLACK_SUBSCRIBER
+         SET BOOKING_DT = #{bookingDt}
+           , RESORT_ID = #{resortId}
+           , ROOM_TYPE = #{roomType}
+           , USE_YN = #{useYn}
+           , UPDATE_DT = now()
+       WHERE SUBSCRIPTION_ID = #{subscriptionId}    
+    </update>
+
+    <update id="deleteSubscription" parameterType="SlackSubscription">
+      DELETE SLACK_SUBSCRIBER
+       WHERE SUBSCRIPTION_ID = #{subscriptionId}    
+    </update>   
+       
 </mapper>
 

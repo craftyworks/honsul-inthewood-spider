@@ -30,4 +30,8 @@ public interface SlackDao {
 
   List<Map<String, String>> selectComingWeekendBookingDt();
 
+  void insertNewSubscription(SlackSubscription subscription);
+
+  void updateSubscription(SlackSubscription subscription);
+
 }

@@ -12,18 +12,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SlackSubscription {
+  @JsonProperty("subscription_id")
+  private String subscriptionId;
   @JsonProperty("user_id")
   private String userId;
   @JsonProperty("user_name")
   private String userName;
-  @JsonProperty("subscription_id")
-  private String subscriptionId;
+  private String channel;
+  @JsonProperty("bookingDt")
+  private String bookingDt;
   @JsonProperty("resort_id")
   private String resortId;
   @JsonProperty("resort_nm")
   private String resortNm;
   private String homepage;
   private String address;
-  @JsonProperty("bookingDt")
-  private String bookingDt;
+  @JsonProperty("room_type")
+  private String roomType;
 }
