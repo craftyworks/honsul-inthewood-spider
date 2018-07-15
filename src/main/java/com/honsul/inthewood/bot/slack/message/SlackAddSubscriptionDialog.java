@@ -14,7 +14,7 @@ public class SlackAddSubscriptionDialog {
         .callbackId("add_subscription")
         .title("휴양림 정찰 추가")
         .submitLabel("저장")
-        .notifyOnCancel(true)
+        .notifyOnCancel(false)
         .build();
     
     SlackDialogSelectElement resort = SlackDialogSelectElement.builder()
