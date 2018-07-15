@@ -64,8 +64,8 @@ public class SlackBotServiceTest {
       command.setName("resort_nm");
       SlackDialogOptionHolder options = service.loadDialogOptions(command);
       logger.debug("json:{}", json.write(options));
-      
-      assertThat(options.getOptions()).isNotEmpty();
+      assertThat(options.getOptions()).isNull();
+      assertThat(options.getOptionGroups()).isNotEmpty();
   
       command.setName("booking_dt");
       options = service.loadDialogOptions(command);
@@ -75,7 +75,23 @@ public class SlackBotServiceTest {
       command.setValue("2");
       options = service.loadDialogOptions(command);
       logger.debug("json:{}", json.write(options));
+      assertThat(options.getOptions()).isEmpty();
+      
+      command.setValue("20180901");
+      options = service.loadDialogOptions(command);
+      logger.debug("json:{}", json.write(options));
+      assertThat(options.getOptions()).isNotEmpty();
+      
+      command.setValue("2018-09-01");
+      options = service.loadDialogOptions(command);
+      logger.debug("json:{}", json.write(options));
+      assertThat(options.getOptions()).isNotEmpty();
     }
-  
+
+  @Test
+  public void testLoadResortDialogOptions() throws Exception {
+    throw new RuntimeException("not yet implemented");
+  }
+
   
 }

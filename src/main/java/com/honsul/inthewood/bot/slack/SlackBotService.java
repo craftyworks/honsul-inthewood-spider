@@ -78,11 +78,7 @@ public class SlackBotService {
     switch(command.getCallbackId()) {
       case "add_subscription":
         if("resort_nm".equals(command.getName())) {
-          if(StringUtils.isEmpty(command.getValue())) {
-            return defaultResortDialogOptions(command);
-          } else {
-            return loadResortDialogOptions(command);
-          }
+          return loadResortDialogOptions(command);
         } else if("booking_dt".equals(command.getName()) ) {
           if(StringUtils.isEmpty(command.getValue())) {
             return defaultBookingDtDialogOptions(command);
@@ -98,7 +94,7 @@ public class SlackBotService {
   private SlackDialogOptionHolder loadBookingDtDialogOptions(SlackActionCommand command) {
     String param = command.getValue();
     param = param.replaceAll("[^0-9]", "");
-    Map<String, String> dateInfo = dao.getSubscribeBookingDt(command.getValue());
+    Map<String, String> dateInfo = dao.getSubscribeBookingDt(param);
     
     List<Option> options = new ArrayList<>();
     if(dateInfo != null) {
@@ -118,21 +114,20 @@ public class SlackBotService {
     }
     return SlackDialogOptionHolder.ofOptions(options);
   }
-
-  private SlackDialogOptionHolder defaultResortDialogOptions(SlackActionCommand command) {
-    int resortCount = dao.getBookingResortCount();
-
-    List<Option> options = new ArrayList<>();
-    options.add(Option.of("전국 " + resortCount + "개 휴양림" , "*"));
-    
-    return SlackDialogOptionHolder.ofOptions(options);
-  }
   
   private SlackDialogOptionHolder loadResortDialogOptions(SlackActionCommand command) {
     List<Map<String, String>> result = dao.selectResortOptionList(command.getValue());
     
     List<OptionGroup> optionGroups = new ArrayList<>();
     OptionGroup g = null;
+
+    // 빈 문자열로 검색 시 전국 옵션 추가
+    if(StringUtils.isEmpty(command.getValue())) {
+      g = OptionGroup.of("All");
+      g.addOption(Option.of("전국 " + result.size() + "개 휴양림" , "*"));
+      optionGroups.add(g);
+    }
+    
     for(Map<String, String> row : result) {
       if("Y".equals(row.get("groupYn"))) {
         g = OptionGroup.of(row.get("region"));
