@@ -60,11 +60,18 @@ public class SlackBotController {
   /**
    * Slack Action Handler
    */
+  @ResponseBody
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public void actionCommand(@RequestBody SlackActionCommand command) {
     logger.info("received action command : {}", command);
-    
-    eventBus.post(command);
+    switch(command.getType()) {
+    case "message_action":
+      break;
+    case "dialog_submission":
+      break;
+    default:
+      break;
+    }
   }
   
   /**
