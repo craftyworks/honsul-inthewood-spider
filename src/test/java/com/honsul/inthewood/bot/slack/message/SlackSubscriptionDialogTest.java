@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.honsul.inthewood.bot.slack.model.SlackDialog;
 
-public class SlackAddSubscriptionDialogTest {
+public class SlackSubscriptionDialogTest {
 
-private static final Logger logger = LoggerFactory.getLogger(SlackAddSubscriptionDialogTest.class);
+private static final Logger logger = LoggerFactory.getLogger(SlackSubscriptionDialogTest.class);
 
   @Test
   public void testBuild() throws Exception {
     
-    SlackDialog dialog = SlackAddSubscriptionDialog.build();
+    SlackDialog dialog = SlackSubscriptionDialog.build();
     
     assertThat(dialog).isNotNull();
 

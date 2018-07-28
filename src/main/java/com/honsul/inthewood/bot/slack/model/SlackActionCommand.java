@@ -18,7 +18,7 @@ public class SlackActionCommand implements TokenBarer {
   private String actionTs;
   
   @JsonProperty("callback_id")
-  private CallbackId callbackId;
+  private String callbackId;
   
   @JsonProperty("trigger_id")
   private String triggerId;
@@ -93,8 +93,5 @@ public class SlackActionCommand implements TokenBarer {
   }
   public static enum Type {
     dialog_submission, dialog_suggestion, interactive_message, message_action;  
-  }
-  public static enum CallbackId {
-    add_subscription, edit_subscription, list_subscription
   }
 }

@@ -59,7 +59,7 @@ public class SlackSubscriptionCompleteMessage {
   public static SlackMessage build(SlackSubscription subscription) {
 
     SlackAttachment attachment = SlackAttachment.builder()
-      .callbackId("list_subscription")
+      .callbackId("subscription_item")
       .title("")
       .text("")
       .fields(fields(subscription))

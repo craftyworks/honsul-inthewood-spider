@@ -37,14 +37,29 @@ public class SlackActionCommandListener implements EventBusListener{
   @Subscribe
   public void receive(SlackActionCommand actionCommand) {
     switch (actionCommand.getCallbackId()) {
-      case add_subscription:
+      case "add_subscription":
         addSubscription(actionCommand);
         break;
-      case list_subscription:
+      case "edit_subscription":
+        addSubscription(actionCommand);
+        break;
+      case "subscription_item":
         switch(actionCommand.getActions()[0].getName()) {
           case "list":
             listSubscription(actionCommand);
             break;
+          case "edit":
+            editSubscription(actionCommand);
+            break;
+          case "remove":
+            removeSubscription(actionCommand);
+            break;
+          default:
+            throw new AssertionError("Never Happend");
+        }        
+        break;
+      case "list_subscription":
+        switch(actionCommand.getActions()[0].getName()) {
           case "edit":
             editSubscription(actionCommand);
             break;

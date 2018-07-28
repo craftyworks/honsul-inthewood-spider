@@ -5,14 +5,14 @@ import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.DataSourceType;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
 
-public class SlackAddSubscriptionDialog {
+public class SlackSubscriptionDialog {
   public static SlackDialog build() {
-    return build(null, null);
+    return build("add_subscription", null, null);
   }
-  public static SlackDialog build(Option selectedResortOption, Option selectedBookingDtOption) {
+  public static SlackDialog build(String callbackId, Option selectedResortOption, Option selectedBookingDtOption) {
     SlackDialog dialog = SlackDialog.builder()
-        .callbackId("add_subscription")
-        .title("휴양림 정찰 추가")
+        .callbackId(callbackId)
+        .title("휴양림 정찰")
         .submitLabel("저장")
         .notifyOnCancel(false)
         .build();

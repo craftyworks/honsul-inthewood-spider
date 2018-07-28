@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.honsul.inthewood.bot.slack.dao.SlackDao;
-import com.honsul.inthewood.bot.slack.message.SlackAddSubscriptionDialog;
+import com.honsul.inthewood.bot.slack.message.SlackSubscriptionDialog;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
@@ -79,20 +79,19 @@ public class SlackBotService {
   }
 
   public SlackDialogOptionHolder loadDialogOptions(SlackActionCommand command) {
-    switch(command.getCallbackId()) {
-      case add_subscription:
-        if("resort_nm".equals(command.getName())) {
-          return loadResortDialogOptions(command);
-        } else if("booking_dt".equals(command.getName()) ) {
-          if(StringUtils.isEmpty(command.getValue())) {
-            return defaultBookingDtDialogOptions(command);
-          } else {
-            return loadBookingDtDialogOptions(command);
-          }
+    if(command.getCallbackId().startsWith("add_subscription") || command.getCallbackId().startsWith("edit_subscription")) {
+      if("resort_nm".equals(command.getName())) {
+        return loadResortDialogOptions(command);
+      } else if("booking_dt".equals(command.getName()) ) {
+        if(StringUtils.isEmpty(command.getValue())) {
+          return defaultBookingDtDialogOptions(command);
+        } else {
+          return loadBookingDtDialogOptions(command);
         }
-      default:
-        return SlackDialogOptionHolder.ofOptionGroups(new ArrayList<>());
+      }
     }
+    
+    return SlackDialogOptionHolder.ofOptionGroups(new ArrayList<>());
   }
 
   private SlackDialogOptionHolder loadBookingDtDialogOptions(SlackActionCommand command) {
@@ -144,7 +143,7 @@ public class SlackBotService {
    * 휴양림 정찰 추가 다이알로그 리턴.
    */
   public SlackDialog getSlackAddSubscriptionDialog() {
-    return SlackAddSubscriptionDialog.build();
+    return SlackSubscriptionDialog.build();
   }
   
   /**
@@ -156,22 +155,24 @@ public class SlackBotService {
     Option selectedResort = Option.of(subscription.getResortNm(), subscription.getResortId());
     Option selectedBookingDt = Option.of(subscription.getBookingDtTxt(), subscription.getBookingDt());
     
-    return SlackAddSubscriptionDialog.build(selectedResort, selectedBookingDt);
+    return SlackSubscriptionDialog.build("edit_subscription$" + subscriptionId, selectedResort, selectedBookingDt);
   }
   
   /**
-   * 휴양림 정찰 등록.
+   * 휴양림 정찰 등록/수정.
    */
-  public SlackDialogSubmissionResponse addSubscription(SlackActionCommand command) {
-    switch (command.getCallbackId()) {
-      case add_subscription:
+  public SlackDialogSubmissionResponse saveSubscription(SlackActionCommand command) {
+    switch(command.getCallbackId()) {
+      case "add_subscription":
         insertNewSubscription(command);
         break;
-      case edit_subscription:
+      case "edit_subscription":
         updateSubscription(command);
-      default:
         break;
+      default:
+        throw new AssertionError("Never happened");
     }
+    
     return SlackDialogSubmissionResponse.ok();
   }
 
@@ -208,6 +209,7 @@ public class SlackBotService {
         .channel(command.getChannel().getId())
         .bookingDt(command.getSubmission().get("booking_dt"))
         .resortId(command.getSubmission().get("resort_nm"))
+        .subscriptionId(command.getSubmission().get("subscription_id"))
         .roomType("*")
         .build();
     return subscription;
