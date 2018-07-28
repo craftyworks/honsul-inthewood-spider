@@ -89,7 +89,8 @@ public class SlackActionCommandListener implements EventBusListener{
     List<SlackSubscription> subscriptions = service.selectSlackSubscription(actionCommand.getUser().getId(), actionCommand.getChannel().getId());
     SlackMessage slackMessage = SlackSubscriptionListMessage.build(subscriptions);
     
-    slackMessage.setTs(actionCommand.getActionTs());
+    slackMessage.setTs(actionCommand.getMessageTs());
+    slackMessage.setToken(service.getSlackBotAccessToken(actionCommand.getUser().getId()));
     
     slackClient.chatUpdate(slackMessage);
   }  
