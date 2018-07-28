@@ -83,13 +83,16 @@ public class SlackActionCommandListener implements EventBusListener{
   private void removeSubscription(SlackActionCommand actionCommand) {
     logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
     
+    // subscritionId 로 구독 삭제
     String subscriptionId = actionCommand.getActions()[0].getValue();
     service.removeSlackSubscription(subscriptionId);
     
+    // 구독중인 목록으로 메시지 업데이트
     List<SlackSubscription> subscriptions = service.selectSlackSubscription(actionCommand.getUser().getId(), actionCommand.getChannel().getId());
     SlackMessage slackMessage = SlackSubscriptionListMessage.build(subscriptions);
     
     slackMessage.setTs(actionCommand.getMessageTs());
+    slackMessage.setChannel(actionCommand.getChannel().getId());
     slackMessage.setToken(service.getSlackBotAccessToken(actionCommand.getUser().getId()));
     
     slackClient.chatUpdate(slackMessage);
