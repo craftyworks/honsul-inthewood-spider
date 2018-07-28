@@ -131,7 +131,7 @@ public class SlackWebClient implements SlackClient {
   }
 
   private <T> T postSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {
-    logger.debug("post api {}, param : {}", api.getCommand(), param);
+    logger.info("post api {}, param : {}", api.getCommand(), param);
 
     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(api.getURL());
 
@@ -146,7 +146,7 @@ public class SlackWebClient implements SlackClient {
 
     ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, entity, String.class);
     
-    logger.debug("post api {}, response : {}, {}", api.getCommand(), response.getStatusCode(), response.getBody());
+    logger.info("post api {}, response : {}, {}", api.getCommand(), response.getStatusCode(), response.getBody());
     
     try {
       return new ObjectMapper().readValue(response.getBody(), resultClass);
@@ -158,7 +158,7 @@ public class SlackWebClient implements SlackClient {
   }
 
   private <T> T getSlackAPI(SlackAPI api, Object param, Class<T> resultClass) {
-    logger.debug("get api {}, param : {}", api.getCommand(), param);
+    logger.info("get api {}, param : {}", api.getCommand(), param);
     
     if(MediaType.APPLICATION_FORM_URLENCODED.equals(api.getAccessType())) {
       UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(api.getURL());
@@ -171,11 +171,11 @@ public class SlackWebClient implements SlackClient {
       
       ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
 
-      logger.debug("get api {}, http response : {}, {}", api.getCommand(), response.getStatusCode(), response.getBody());
+      logger.info("get api {}, http response : {}, {}", api.getCommand(), response.getStatusCode(), response.getBody());
       
       try {
         T result = new ObjectMapper().readValue(response.getBody(), resultClass);
-        logger.debug("get api {}, result : {}", api.getMethod(), result);
+        logger.info("get api {}, result : {}", api.getMethod(), result);
         return result;
       } catch (IOException e) {
         new RuntimeException("Salck API Error", e);
