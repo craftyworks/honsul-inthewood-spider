@@ -19,8 +19,10 @@ public class SlackSubscription {
   @JsonProperty("user_name")
   private String userName;
   private String channel;
-  @JsonProperty("bookingDt")
+  @JsonProperty("booking_dt")
   private String bookingDt;
+  @JsonProperty("booking_dt_txt")
+  private String bookingDtTxt;
   @JsonProperty("resort_id")
   private String resortId;
   @JsonProperty("resort_nm")

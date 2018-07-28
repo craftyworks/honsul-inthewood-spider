@@ -111,8 +111,6 @@ public class SlackBotService {
     List<Map<String, String>> weeks = dao.selectComingWeekendBookingDt();
     
     List<Option> options = new ArrayList<>();
-    options.add(Option.of("주말과 연휴", "holiday"));
-    
     for(Map<String, String> row  : weeks) {
       options.add(Option.of(row.get("bookingDtTxt"), row.get("bookingDt")));
     }
@@ -142,10 +140,25 @@ public class SlackBotService {
     return SlackDialogOptionHolder.ofOptionGroups(optionGroups);
   }
 
+  /**
+   * 휴양림 정찰 추가 다이알로그 리턴.
+   */
   public SlackDialog getSlackAddSubscriptionDialog() {
     return SlackAddSubscriptionDialog.build();
   }
-
+  
+  /**
+   * 휴양림 정찰 수정 다이알로그 리턴.
+   */
+  public SlackDialog getSlackEditSubscriptionDialog(String subscriptionId) {
+    SlackSubscription subscription = getSlackSubscriptionById(subscriptionId);
+    
+    Option selectedResort = Option.of(subscription.getResortNm(), subscription.getResortId());
+    Option selectedBookingDt = Option.of(subscription.getBookingDtTxt(), subscription.getBookingDt());
+    
+    return SlackAddSubscriptionDialog.build(selectedResort, selectedBookingDt);
+  }
+  
   /**
    * 휴양림 정찰 등록.
    */

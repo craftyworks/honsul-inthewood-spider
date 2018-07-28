@@ -14,6 +14,9 @@ import com.honsul.inthewood.bot.slack.SlackWebClient;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionCompleteMessage;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionListMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackDialog;
+import com.honsul.inthewood.bot.slack.model.api.DialogOpenRequest;
+import com.honsul.inthewood.bot.slack.model.api.DialogOpenResponse;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 
 @Component
@@ -84,10 +87,18 @@ public class SlackActionCommandListener implements EventBusListener{
   private void editSubscription(SlackActionCommand actionCommand) {
     logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
     
+    String token = service.getSlackBotAccessToken(actionCommand.getUser().getId());
+    String triggerId = actionCommand.getTriggerId();
     String subscriptionId = actionCommand.getActions()[0].getValue();
-    SlackSubscription subscription = service.getSlackSubscriptionById(subscriptionId);
+    SlackDialog dialog = service.getSlackEditSubscriptionDialog(subscriptionId); 
     
-    slackClient.sendMessage(actionCommand.getResponseUrl(), SlackSubscriptionCompleteMessage.build(subscription));
+    logger.info("Dialog open request {}, {}, {}", token, triggerId, dialog);
+    DialogOpenResponse response = slackClient.dialogOpen(DialogOpenRequest.builder()
+        .token(token)
+        .triggerId(triggerId)
+        .dialog(dialog).build()
+    );
+    logger.info("Dialog Open response : {}", response);
   }
   
   /**

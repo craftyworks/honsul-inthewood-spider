@@ -37,10 +37,11 @@
            , a.USER_ID
            , b.USER_NAME
            , a.CHANNEL
+           , a.BOOKING_DT
            , CASE WHEN a.BOOKING_DT = 'holiday'
                  THEN '주말과 연휴'
-                 ELSE a.BOOKING_DT
-              END as BOOKING_DT
+                 ELSE CONCAT(DATE_FORMAT(d.DT, '%Y년 %m월 %d일'), ' ', d.DAY_KR_NM)
+              END as BOOKING_DT_TXT
            , a.RESORT_ID
            , CASE WHEN a.RESORT_ID = '*' 
                  THEN CONCAT('전국 ', (SELECT COUNT(distinct RESORT_ID) FROM BOOKING), '개 휴양림') 
@@ -54,6 +55,8 @@
           ON b.USER_ID = a.USER_ID
         LEFT JOIN RESORT c
           ON c.RESORT_ID = a.RESORT_ID
+        LEFt JOIN CALENDAR d
+          ON d.DT = STR_TO_DATE(a.BOOKING_DT, '%Y%m%d')
        WHERE a.USER_ID = #{userId}
          AND a.CHANNEL = #{channelId}
        ORDER BY a.SUBSCRIPTION_ID
@@ -64,10 +67,11 @@
            , a.USER_ID
            , b.USER_NAME
            , a.CHANNEL
+           , a.BOOKING_DT
            , CASE WHEN a.BOOKING_DT = 'holiday'
                  THEN '주말과 연휴'
-                 ELSE a.BOOKING_DT
-              END as BOOKING_DT
+                 ELSE CONCAT(DATE_FORMAT(d.DT, '%Y년 %m월 %d일'), ' ', d.DAY_KR_NM)
+              END as BOOKING_DT_TXT
            , a.RESORT_ID
            , CASE WHEN a.RESORT_ID = '*' 
                  THEN CONCAT('전국 ', (SELECT COUNT(distinct RESORT_ID) FROM BOOKING), '개 휴양림') 
@@ -81,6 +85,8 @@
           ON b.USER_ID = a.USER_ID
         LEFT JOIN RESORT c
           ON c.RESORT_ID = a.RESORT_ID
+        LEFt JOIN CALENDAR d
+          ON d.DT = STR_TO_DATE(a.BOOKING_DT, '%Y%m%d')
       <choose>
         <when test="subscriptionId and subscriptionId != ''">
        WHERE a.SUBSCRIPTION_ID = #{subscriptionId}
@@ -118,6 +124,9 @@
     </select>
 
     <select id="selectComingWeekendBookingDt" resultType="cmap" parameterType="string">
+      SELECT 'holiday' as BOOKING_DT
+           , '주말과 연휴' as BOOKING_DT_TXT
+       UNION ALL     
       SELECT DATE_FORMAT(a.DT, '%Y%m%d') as BOOKING_DT
            , CONCAT(DATE_FORMAT(a.DT, '%Y년 %m월 %d일'), ' ', a.DAY_KR_NM) as BOOKING_DT_TXT
         FROM CALENDAR a

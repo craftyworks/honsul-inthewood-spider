@@ -53,7 +53,7 @@ public class SlackSubscriptionCompleteMessage {
     if(!StringUtils.isEmpty(subscription.getHomepage())) {
       title = "<" + subscription.getHomepage() + "|" + title + ">";
     }
-    return new SlackField[] { SlackField.of("휴양림", title), SlackField.of("일정", subscription.getBookingDt()) };
+    return new SlackField[] { SlackField.of("휴양림", title), SlackField.of("일정", subscription.getBookingDtTxt()) };
   }  
   
   public static SlackMessage build(SlackSubscription subscription) {

@@ -73,7 +73,7 @@ public class SlackBotController {
     
     switch (command.getType()) {
       case dialog_submission:
-        // 휴양림 정찰 등록/수정 처리
+        // 휴양림 정찰 등록 처리
         resp = service.addSubscription(command);
         break;
       case interactive_message:
