@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SlackActionCommand implements TokenBarer {
-  private String type;
+  private Type type;
 
   private String token;
   
@@ -90,6 +90,8 @@ public class SlackActionCommand implements TokenBarer {
     private String clientMsgId;
     
     private String ts;
-    
+  }
+  public static enum Type {
+    dialog_submission, interactive_message, message_action;  
   }
 }

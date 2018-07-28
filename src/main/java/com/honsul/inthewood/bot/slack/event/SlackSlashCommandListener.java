@@ -49,7 +49,7 @@ public class SlackSlashCommandListener implements EventBusListener{
       help(slashCommand);
       break;
     default:
-      help(slashCommand);
+      unknown(slashCommand);
       break;
     }
   }
@@ -66,6 +66,9 @@ public class SlackSlashCommandListener implements EventBusListener{
     slackClient.sendMessage(slashCommand.getResponseUrl(), slackMessage);
   }
   
+  /**
+   * 신규 정찰 휴양림 추가 다이얼로그 오픈.
+   */
   private void add(SlackSlashCommand slashCommand) {
     logger.info("slash add command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
     
@@ -82,10 +85,13 @@ public class SlackSlashCommandListener implements EventBusListener{
     logger.info("Dialog Open response : {}", response);
   }
 
+  /**
+   * 현재 정찰중인 휴양림 목록을 출력한다.
+   */
   private void list(SlackSlashCommand slashCommand) {
     logger.info("slash list command : {}, {}", slashCommand.getCommand(), slashCommand.getText());
     
-    List<SlackSubscription> subscriptions = service.selectSlackSubscription(slashCommand);
+    List<SlackSubscription> subscriptions = service.selectSlackSubscription(slashCommand.getUserId(), slashCommand.getChannelId());
     SlackMessage slackMessage = SlackSubscriptionListMessage.build(subscriptions);
     slackClient.sendMessage(slashCommand.getResponseUrl(), slackMessage);
   }

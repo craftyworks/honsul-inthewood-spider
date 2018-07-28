@@ -54,7 +54,7 @@ public class SlackBotServiceTest {
     when(slashCommand.getUserId()).thenReturn("U0502LPJC");
     when(slashCommand.getChannelId()).thenReturn("GB1NY12UX");
     
-    assertThat(service.selectSlackSubscription(slashCommand)).isNotEmpty();
+    assertThat(service.selectSlackSubscription(slashCommand.getUserId(), slashCommand.getChannelId())).isNotEmpty();
   }
 
   @Test

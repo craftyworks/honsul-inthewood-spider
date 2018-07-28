@@ -1,6 +1,7 @@
 package com.honsul.inthewood.bot.slack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,6 @@ import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.Option;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSelectElement.OptionGroup;
 import com.honsul.inthewood.bot.slack.model.SlackDialogSubmissionResponse;
-import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
@@ -71,8 +71,11 @@ public class SlackBotService {
     return dao.getSlackUserAcccessTokenByUserId(userId);
   }
 
-  public List<SlackSubscription> selectSlackSubscription(SlackSlashCommand slashCommand) {
-    return dao.selectSlackSubscription(slashCommand);
+  public List<SlackSubscription> selectSlackSubscription(String userId, String channelId) {
+    Map<String, String> param = new HashMap<>();
+    param.put("userId", userId);
+    param.put("channelId", channelId);
+    return dao.selectSlackSubscription(param);
   }
 
   public SlackDialogOptionHolder loadDialogOptions(SlackActionCommand command) {
@@ -147,14 +150,14 @@ public class SlackBotService {
    * 휴양림 정찰 등록.
    */
   public SlackDialogSubmissionResponse addSubscription(SlackActionCommand command) {
-    switch(command.getCallbackId()) {
-    case "add_subscription":
-      insertNewSubscription(command);
-      break;
-    case "edit_subscription":
-      updateSubscription(command);
-    default:
-      break;
+    switch (command.getCallbackId()) {
+      case "add_subscription":
+        insertNewSubscription(command);
+        break;
+      case "edit_subscription":
+        updateSubscription(command);
+      default:
+        break;
     }
     return SlackDialogSubmissionResponse.ok();
   }
@@ -163,7 +166,7 @@ public class SlackBotService {
    * SlackSubscription 수정
    */
   private void updateSubscription(SlackActionCommand command) {
-    SlackSubscription subscription = createSlackSubscription(command);
+    SlackSubscription subscription = createSlackSubscriptionFromSubmissionCommand(command);
     dao.updateSubscription(subscription);
   }
 
@@ -171,16 +174,22 @@ public class SlackBotService {
    * 신규 SlackSubscription 등록
    */
   private void insertNewSubscription(SlackActionCommand command) {
-    SlackSubscription subscription = createSlackSubscription(command);
+    SlackSubscription subscription = createSlackSubscriptionFromSubmissionCommand(command);
     dao.insertNewSubscription(subscription);
   }
 
-  public SlackSubscription getSlackSubscription(SlackActionCommand actionCommand) {
-    SlackSubscription vo = createSlackSubscription(actionCommand);
+  public SlackSubscription getSlackSubscriptionById(String subscriptionId) {
+    SlackSubscription vo = new SlackSubscription();
+    vo.setSubscriptionId(subscriptionId);
+    return dao.getSlackSubscription(vo);
+  }
+  
+  public SlackSubscription getSlackSubscriptionFromSubmissionCommand(SlackActionCommand actionCommand) {
+    SlackSubscription vo = createSlackSubscriptionFromSubmissionCommand(actionCommand);
     return dao.getSlackSubscription(vo);
   }
 
-  private SlackSubscription createSlackSubscription(SlackActionCommand command) {
+  private SlackSubscription createSlackSubscriptionFromSubmissionCommand(SlackActionCommand command) {
     SlackSubscription subscription = SlackSubscription.builder()
         .userId(command.getUser().getId())
         .channel(command.getChannel().getId())
@@ -190,4 +199,9 @@ public class SlackBotService {
         .build();
     return subscription;
   }
+
+  public void removeSlackSubscription(String subscriptionId) {
+    dao.removeSubscription(subscriptionId);
+  }
+
 }

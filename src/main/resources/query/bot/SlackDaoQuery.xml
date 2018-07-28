@@ -32,7 +32,7 @@
        WHERE USER_ID = #{vo}
     </select>
 
-    <select id="selectSlackSubscription" resultType="SlackSubscription" parameterType="SlackSlashCommand">
+    <select id="selectSlackSubscription" resultType="SlackSubscription" parameterType="map">
       SELECT a.SUBSCRIPTION_ID
            , a.USER_ID
            , b.USER_NAME
@@ -147,9 +147,9 @@
        WHERE SUBSCRIPTION_ID = #{subscriptionId}    
     </update>
 
-    <delete id="deleteSubscription" parameterType="SlackSubscription">
+    <delete id="removeSubscription" parameterType="string">
       DELETE SLACK_SUBSCRIBER
-       WHERE SUBSCRIPTION_ID = #{subscriptionId}    
+       WHERE SUBSCRIPTION_ID = #{vo}    
     </delete>   
        
 </mapper>

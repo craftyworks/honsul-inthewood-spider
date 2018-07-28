@@ -27,7 +27,7 @@ public class SlackSlashCommandListenerTest {
     slackClient = mock(SlackWebClient.class);
 
     service = mock(SlackBotService.class);
-    when(service.selectSlackSubscription(any(SlackSlashCommand.class))).thenReturn(new ArrayList<>());
+    when(service.selectSlackSubscription(any(String.class), any(String.class))).thenReturn(new ArrayList<>());
     
     listener = new SlackSlashCommandListener();
     

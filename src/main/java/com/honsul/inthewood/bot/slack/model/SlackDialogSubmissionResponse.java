@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(Include.NON_NULL)
-public class SlackDialogSubmissionResponse {
+public class SlackDialogSubmissionResponse implements SlackActionCommandResponsable {
   private List<Error> errors;
   
   @Data

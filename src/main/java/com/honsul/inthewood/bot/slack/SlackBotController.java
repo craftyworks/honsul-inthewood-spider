@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.common.eventbus.EventBus;
 import com.honsul.inthewood.bot.slack.message.WelcomeMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackActionCommandResponsable;
 import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
-import com.honsul.inthewood.bot.slack.model.SlackDialogSubmissionResponse;
 import com.honsul.inthewood.bot.slack.model.SlackEventMessage;
 import com.honsul.inthewood.bot.slack.model.SlackMessageResponse;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
@@ -59,30 +59,35 @@ public class SlackBotController {
   }
   
   /**
-   * Slack Action Handler
+   * Slack Action Command Handler.
+   * 
    */
   @ResponseBody
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public SlackDialogSubmissionResponse actionCommand(@RequestBody SlackActionCommand command) {
-    logger.info("received action command : {}", command);
-    SlackDialogSubmissionResponse resp = null;
+  public SlackActionCommandResponsable actionCommand(@RequestBody SlackActionCommand command) {
+    logger.info("received action command [type : {}, callbackId : {}, payload : {}]", command.getType(), command.getCallbackId(), command);
+    SlackActionCommandResponsable resp = null;
     
-    switch(command.getType()) {
-    case "dialog_submission":
-      resp = service.addSubscription(command);
-      eventBus.post(command);
-      break;
-    case "message_action":
-    default:
-      resp = SlackDialogSubmissionResponse.ok();
-      eventBus.post(command);
-      break;
+    switch (command.getType()) {
+      case dialog_submission:
+        // 휴양림 정찰설정 등록/수정 처리
+        resp = service.addSubscription(command);
+        // 휴양림 정찰설정 목록 출력
+        eventBus.post(command);
+        break;
+      case interactive_message:
+      case message_action:
+      default:
+        resp = SlackActionCommandResponsable.OK;
+        eventBus.post(command);
+        break;
     }
     return resp;
   }
   
   /**
-   * Slack Dynamic Option loading Command
+   * Slack Dynamic Option loading Command.
+   * <p>정찰 휴양림 설정 다이알로그의 휴양림 목록과 대상 일자 콤보의 옵션 목록을 다이나믹하게 로딩한다.
    */
   @ResponseBody
   @PostMapping(value = "loadOption", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -93,7 +98,12 @@ public class SlackBotController {
   }  
   
   /** 
-   * Slack Slash Command Handler 
+   * Slack Slash Command Handler.
+   * 
+   * <li> /scout list - 현재 정찰중인 휴양림 목록을 출력
+   * <li> /scout add - 휴양림 정찰대상 추가 다이알로그 출력
+   * <li> /scout help - 사용방법 출력
+   * <p>Slash Command 에 대한 처리는 EventBus 에 등록된 {@link com.honsul.inthewood.bot.slack.event.SlackSlashCommandListener} 에서 처리한다.
    */
   @ResponseBody
   @PostMapping(value = "slash", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

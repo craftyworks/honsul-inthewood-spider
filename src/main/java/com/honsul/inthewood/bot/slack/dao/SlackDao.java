@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 
@@ -20,7 +19,7 @@ public interface SlackDao {
 
   String getSlackUserAcccessTokenByUserId(String userId);
 
-  List<SlackSubscription> selectSlackSubscription(SlackSlashCommand slashCommand);
+  List<SlackSubscription> selectSlackSubscription(Map<String, String> param);
 
   List<Map<String, String>> selectResortOptionList(String value);
 
@@ -33,6 +32,8 @@ public interface SlackDao {
   void insertNewSubscription(SlackSubscription subscription);
 
   void updateSubscription(SlackSubscription subscription);
+
+  void removeSubscription(String subscriptionId);
 
   SlackSubscription getSlackSubscription(SlackSubscription subscription);
 

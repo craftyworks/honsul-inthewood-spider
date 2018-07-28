@@ -1,5 +1,7 @@
 package com.honsul.inthewood.bot.slack.event;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,9 @@ import com.google.common.eventbus.Subscribe;
 import com.honsul.inthewood.bot.slack.SlackBotService;
 import com.honsul.inthewood.bot.slack.SlackWebClient;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionCompleteMessage;
+import com.honsul.inthewood.bot.slack.message.SlackSubscriptionListMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 
 @Component
@@ -30,22 +34,63 @@ public class SlackActionCommandListener implements EventBusListener{
   @AllowConcurrentEvents
   @Subscribe
   public void receive(SlackActionCommand actionCommand) {
-    logger.debug("receiver action command : {}", actionCommand);
-    switch(actionCommand.getCallbackId().trim()) {
-    case "add_subscription":
-      addSubscription(actionCommand);
-      break;
-    default:
-      break;
+    switch (actionCommand.getCallbackId().trim()) {
+      case "add_subscription":
+        addSubscription(actionCommand);
+        break;
+      case "list_subscription":
+        switch(actionCommand.getActions()[0].getName()) {
+          case "edit":
+            editSubscription(actionCommand);
+            break;
+          case "remove":
+            removeSubscription(actionCommand);
+            break;
+          default:
+            throw new AssertionError("Never Happend");
+        }
+      default:
+        break;
     }
   }
   
+  /**
+   * 신규 휴양림 정찰 등록 후 결과 메시지 출력.
+   */
   private void addSubscription(SlackActionCommand actionCommand) {
     logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
     
-    SlackSubscription subscription = service.getSlackSubscription(actionCommand);
+    SlackSubscription subscription = service.getSlackSubscriptionFromSubmissionCommand(actionCommand);
     
     slackClient.sendMessage(actionCommand.getResponseUrl(), SlackSubscriptionCompleteMessage.build(subscription));
   }
   
+  /**
+   * 정찰 휴양림 정보 수정.
+   */
+  private void editSubscription(SlackActionCommand actionCommand) {
+    logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
+    
+    String subscriptionId = actionCommand.getActions()[0].getValue();
+    SlackSubscription subscription = service.getSlackSubscriptionById(subscriptionId);
+    
+    slackClient.sendMessage(actionCommand.getResponseUrl(), SlackSubscriptionCompleteMessage.build(subscription));
+  }
+  
+  /**
+   * 정찰 대상 휴양림 삭제 요청.
+   */
+  private void removeSubscription(SlackActionCommand actionCommand) {
+    logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
+    
+    String subscriptionId = actionCommand.getActions()[0].getValue();
+    service.removeSlackSubscription(subscriptionId);
+    
+    List<SlackSubscription> subscriptions = service.selectSlackSubscription(actionCommand.getUser().getId(), actionCommand.getChannel().getId());
+    SlackMessage slackMessage = SlackSubscriptionListMessage.build(subscriptions);
+    
+    slackMessage.setTs(actionCommand.getMessageTs());
+    
+    slackClient.chatUpdate(slackMessage);
+  }  
 }
