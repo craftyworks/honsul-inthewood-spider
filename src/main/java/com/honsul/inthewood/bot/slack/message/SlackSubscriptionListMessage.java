@@ -66,9 +66,12 @@ public class SlackSubscriptionListMessage {
          )
         .toArray(SlackAttachment[]::new);
     
+    String text = attchments.length > 0 
+        ? "정찰중인 휴양림 목록은 다음과 같습니다." 
+        : "정찰중인 휴양림이 존재하지 않습니다.\n`/scout add` 명령어를 입력하여 정찰할 휴양림 정보를 추가하세요.";
     return SlackMessage.builder()
         .username("휴양림 정찰봇")
-        .text("정찰중인 휴양림 목록은 다음과 같습니다.")
+        .text(text)
         .attachments(attchments)
         .build();
     
