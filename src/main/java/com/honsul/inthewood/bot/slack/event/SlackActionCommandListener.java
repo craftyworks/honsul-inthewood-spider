@@ -14,7 +14,6 @@ import com.honsul.inthewood.bot.slack.SlackWebClient;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionCompleteMessage;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionListMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
-import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 
 @Component
@@ -89,12 +88,7 @@ public class SlackActionCommandListener implements EventBusListener{
     
     // 구독중인 목록으로 메시지 업데이트
     List<SlackSubscription> subscriptions = service.selectSlackSubscription(actionCommand.getUser().getId(), actionCommand.getChannel().getId());
-    SlackMessage slackMessage = SlackSubscriptionListMessage.build(subscriptions);
     
-    slackMessage.setTs(actionCommand.getActionTs());
-    slackMessage.setChannel(actionCommand.getChannel().getId());
-    slackMessage.setToken(service.getSlackBotAccessToken(actionCommand.getUser().getId()));
-    
-    slackClient.chatUpdate(slackMessage);
+    slackClient.sendMessage(actionCommand.getResponseUrl(), SlackSubscriptionListMessage.build(subscriptions));
   }  
 }
