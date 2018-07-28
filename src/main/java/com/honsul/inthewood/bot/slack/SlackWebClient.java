@@ -191,7 +191,7 @@ public class SlackWebClient implements SlackClient {
 
     ResponseEntity<String> response = restTemplate.postForEntity(url, slackMessage, String.class);
     
-    logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
+    logger.info("message response : {}, {}", response.getStatusCode(), response.getBody());
   }
   
   @Override
@@ -199,7 +199,7 @@ public class SlackWebClient implements SlackClient {
 
     ResponseEntity<String> response = restTemplate.postForEntity("https://slack.com/api/chat.delete", message, String.class);
     
-    logger.debug("message response : {}, {}", response.getStatusCode(), response.getBody());
+    logger.info("message response : {}, {}", response.getStatusCode(), response.getBody());
   }
 
 
