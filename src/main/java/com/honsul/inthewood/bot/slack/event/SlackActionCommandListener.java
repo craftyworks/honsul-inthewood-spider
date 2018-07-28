@@ -14,6 +14,7 @@ import com.honsul.inthewood.bot.slack.SlackWebClient;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionCompleteMessage;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionListMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackMessage;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 
 @Component
@@ -33,11 +34,11 @@ public class SlackActionCommandListener implements EventBusListener{
   @AllowConcurrentEvents
   @Subscribe
   public void receive(SlackActionCommand actionCommand) {
-    switch (actionCommand.getCallbackId().trim()) {
-      case "add_subscription":
+    switch (actionCommand.getCallbackId()) {
+      case add_subscription:
         addSubscription(actionCommand);
         break;
-      case "list_subscription":
+      case list_subscription:
         switch(actionCommand.getActions()[0].getName()) {
           case "edit":
             editSubscription(actionCommand);
@@ -88,7 +89,7 @@ public class SlackActionCommandListener implements EventBusListener{
     
     // 구독중인 목록으로 메시지 업데이트
     List<SlackSubscription> subscriptions = service.selectSlackSubscription(actionCommand.getUser().getId(), actionCommand.getChannel().getId());
-    
-    slackClient.sendMessage(actionCommand.getResponseUrl(), SlackSubscriptionListMessage.build(subscriptions));
+    SlackMessage message = SlackSubscriptionListMessage.build(subscriptions);
+    slackClient.sendMessage(actionCommand.getResponseUrl(), message);
   }  
 }

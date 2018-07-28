@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.honsul.inthewood.HonsulInTheWoodApplication;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
+import com.honsul.inthewood.bot.slack.model.SlackActionCommand.CallbackId;
 import com.honsul.inthewood.bot.slack.model.SlackDialogOptionHolder;
 import com.honsul.inthewood.bot.slack.model.SlackSlashCommand;
 
@@ -60,7 +61,7 @@ public class SlackBotServiceTest {
   @Test
     public void testLoadDialogOptions() throws Exception {
       SlackActionCommand command = new SlackActionCommand();
-      command.setCallbackId("add_subscription");
+      command.setCallbackId(CallbackId.add_subscription);
       command.setName("resort_nm");
       SlackDialogOptionHolder options = service.loadDialogOptions(command);
       logger.debug("json:{}", json.write(options));

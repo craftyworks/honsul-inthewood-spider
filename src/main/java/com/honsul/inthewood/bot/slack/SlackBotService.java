@@ -80,7 +80,7 @@ public class SlackBotService {
 
   public SlackDialogOptionHolder loadDialogOptions(SlackActionCommand command) {
     switch(command.getCallbackId()) {
-      case "add_subscription":
+      case add_subscription:
         if("resort_nm".equals(command.getName())) {
           return loadResortDialogOptions(command);
         } else if("booking_dt".equals(command.getName()) ) {
@@ -151,10 +151,10 @@ public class SlackBotService {
    */
   public SlackDialogSubmissionResponse addSubscription(SlackActionCommand command) {
     switch (command.getCallbackId()) {
-      case "add_subscription":
+      case add_subscription:
         insertNewSubscription(command);
         break;
-      case "edit_subscription":
+      case edit_subscription:
         updateSubscription(command);
       default:
         break;

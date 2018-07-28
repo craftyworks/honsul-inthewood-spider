@@ -60,7 +60,10 @@ public class SlackBotController {
   
   /**
    * Slack Action Command Handler.
-   * 
+   * <li> 예약현황을 정찰할 휴양림 정보 등록
+   * <li> 정찰중인 휴양림 정보를 수정
+   * <li> 정찰중인 휴양림 정보를 삭제 
+   * Action 수행 후 결과 메시지는 현재 정찰중인 휴양림 목록을 출력한다.
    */
   @ResponseBody
   @PostMapping(value = "action", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,18 +73,18 @@ public class SlackBotController {
     
     switch (command.getType()) {
       case dialog_submission:
-        // 휴양림 정찰설정 등록/수정 처리
+        // 휴양림 정찰 등록/수정 처리
         resp = service.addSubscription(command);
-        // 휴양림 정찰설정 목록 출력
-        eventBus.post(command);
         break;
       case interactive_message:
       case message_action:
       default:
         resp = SlackActionCommandResponsable.OK;
-        eventBus.post(command);
         break;
     }
+    
+    // 정찰중인 휴양림 목록 출력
+    eventBus.post(command);
     return resp;
   }
   
