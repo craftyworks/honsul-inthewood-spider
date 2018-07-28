@@ -148,7 +148,8 @@
     </update>
 
     <delete id="removeSubscription" parameterType="string">
-      DELETE SLACK_SUBSCRIBER
+      DELETE 
+        FROM SLACK_SUBSCRIBER
        WHERE SUBSCRIPTION_ID = #{vo}    
     </delete>   
        
