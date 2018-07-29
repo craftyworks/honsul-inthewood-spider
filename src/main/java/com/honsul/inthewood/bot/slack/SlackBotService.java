@@ -195,6 +195,9 @@ public class SlackBotService {
    * SlackSubscription 수정
    */
   private void updateSubscription(SlackActionCommand command) {
+    SubmissionDialogSession session = getSubmissionDialogSession(command.getSubmission().get("dialog_submission_id"));
+    command.getSubmission().put("subscription_id", session.getSubscriptionId());
+    
     SlackSubscription subscription = createSlackSubscriptionFromSubmissionCommand(command);
     dao.updateSubscription(subscription);
   }
