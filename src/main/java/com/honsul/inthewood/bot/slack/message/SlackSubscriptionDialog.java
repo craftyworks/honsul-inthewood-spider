@@ -9,6 +9,11 @@ public class SlackSubscriptionDialog {
   public static SlackDialog build() {
     return build("add_subscription", null, null);
   }
+  
+  public static SlackDialog build(String callbackId) {
+    return build(callbackId, null, null);
+  }
+      
   public static SlackDialog build(String callbackId, Option selectedResortOption, Option selectedBookingDtOption) {
     SlackDialog dialog = SlackDialog.builder()
         .callbackId(callbackId)

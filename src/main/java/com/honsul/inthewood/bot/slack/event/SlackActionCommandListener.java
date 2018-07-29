@@ -2,6 +2,7 @@ package com.honsul.inthewood.bot.slack.event;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,13 @@ import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.honsul.inthewood.bot.slack.SlackBotService;
 import com.honsul.inthewood.bot.slack.SlackWebClient;
-import com.honsul.inthewood.bot.slack.message.SlackSubscriptionCompleteMessage;
 import com.honsul.inthewood.bot.slack.message.SlackSubscriptionListMessage;
 import com.honsul.inthewood.bot.slack.model.SlackActionCommand;
 import com.honsul.inthewood.bot.slack.model.SlackDialog;
 import com.honsul.inthewood.bot.slack.model.api.DialogOpenRequest;
 import com.honsul.inthewood.bot.slack.model.api.DialogOpenResponse;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
+import com.honsul.inthewood.bot.slack.model.domain.SubmissionDialogSession;
 
 @Component
 public class SlackActionCommandListener implements EventBusListener{
@@ -38,28 +39,16 @@ public class SlackActionCommandListener implements EventBusListener{
   public void receive(SlackActionCommand actionCommand) {
     switch (actionCommand.getCallbackId()) {
       case "add_subscription":
-        addSubscription(actionCommand);
+        updateSubscription(actionCommand);
         break;
       case "edit_subscription":
-        addSubscription(actionCommand);
-        break;
-      case "subscription_item":
-        switch(actionCommand.getActions()[0].getName()) {
-          case "list":
-            listSubscription(actionCommand);
-            break;
-          case "edit":
-            editSubscription(actionCommand);
-            break;
-          case "remove":
-            removeSubscription(actionCommand);
-            break;
-          default:
-            throw new AssertionError("Never Happend");
-        }        
+        updateSubscription(actionCommand);
         break;
       case "list_subscription":
         switch(actionCommand.getActions()[0].getName()) {
+          case "add":
+            addSubscription(actionCommand);
+            break;
           case "edit":
             editSubscription(actionCommand);
             break;
@@ -88,16 +77,44 @@ public class SlackActionCommandListener implements EventBusListener{
   /**
    * 신규 휴양림 정찰 등록 후 결과 메시지 출력.
    */
+  private void updateSubscription(SlackActionCommand actionCommand) {
+    logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
+    
+    String callbackUrl = actionCommand.getResponseUrl();
+    String submissionId = actionCommand.getSubmission().get("dialog_submission_id");
+    if(!StringUtils.isEmpty(submissionId)) {
+      SubmissionDialogSession session = service.getSubmissionDialogSession(submissionId);
+      if(!StringUtils.isEmpty(session.getCallbackUrl())) {
+        callbackUrl = session.getCallbackUrl();
+      }
+    }
+    
+    List<SlackSubscription> subscriptions = service.selectSlackSubscription(actionCommand.getUser().getId(), actionCommand.getChannel().getId());
+        
+    slackClient.sendMessage(callbackUrl, SlackSubscriptionListMessage.build(subscriptions));
+  }
+
+  /**
+   * 정찰 휴양림 정보 등록 대화상자 오픈.
+   */
   private void addSubscription(SlackActionCommand actionCommand) {
     logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
     
-    SlackSubscription subscription = service.getSlackSubscriptionFromSubmissionCommand(actionCommand);
+    String token = service.getSlackBotAccessToken(actionCommand.getUser().getId());
+    String triggerId = actionCommand.getTriggerId();
+    SlackDialog dialog = service.getSlackAddSubscriptionDialog(actionCommand); 
     
-    slackClient.sendMessage(actionCommand.getResponseUrl(), SlackSubscriptionCompleteMessage.build(subscription));
+    logger.info("Dialog open request {}, {}, {}", token, triggerId, dialog);
+    DialogOpenResponse response = slackClient.dialogOpen(DialogOpenRequest.builder()
+        .token(token)
+        .triggerId(triggerId)
+        .dialog(dialog).build()
+    );
+    logger.info("Dialog Open response : {}", response);
   }
-  
+
   /**
-   * 정찰 휴양림 정보 수정.
+   * 정찰 휴양림 정보 수정 대화상자 오픈.
    */
   private void editSubscription(SlackActionCommand actionCommand) {
     logger.info("action command : {}, {}", actionCommand.getType(), actionCommand.getCallbackId());
@@ -105,7 +122,7 @@ public class SlackActionCommandListener implements EventBusListener{
     String token = service.getSlackBotAccessToken(actionCommand.getUser().getId());
     String triggerId = actionCommand.getTriggerId();
     String subscriptionId = actionCommand.getActions()[0].getValue();
-    SlackDialog dialog = service.getSlackEditSubscriptionDialog(subscriptionId); 
+    SlackDialog dialog = service.getSlackEditSubscriptionDialog(actionCommand, subscriptionId); 
     
     logger.info("Dialog open request {}, {}, {}", token, triggerId, dialog);
     DialogOpenResponse response = slackClient.dialogOpen(DialogOpenRequest.builder()

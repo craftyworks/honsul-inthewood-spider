@@ -23,27 +23,41 @@ public class R028BookingParser extends JsoupBookingParser {
 
   private static final String CONNECT_URL = "https://www.ddnayo.com/RsvSys/Calendar.aspx?id_hotel=1985";
 
+  private Document getDocument(Document doc) throws IOException {
+    String EVENTARGUMENT = doc.selectFirst("#ctt_ctt_cal > table.title > tbody > tr > td.td > span.nxt_m > a[href]").attr("href").split("\\(")[1].split("\\)")[0];
+    String EVENTTARGET = EVENTARGUMENT.split("\\,")[0].replaceAll("\\'", "");
+    EVENTARGUMENT = EVENTARGUMENT.split("\\,")[1].replaceAll("\\'", "");
+    
+    logger.debug("event target: {}, argument: {}", EVENTTARGET, EVENTARGUMENT);
+    
+    String VIEWSTATEGENERATOR = doc.select("div.aspNetHidden > input[name=__VIEWSTATEGENERATOR]").val();
+    String EVENTVALIDATION = doc.select("div.aspNetHidden > input[name=__EVENTVALIDATION]").val();
+    
+    Element elm = doc.selectFirst("form[id=form1]");
+    if(elm != null) {
+      String VIEWSTATE = elm.selectFirst("input[name=__VIEWSTATE]").val();      
+      return Jsoup.connect(CONNECT_URL)
+          .data("ctl00$ctl00$ctt$ctt$sm", "ctl00$ctl00$ctt$ctt$upp|"+EVENTTARGET)
+          .data("__EVENTTARGET", EVENTTARGET)
+          .data("__EVENTARGUMENT", EVENTARGUMENT)
+          .data("__LASTFOCUS", "")
+          .data("__VIEWSTATE", VIEWSTATE)
+          .data("__VIEWSTATEGENERATOR", VIEWSTATEGENERATOR)
+          .data("__EVENTVALIDATION", EVENTVALIDATION)
+          .data("__ASYNCPOST", "true").post();
+    }
+    return null;
+  }
   @Override
   protected List<Document> documents() throws IOException {
     List<Document> documentList = new ArrayList<>();    
     
     Document doc = Jsoup.connect(CONNECT_URL).post();
     documentList.add(doc);
-    
-    String EVENTARGUMENT = doc.selectFirst("#ctt_ctt_cal > table.title > tbody > tr > td.td > span.nxt_m > a[href]").attr("href").split("\\(")[1].split("\\)")[0];
-    String EVENTTARGET = EVENTARGUMENT.split("\\,")[0].replaceAll("\\'", "");
-    EVENTARGUMENT = EVENTARGUMENT.split("\\,")[1].replaceAll("\\'", "");
-    
-	String VIEWSTATEGENERATOR = doc.select("div.aspNetHidden > input[name=__VIEWSTATEGENERATOR]").val();
-	String EVENTVALIDATION = doc.select("div.aspNetHidden > input[name=__EVENTVALIDATION]").val();
-	
-    Element elm = doc.selectFirst("form[id=form1]");
-    if(elm != null) {
-      String VIEWSTATE = elm.selectFirst("input[name=__VIEWSTATE]").val();      
-      doc = Jsoup.connect(CONNECT_URL).data("ctl00$ctl00$ctt$ctt$sm", "ctl00$ctl00$ctt$ctt$upp|"+EVENTTARGET).data("__EVENTTARGET", EVENTTARGET).data("__EVENTARGUMENT", EVENTARGUMENT).data("__LASTFOCUS", "")
-    		  .data("__VIEWSTATE", VIEWSTATE).data("__VIEWSTATEGENERATOR", VIEWSTATEGENERATOR).data("__EVENTVALIDATION", EVENTVALIDATION).data("__ASYNCPOST", "true").post();
+    while((doc = getDocument(doc)) != null) {
       documentList.add(doc);
-    }   
+    }
+    
     return documentList;
   }
   

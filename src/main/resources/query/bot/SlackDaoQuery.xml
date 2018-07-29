@@ -161,5 +161,21 @@
        WHERE SUBSCRIPTION_ID = #{vo}    
     </delete>   
        
+    <insert id="insertSubmissionDialogSession" parameterType="SubmissionDialogSession">
+      INSERT INTO SLACK_SUBMISSION_DIALOG(
+         SUBMISSION_ID, SUBSCRIPTION_ID, CALLBACK_URL
+      ) VALUES (
+        #{submissionId}, #{subscriptionId}, #{callbackUrl}
+      )
+    </insert>
+    
+    <select id="getSubmissionDialogSession" resultType="SubmissionDialogSession" parameterType="string"> 
+      SELECT a.SUBMISSION_ID
+           , a.SUBSCRIPTION_ID
+           , a.CALLBACK_URL
+        FROM SLACK_SUBMISSION_DIALOG a
+       WHERE a.SUBMISSION_ID = #{vo}
+    </select>      
+    
 </mapper>
 

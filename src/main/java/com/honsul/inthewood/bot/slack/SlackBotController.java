@@ -77,13 +77,10 @@ public class SlackBotController {
     
     switch (command.getType()) {
       case dialog_submission:
-        //수정
-        if(command.getCallbackId().startsWith("edit_subscription")) {
-          String subscriptionId = command.getCallbackId().split("\\$")[1];
-          command.getSubmission().put("subscription_id", subscriptionId);
-          command.setCallbackId("edit_subscription");
-        }
-        
+        String[] infos = command.getCallbackId().split("\\$");
+        command.setCallbackId(infos[0]);
+        command.getSubmission().put("dialog_submission_id", infos.length > 1 ? infos[1] : "");
+
         // 휴양림 정찰 등록/수정
         resp = service.saveSubscription(command);
         break;

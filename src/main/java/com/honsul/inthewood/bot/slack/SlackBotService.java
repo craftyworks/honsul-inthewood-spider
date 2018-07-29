@@ -24,6 +24,7 @@ import com.honsul.inthewood.bot.slack.model.api.AuthTestResponse;
 import com.honsul.inthewood.bot.slack.model.api.UserAuth;
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
+import com.honsul.inthewood.bot.slack.model.domain.SubmissionDialogSession;
 
 @Service
 public class SlackBotService {
@@ -142,20 +143,34 @@ public class SlackBotService {
   /**
    * 휴양림 정찰 추가 다이알로그 리턴.
    */
-  public SlackDialog getSlackAddSubscriptionDialog() {
-    return SlackSubscriptionDialog.build();
+  public SlackDialog getSlackAddSubscriptionDialog(SlackActionCommand actionCommand) {
+    //Submission Dialog Session
+    SubmissionDialogSession session = createSubmissionDialogSession(actionCommand.getResponseUrl(), "");
+    
+    return SlackSubscriptionDialog.build("add_subscription$" + session.getSubmissionId());
   }
   
   /**
    * 휴양림 정찰 수정 다이알로그 리턴.
    */
-  public SlackDialog getSlackEditSubscriptionDialog(String subscriptionId) {
+  public SlackDialog getSlackEditSubscriptionDialog(SlackActionCommand actionCommand, String subscriptionId) {
     SlackSubscription subscription = getSlackSubscriptionById(subscriptionId);
     
     Option selectedResort = Option.of(subscription.getResortNm(), subscription.getResortId());
     Option selectedBookingDt = Option.of(subscription.getBookingDtTxt(), subscription.getBookingDt());
     
-    return SlackSubscriptionDialog.build("edit_subscription$" + subscriptionId, selectedResort, selectedBookingDt);
+    //Submission Dialog Session
+    SubmissionDialogSession session = createSubmissionDialogSession(actionCommand.getResponseUrl(), subscriptionId);
+    
+    return SlackSubscriptionDialog.build("edit_subscription$" + session.getSubmissionId(), selectedResort, selectedBookingDt);
+  }
+  
+  private SubmissionDialogSession createSubmissionDialogSession(String callbackUrl, String subscriptionId) {
+    SubmissionDialogSession session = SubmissionDialogSession.of(callbackUrl, subscriptionId);
+    
+    dao.insertSubmissionDialogSession(session);
+    
+    return session;
   }
   
   /**
@@ -217,6 +232,10 @@ public class SlackBotService {
 
   public void removeSlackSubscription(String subscriptionId) {
     dao.removeSubscription(subscriptionId);
+  }
+
+  public SubmissionDialogSession getSubmissionDialogSession(String submissionId) {
+    return dao.getSubmissionDialogSession(submissionId);
   }
 
 }

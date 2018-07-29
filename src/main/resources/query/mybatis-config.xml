@@ -26,6 +26,7 @@
     <typeAlias alias="SlackSubscription" type="com.honsul.inthewood.bot.slack.model.domain.SlackSubscription"/>
     <typeAlias alias="SlackSlashCommand" type="com.honsul.inthewood.bot.slack.model.SlackSlashCommand"/>
     <typeAlias alias="SlackMessage" type="com.honsul.inthewood.bot.slack.model.SlackMessage"/>
+    <typeAlias alias="SubmissionDialogSession" type="com.honsul.inthewood.bot.slack.model.domain.SubmissionDialogSession"/>
   </typeAliases>
   
   <typeHandlers>

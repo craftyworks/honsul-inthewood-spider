@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.honsul.inthewood.bot.slack.model.domain.SlackSubscription;
 import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
+import com.honsul.inthewood.bot.slack.model.domain.SubmissionDialogSession;
 
 @Mapper
 @Repository
@@ -36,5 +37,9 @@ public interface SlackDao {
   void removeSubscription(String subscriptionId);
 
   SlackSubscription getSlackSubscription(SlackSubscription subscription);
+
+  void insertSubmissionDialogSession(SubmissionDialogSession session);
+
+  SubmissionDialogSession getSubmissionDialogSession(String submissionId);
 
 }

@@ -36,7 +36,24 @@ public class SlackBotControllerTest {
   }
 
   @Test
-  public void testActionCommand() throws Exception {
+  public void testAddActionCommand() throws Exception {
+    SlackActionCommand command = new SlackActionCommand();
+    command.setType(Type.dialog_submission);
+    command.setCallbackId("add_subscription");
+    command.setSubmission(new HashMap<>());
+    
+    SlackActionCommandResponsable response = controller.actionCommand(command);
+    
+    assertThat(response).isNotNull();
+    assertThat(command.getSubmission()).containsKey("dialog_submission_id").containsValue("");
+    assertThat(command.getCallbackId()).isEqualTo("add_subscription");
+    
+    verify(service).saveSubscription(command);
+    verify(eventBus).post(command);
+  }
+  
+  @Test
+  public void testEditActionCommand() throws Exception {
     SlackActionCommand command = new SlackActionCommand();
     command.setType(Type.dialog_submission);
     command.setCallbackId("edit_subscription$123");
@@ -45,11 +62,10 @@ public class SlackBotControllerTest {
     SlackActionCommandResponsable response = controller.actionCommand(command);
     
     assertThat(response).isNotNull();
-    assertThat(command.getSubmission()).containsKey("subscription_id").containsValue("123");
+    assertThat(command.getSubmission()).containsKey("dialog_submission_id").containsValue("123");
     assertThat(command.getCallbackId()).isEqualTo("edit_subscription");
     
     verify(service).saveSubscription(command);
     verify(eventBus).post(command);
   }
-
 }
