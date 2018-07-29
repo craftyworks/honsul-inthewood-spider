@@ -5,6 +5,9 @@ spring:
     proxy-target-class: true
   mustache:
     suffix: .html
+  output:
+    ansi:
+      enabled: always 
 
 mybatis:
   config-location: classpath:query/mybatis-config.xml
