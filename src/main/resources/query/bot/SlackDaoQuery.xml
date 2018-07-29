@@ -151,7 +151,6 @@
          SET BOOKING_DT = #{bookingDt}
            , RESORT_ID = #{resortId}
            , ROOM_TYPE = #{roomType}
-           , USE_YN = #{useYn}
            , UPDATE_DT = now()
        WHERE SUBSCRIPTION_ID = #{subscriptionId}    
     </update>
