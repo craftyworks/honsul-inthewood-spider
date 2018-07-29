@@ -29,14 +29,18 @@ import com.honsul.inthewood.bot.slack.model.domain.SlackUser;
 public class SlackBotController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
-  @Autowired
   private SlackBotService service;
   
-  @Autowired
   private SlackWebClient slackClient;
 
-  @Autowired
   private EventBus eventBus;
+  
+  @Autowired
+  public SlackBotController(SlackBotService service, SlackWebClient slackClient, EventBus eventBus) {
+    this.service = service;
+    this.slackClient = slackClient;
+    this.eventBus = eventBus;
+  }
   
   @GetMapping("/install")
   public String install(Model model) {
@@ -75,7 +79,7 @@ public class SlackBotController {
       case dialog_submission:
         //수정
         if(command.getCallbackId().startsWith("edit_subscription")) {
-          String subscriptionId = command.getCallbackId().split("$")[1];
+          String subscriptionId = command.getCallbackId().split("\\$")[1];
           command.getSubmission().put("subscription_id", subscriptionId);
           command.setCallbackId("edit_subscription");
         }
